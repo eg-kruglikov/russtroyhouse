@@ -4,6 +4,7 @@ import { styles, headerStyles } from "./styles";
 import { works, services } from "./moks";
 import logo from "./assets/logo_russtroyhouse_header_new.png";
 import ModalCallback from "./components/modalCallback";
+import background from "./assets/background_new.jpg";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -28,56 +29,90 @@ function App() {
             alignItems: "center",
           }}
         >
-          <img src={logo} alt="РусУютСтрой" style={{ height: "7vh" }} />
+          <img src={logo} alt="РусУютСтрой" style={{ height: "5vh" }} />
           <a
             href="tel:+79991234567"
             style={{
               color: "#1c2e52",
-              fontSize: "20px",
+              fontSize: "16px",
               textDecoration: "none",
-              fontWeight: "600",
+              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
             }}
           >
+            <span role="img" aria-label="phone">
+              📞
+            </span>
             +7 (999) 123-45-67
           </a>
         </div>
       </header>
 
-      <section style={styles.section}>
-        <h2
+      <section
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          padding: "100px 20px",
+          color: "#fff",
+          textAlign: "center",
+        }}
+      >
+        <div
           style={{
-            fontSize: "36px",
-            fontWeight: "bold",
-            marginBottom: "10px",
-            color: "#1c2e52",
+            backgroundColor: "rgba(0,0,0,0.6)",
+            padding: "40px 20px",
+            borderRadius: "12px",
+            maxWidth: "800px",
+            margin: "0 auto",
           }}
         >
-          Ремонт квартир под ключ в Москве
-        </h2>
-        <p
-          style={{
-            fontSize: "24px",
-            color: "#f97316",
-            fontStyle: "italic",
-            marginBottom: "30px",
-            fontWeight: "800",
-          }}
-        >
-          Мы создаём уют
-        </p>
-        <p
-          style={{
-            fontSize: "16px",
-            color: "#555",
-            marginBottom: "20px",
-          }}
-        >
-          Гарантия, качество и соблюдение сроков от надёжной строительной
-          компании
-        </p>
-        <button onClick={() => setShowModal(true)} style={styles.button}>
-          Оставить заявку
-        </button>
+          <h1
+            style={{
+              fontSize: "36px",
+              fontWeight: "700",
+              marginBottom: "20px",
+            }}
+          >
+            Ремонт квартир под ключ в Москве
+          </h1>
+          <p
+            style={{
+              fontSize: "20px",
+              fontStyle: "italic",
+              color: "#f97316",
+              marginBottom: "10px",
+              fontWeight: "600",
+            }}
+          >
+            Мы создаём уют
+          </p>
+          <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+            Более 10 лет опыта. Работаем строго по договору.
+          </p>
+          <p style={{ fontSize: "16px", marginBottom: "30px" }}>
+            Гарантия, качество и соблюдение сроков от надёжной строительной
+            компании
+          </p>
+          <button
+            style={{
+              padding: "14px 28px",
+              fontSize: "16px",
+              backgroundColor: "#f97316",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            Оставить заявку
+          </button>
+        </div>
       </section>
 
       <section id="services" style={styles.section}>
