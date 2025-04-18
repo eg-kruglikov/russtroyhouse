@@ -29,7 +29,7 @@ function App() {
             alignItems: "center",
           }}
         >
-          <img src={logo} alt="РусУютСтрой" style={{ height: "5vh" }} />
+          <img src={logo} alt="РусУютСтрой" style={{ height: "6vh" }} />
           <a
             href="tel:+79991234567"
             style={{
@@ -55,14 +55,16 @@ function App() {
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          padding: "100px 20px",
+          padding: "60px 16px",
           color: "#fff",
           textAlign: "center",
         }}
       >
         <div
           style={{
-            backgroundColor: "rgba(0,0,0,0.6)",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backdropFilter: "blur(1px)",
+            WebkitBackdropFilter: "blur(1px)", // для Safari
             padding: "40px 20px",
             borderRadius: "12px",
             maxWidth: "800px",
@@ -71,9 +73,10 @@ function App() {
         >
           <h1
             style={{
-              fontSize: "36px",
+              fontSize: "26px",
               fontWeight: "700",
-              marginBottom: "20px",
+              marginBottom: "16px",
+              lineHeight: "1.2",
             }}
           >
             Ремонт квартир под ключ в Москве
@@ -84,27 +87,45 @@ function App() {
               fontStyle: "italic",
               color: "#f97316",
               marginBottom: "10px",
-              fontWeight: "600",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "6px",
             }}
           >
             Мы создаём уют
           </p>
-          <p style={{ fontSize: "16px", marginBottom: "10px" }}>
+          <p
+            style={{
+              fontSize: "16px",
+              marginBottom: "10px",
+              lineHeight: "1.4",
+            }}
+          >
             Более 10 лет опыта. Работаем строго по договору.
           </p>
-          <p style={{ fontSize: "16px", marginBottom: "30px" }}>
+          <p
+            style={{
+              fontSize: "16px",
+              lineHeight: "1.4",
+              marginBottom: "20px",
+            }}
+          >
             Гарантия, качество и соблюдение сроков от надёжной строительной
             компании
           </p>
           <button
             style={{
-              padding: "14px 28px",
+              padding: "12px 24px",
               fontSize: "16px",
               backgroundColor: "#f97316",
               color: "#fff",
               border: "none",
               borderRadius: "8px",
               cursor: "pointer",
+              width: "100%",
+              maxWidth: "260px",
+              margin: "0 auto",
             }}
             onClick={() => {
               setShowModal(true);
@@ -112,17 +133,54 @@ function App() {
           >
             Оставить заявку
           </button>
+          <p
+            className="bookmark-reminder"
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              marginTop: "12px",
+              fontSize: "14px",
+              lineHeight: "1.4",
+            }}
+          >
+            ⭐ Не забудьте добавить наш сайт в закладки, чтобы не потерять!{" "}
+            <br />
+            Это поможет быстро вернуться и завершить выбор 😊
+          </p>
         </div>
       </section>
 
       <section id="services" style={styles.section}>
         <h2 style={styles.sectionTitle}>Наши услуги</h2>
-        <div style={styles.grid}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+            maxWidth: "1200px",
+            margin: "0 auto",
+          }}
+        >
           {services.map((service, index) => (
-            <div key={index} style={styles.card}>
-              <div style={styles.cardTitle}>{service}</div>
-              <p style={styles.text}>
-                Подробнее об этой услуге вы можете узнать у нашего менеджера.
+            <div
+              key={index}
+              style={{
+                background: "#fff",
+                borderRadius: "12px",
+                padding: "20px",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                transition: "transform 0.2s ease",
+              }}
+            >
+              <div style={{ fontSize: "32px" }}>{service.icon}</div>
+              <div style={{ fontWeight: "600", fontSize: "18px" }}>
+                {service.title}
+              </div>
+              <p style={{ fontSize: "14px", color: "#333" }}>
+                {service.description}
               </p>
             </div>
           ))}

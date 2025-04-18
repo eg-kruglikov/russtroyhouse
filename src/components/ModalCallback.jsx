@@ -58,6 +58,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
       setLoading(false);
     }
   };
+
   return (
     showModal && (
       <div
@@ -67,7 +68,8 @@ const ModalCallback = ({ showModal, setShowModal }) => {
           left: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "rgba(0,0,0,0.5)",
+          backgroundColor: "rgba(0,0,0,0.4)",
+          backdropFilter: "blur(3px)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -77,14 +79,22 @@ const ModalCallback = ({ showModal, setShowModal }) => {
         <div
           style={{
             backgroundColor: "#fff",
-            padding: "30px",
-            borderRadius: "10px",
-            maxWidth: "400px",
-            width: "100%",
-            textAlign: "left",
+            padding: "30px 24px",
+            borderRadius: "12px",
+            maxWidth: "420px",
+            width: "90%",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
+            animation: "fadeInUp 0.3s ease-out",
           }}
         >
-          <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
+          <h2
+            style={{
+              marginBottom: "20px",
+              textAlign: "center",
+              fontSize: "22px",
+              fontWeight: "700",
+            }}
+          >
             Обратный звонок
           </h2>
 
@@ -95,11 +105,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
           ) : (
             <form
               onSubmit={handleSubmit}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-              }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <input
                 type="text"
@@ -112,6 +118,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
                   fontSize: "16px",
                   border: "1px solid #ccc",
                   borderRadius: "6px",
+                  marginBottom: "14px",
                 }}
               />
               <input
@@ -125,6 +132,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
                   fontSize: "16px",
                   border: "1px solid #ccc",
                   borderRadius: "6px",
+                  marginBottom: "14px",
                 }}
               />
               <textarea
@@ -132,9 +140,14 @@ const ModalCallback = ({ showModal, setShowModal }) => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 style={{
-                  padding: "10px",
+                  padding: "12px",
                   fontSize: "16px",
-                  minHeight: "80px",
+                  borderRadius: "6px",
+                  border: "1px solid #ccc",
+                  height: "100px",
+                  resize: "none",
+                  marginBottom: "14px",
+                  width: "100%",
                 }}
               />
               {error && (
@@ -153,13 +166,15 @@ const ModalCallback = ({ showModal, setShowModal }) => {
                 type="submit"
                 disabled={loading}
                 style={{
-                  padding: "14px 30px",
+                  padding: "14px",
+                  fontSize: "16px",
                   backgroundColor: loading ? "#aaa" : "#f97316",
                   color: "#fff",
                   border: "none",
                   borderRadius: "8px",
                   cursor: loading ? "not-allowed" : "pointer",
-                  fontSize: "16px",
+                  marginBottom: "12px",
+                  width: "100%",
                 }}
               >
                 {loading ? "Отправка..." : "Отправить"}
@@ -173,14 +188,13 @@ const ModalCallback = ({ showModal, setShowModal }) => {
               setSubmitted(false);
             }}
             style={{
-              marginTop: "20px",
               backgroundColor: "#eee",
-              padding: "10px",
-              fontSize: "14px",
-              width: "100%",
+              color: "#333",
+              padding: "12px",
               border: "none",
-              borderRadius: "6px",
+              borderRadius: "8px",
               cursor: "pointer",
+              width: "100%",
             }}
           >
             Закрыть
