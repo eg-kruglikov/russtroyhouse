@@ -4,7 +4,8 @@ import { styles, headerStyles } from "./styles";
 import { works, services } from "./moks";
 import logo from "./assets/logo_russtroyhouse_header_new.png";
 import ModalCallback from "./components/modalCallback";
-import background from "./assets/background_new.jpg";
+import background from "./assets/background_new_3.jpg";
+import officeMain from "./assets/office_main.jpg";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +32,7 @@ function App() {
         >
           <img src={logo} alt="РусУютСтрой" style={{ height: "6vh" }} />
           <a
-            href="tel:+79991234567"
+            href="tel:+7 (926) 408-18-11"
             style={{
               color: "#1c2e52",
               fontSize: "16px",
@@ -45,7 +46,7 @@ function App() {
             <span role="img" aria-label="phone">
               📞
             </span>
-            +7 (999) 123-45-67
+            +7 (926) 408-18-11
           </a>
         </div>
       </header>
@@ -199,54 +200,84 @@ function App() {
         </div>
       </section>
 
-      <section id="about" style={styles.section}>
-        <h2 style={styles.sectionTitle}>Ваше спокойствие — наша работа</h2>
-        <p style={styles.sectionText}>
-          С нами вы можете не беспокоиться о сроках, качестве и контроле. Мы
-          работаем строго по договору, предоставляем ежедневные фотоотчёты и
-          даём гарантию на все виды работ. Более 10 лет опыта и сотни довольных
-          клиентов позволяют нам решать задачи любой сложности профессионально и
-          надёжно.
-        </p>
-        <button style={styles.button}>Узнать больше</button>
+      <section id="office" style={styles.section}>
+        <h2 style={styles.sectionTitle}>Наш офис</h2>
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            textAlign: "center",
+          }}
+        >
+          <img
+            src={officeMain}
+            alt="Офис компании РусУютСтрой"
+            style={{
+              width: "100%",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              objectFit: "cover",
+            }}
+          />
+          <p
+            style={{
+              marginTop: "16px",
+              fontSize: "16px",
+              color: "#333",
+              lineHeight: "1.5",
+            }}
+          >
+            Мы работаем в уютном офисе с видом на набережную. Здесь мы встречаем
+            клиентов, обсуждаем проекты и подписываем договоры.
+          </p>
+          <p
+            style={{
+              marginTop: "8px",
+              fontSize: "15px",
+              color: "#555",
+            }}
+          >
+            📍 Московская область, г. Балашиха, пр-т Ленина, д. 32
+          </p>
+        </div>
       </section>
 
-      <section id="contact" style={styles.section}>
-        <h2 style={styles.sectionTitle}>Оставьте заявку</h2>
-        <p style={styles.sectionText}>
-          Наш менеджер свяжется с вами в течение 15 минут
+      <footer
+        style={{
+          backgroundColor: "#1e2c50",
+          color: "#fff",
+          textAlign: "center",
+          padding: "30px 20px",
+          fontSize: "15px",
+          lineHeight: "1.6",
+        }}
+      >
+        <p>ИП Самылкина Юлия Николаевна ИНН/КПП: 5029189414 / 775101001</p>
+        <p>
+          Адрес: Королёв, ул Проспект Королева 5 д, ТРЦ — Статус, 3 этаж, офис
+          315
         </p>
-        <form style={styles.form}>
-          <input
-            type="text"
-            placeholder="Ваше имя"
-            required
-            style={styles.input}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            style={styles.input}
-          />
-          <input
-            type="tel"
-            placeholder="Телефон"
-            required
-            style={styles.input}
-          />
-          <button type="submit" style={styles.button}>
-            Отправить
-          </button>
-        </form>
-      </section>
-
-      <footer style={styles.footer}>
-        <p>ООО «РусУютСтрой»</p>
-        <p>ИНН: 5032309990 / ОГРН: 1235000050982</p>
-        <p>Адрес: Московская область, г. Балашиха, пр-т Ленина, д. 32</p>
-        <p>Email: info@russtroyhouse.ru | Телефон: +7 (999) 123-45-67</p>
-        <p>© {new Date().getFullYear()} РусУютСтрой. Все права защищены.</p>
+        <p style={{ marginTop: "8px" }}>
+          <a
+            href="mailto:rus_pd@mail.ru"
+            style={{
+              color: "#fff",
+              textDecoration: "underline",
+              marginRight: "16px",
+            }}
+          >
+            rus_pd@mail.ru
+          </a>
+          <a
+            href="tel:+79264081811"
+            style={{
+              color: "#fff",
+              textDecoration: "underline",
+            }}
+          >
+            +7 (926) 408-18-11
+          </a>
+        </p>
       </footer>
     </div>
   );
