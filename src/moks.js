@@ -1,27 +1,27 @@
 export const works = [
   {
     id: 1,
-    title: "Косметический ремонт квартиры",
-    subtitle: "Площадь: 72 м² · Срок: 1 месяц",
-    image: "https://i.imgur.com/WH0qfKV.png",
-  },
-  {
-    id: 2,
     title: "Отделка офиса в бизнес-центре",
     subtitle: "Площадь: 90 м² · Срок: 1.5 месяца",
     image: "https://i.imgur.com/SHgxkzE.jpeg",
   },
   {
-    id: 3,
+    id: 2,
     title: "Ремонт квартиры в Москве под ключ",
     subtitle: "Площадь: 125 м² · Срок: 2 месяца",
     image: "https://i.imgur.com/hMCsbMZ.jpeg",
   },
   {
-    id: 4,
+    id: 3,
     title: "Отделочные работы в частном доме под ключ",
     subtitle: "Площадь: 160 м² · Срок: 2 месяца",
     image: "https://i.imgur.com/WkdZUcP.jpeg",
+  },
+  {
+    id: 4,
+    title: "Косметический ремонт квартиры",
+    subtitle: "Площадь: 72 м² · Срок: 1 месяц",
+    image: "https://i.imgur.com/WH0qfKV.png",
   },
 ];
 

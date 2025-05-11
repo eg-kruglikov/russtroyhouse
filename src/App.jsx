@@ -6,6 +6,8 @@ import logo from "./assets/logo_russtroyhouse_header.png";
 import ModalCallback from "./components/modalCallback";
 import background from "./assets/background.jpg";
 import officeMain from "./assets/office_main.jpg";
+import mobileImage from "./assets/about_mobile.jpg";
+import desktopImage from "./assets/about_desktop.jpg";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -83,34 +85,32 @@ function App() {
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          padding: "80px 16px",
-          color: "#fff",
+          padding: "60px 16px",
           textAlign: "center",
-          minHeight: "700px",
+          minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          boxSizing: "border-box",
         }}
       >
         <div
           style={{
-            maxWidth: "700px",
             width: "100%",
-            padding: "30px 20px",
-            backgroundColor: "rgba(0, 0, 0, 0.3)", // исправил: тёмная чуть заметная подложка для читаемости
+            maxWidth: "600px",
+            padding: "32px 24px",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // белая подложка
             borderRadius: "16px",
-            backdropFilter: "blur(2px)",
-            WebkitBackdropFilter: "blur(2px)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.2)", // чуть сильнее тень
+            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
           }}
         >
           <h1
             style={{
-              fontSize: "28px",
+              fontSize: "26px",
               fontWeight: "700",
-              marginBottom: "20px",
+              marginBottom: "16px",
               lineHeight: "1.2",
-              textShadow: "0 2px 4px rgba(0,0,0,0.6)", // сильнее тень
+              color: "#1d2d3c", // тёмный текст
             }}
           >
             РЕМОНТ КВАРТИРЫ ПОД КЛЮЧ
@@ -118,12 +118,11 @@ function App() {
 
           <p
             style={{
-              fontSize: "18px",
-              marginBottom: "24px",
-              color: "#8DD13B",
+              fontSize: "16px",
+              marginBottom: "20px",
+              color: "#8DD13B", // зелёная строка
               fontStyle: "italic",
               fontWeight: "600",
-              textShadow: "0 1px 3px rgba(0,0,0,0.6)", // добавил тень подзаголовку тоже
             }}
           >
             Гарантия до 3 лет — Честно, чётко и по договору
@@ -131,37 +130,35 @@ function App() {
 
           <div
             style={{
-              fontSize: "16px",
+              fontSize: "15px",
               lineHeight: "1.6",
-              marginBottom: "32px",
+              marginBottom: "24px",
               textAlign: "left",
               maxWidth: "400px",
-              margin: "0 auto 32px",
-              color: "#fff", // обязательно плотный белый текст
-              textShadow: "0 1px 2px rgba(0,0,0,0.6)", // тень для всех пунктов списка
+              margin: "0 auto 24px",
+              color: "#1d2d3c", // тёмный текст
             }}
           >
-            <p>✅ Бесплатный выезд замерщика</p>
-            <p>✅ Честная смета без скрытых платежей</p>
-            <p>✅ Работаем в Королёве, Мытищах и Пушкино</p>
-            <p>✅ Договор и гарантия до 3 лет</p>
-            <p>✅ Ремонт без стресса и переплат</p>
+            <p>✔️ Бесплатный выезд замерщика</p>
+            <p>✔️ Честная смета без скрытых платежей</p>
+            <p>✔️ Работаем в Королёве, Мытищах и Пушкино</p>
+            <p>✔️ Договор и гарантия до 3 лет</p>
+            <p>✔️ Ремонт без стресса и переплат</p>
           </div>
 
           <button
             style={{
-              padding: "16px 24px",
-              fontSize: "18px",
+              padding: "14px 20px",
+              fontSize: "16px",
               backgroundColor: "#ff6a00",
               color: "#fff",
               border: "none",
               borderRadius: "10px",
               cursor: "pointer",
               width: "100%",
-              maxWidth: "300px",
+              maxWidth: "280px",
               margin: "0 auto",
               display: "block",
-              boxSizing: "border-box",
               fontWeight: "600",
               transition: "background-color 0.3s ease",
             }}
@@ -173,8 +170,125 @@ function App() {
           </button>
         </div>
       </section>
+      {/* мы в тг */}
+      <section
+        style={{
+          paddingTop: "16px",
+          backgroundColor: "#f8f8f8",
+          textAlign: "center",
+        }}
+      >
+        <h2
+          style={{ fontSize: "32px", marginBottom: "16px", color: "#1d2d3c" }}
+        >
+          Мы в Telegram
+        </h2>
+        <p
+          style={{
+            fontSize: "18px",
+            maxWidth: "700px",
+            margin: "0 auto 32px",
+            color: "#444",
+          }}
+        >
+          Рассказываем о нюансах ремонта, делимся опытом, показываем, как
+          создаём уют в квартирах и домах. Присоединяйтесь!
+        </p>
+        <a
+          href="https://t.me/russtroyhouse"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            padding: "12px 24px",
+            fontSize: "16px",
+            backgroundColor: "#0088cc",
+            color: "#fff",
+            borderRadius: "8px",
+            textDecoration: "none",
+            transition: "background-color 0.3s",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#0077b3")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#0088cc")}
+        >
+          Перейти в канал
+        </a>
+      </section>
+      {/* почему мы */}
+      <section
+        id="why-us"
+        style={{
+          backgroundColor: "#f8f9fb",
+          paddingTop: "50px",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "48px",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              textAlign: "center",
+              fontSize: "36px",
+              fontWeight: "700",
+              color: "#1d2d3c",
+              marginBottom: "30px",
+            }}
+          >
+            Почему именно мы?
+          </h2>
+          {[
+            {
+              icon: "🎯",
+              title: "Опыт, проверенный временем",
+              text: "Мы работаем более 10 лет и успели реализовать десятки проектов. Для нас ремонт — это не просто стены и обои, а комфорт и надёжность для жизни.",
+            },
+            {
+              icon: "🤝",
+              title: "Договор и прозрачность",
+              text: "Заключаем официальный договор с чёткими сроками, фиксированной сметой и гарантией на все виды работ до 3 лет.",
+            },
+            {
+              icon: "📸",
+              title: "Контроль в каждый день",
+              text: "Ежедневные фотоотчёты в мессенджере — вы всегда знаете, что происходит на объекте.",
+            },
+            {
+              icon: "🛠️",
+              title: "Наши принципы — уют, качество, честность",
+              text: "Мы не обещаем «евроремонт за 3 дня», но точно сделаем красиво, аккуратно и без нервов. Большинство клиентов приходят по рекомендации.",
+            },
+          ].map((item, i) => (
+            <div key={i} style={{ textAlign: "center", maxWidth: "700px" }}>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  color: "#1d2d3c",
+                  borderBottom: "2px solid #ff6a00",
+                  display: "inline-block",
+                  paddingBottom: "6px",
+                  marginBottom: "12px",
+                }}
+              >
+                <span style={{ marginRight: "8px" }}>{item.icon}</span>
+                {item.title}
+              </h3>
+              <p style={{ color: "#444", fontSize: "16px", lineHeight: "1.6" }}>
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* наши услуги  */}
       {/* наши услуги */}
       <section
         id="services"
@@ -212,7 +326,7 @@ function App() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
-                minHeight: "180px",
+                minHeight: "100px",
                 transition: "transform 0.3s ease",
                 cursor: "pointer",
               }}
@@ -231,14 +345,34 @@ function App() {
       </section>
 
       {/* наши работы */}
-      <section id="works" style={styles.section}>
-        <h2 style={styles.sectionTitle}>Наши работы</h2>
+      <section
+        id="works"
+        style={{
+          backgroundColor: "#f4f4f4",
+          padding: "60px 0",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "28px",
+            marginBottom: "40px",
+            fontWeight: "700",
+            color: "#1d2d3c",
+          }}
+        >
+          Наши работы
+        </h2>
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", // шире карточки
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", // стало 280
             gap: "24px",
-            maxWidth: "900px",
+            padding: "0 16px", // убираем боковой перекос
+            boxSizing: "border-box",
+            width: "100%",
+            maxWidth: "1200px",
             margin: "0 auto",
           }}
         >
@@ -259,7 +393,7 @@ function App() {
                   width: "100%",
                   height: "auto",
                   display: "block",
-                  aspectRatio: "4 / 3", // сохраняет пропорции
+                  aspectRatio: "4 / 3",
                   objectFit: "cover",
                 }}
               />
@@ -269,6 +403,7 @@ function App() {
                     fontWeight: "600",
                     fontSize: "16px",
                     marginBottom: "4px",
+                    color: "#1d2d3c",
                   }}
                 >
                   {work.title}
@@ -291,7 +426,7 @@ function App() {
           }}
         >
           <a
-            href="https://drive.google.com/drive/u/0/folders/1au473YHcyqS1ljb4khUtKmFAJoL6BU12?sort=13&direction=a" // ссылка на больше работ
+            href="https://drive.google.com/drive/u/0/folders/1au473YHcyqS1ljb4khUtKmFAJoL6BU12?sort=13&direction=a"
             style={{
               textDecoration: "none",
               color: "#1c2e52",
@@ -305,7 +440,7 @@ function App() {
             📸 Больше работ →
           </a>
           <a
-            href="https://drive.google.com/drive/u/0/folders/1-3j-D4J7TcQJhco5obTsstmo9-6BEaAD?sort=13&direction=a" // ссылка на дизайн-проекты
+            href="https://drive.google.com/drive/u/0/folders/1-3j-D4J7TcQJhco5obTsstmo9-6BEaAD?sort=13&direction=a"
             style={{
               textDecoration: "none",
               color: "#1c2e52",
@@ -320,6 +455,7 @@ function App() {
           </a>
         </div>
       </section>
+
       {/* НАШ ОФИС */}
       <section id="office" style={styles.section}>
         <h2 style={styles.sectionTitle}>Наш офис</h2>

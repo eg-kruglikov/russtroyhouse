@@ -23,8 +23,9 @@ export const styles = {
     fontWeight: "500",
   },
   section: {
-    padding: "40px 20px",
+    padding: "40px 16px",
     textAlign: "center",
+    boxSizing: "border-box",
   },
   sectionTitle: {
     fontSize: "26px",
