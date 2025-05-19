@@ -48,6 +48,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
           }),
         });
       }
+      ym(101296472, "reachGoal", "form_sent");
       setSubmitted(true);
       setName("");
       setPhone("");

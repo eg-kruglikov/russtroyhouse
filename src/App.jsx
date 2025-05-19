@@ -8,9 +8,11 @@ import background from "./assets/background.jpg";
 import officeMain from "./assets/office_main.jpg";
 import mobileImage from "./assets/about_mobile.jpg";
 import desktopImage from "./assets/about_desktop.jpg";
+import ModalConfirmCall from "./components/ModalConfirmCall";
 
 function App() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModalCallback, setShowModalCallback] = useState(false);
+  const [showModalConfirmCall, setShowModalConfirmCall] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -30,7 +32,14 @@ function App() {
 
   return (
     <div style={styles.page}>
-      <ModalCallback showModal={showModal} setShowModal={setShowModal} />
+      <ModalCallback
+        showModal={showModalCallback}
+        setShowModal={setShowModalCallback}
+      />
+      <ModalConfirmCall
+        showModal={showModalConfirmCall}
+        setShowModal={setShowModalConfirmCall}
+      />
       {/* шапочка */}
       <header
         style={{
@@ -61,14 +70,18 @@ function App() {
           <a
             href="tel:+79264081811"
             style={{
-              color: "#222222", // красивый строгий чёрный цвет
-              fontSize: "15px", // чуть крупнее для солидности
+              color: "#222222",
+              fontSize: "15px",
               textDecoration: "none",
               fontWeight: "600",
-              fontFamily: "'Segoe UI', 'Roboto', 'Arial', sans-serif", // строгий красивый шрифт
+              fontFamily: "'Segoe UI', 'Roboto', 'Arial', sans-serif",
               display: "flex",
               alignItems: "center",
               gap: "6px",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              setShowModalConfirmCall(true);
             }}
           >
             <span role="img" aria-label="phone">
@@ -99,30 +112,36 @@ function App() {
             width: "100%",
             maxWidth: "600px",
             padding: "32px 24px",
-            backgroundColor: "rgba(255, 255, 255, 0.8)", // белая подложка
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
             borderRadius: "16px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
           }}
         >
           <h1
             style={{
-              fontSize: "26px",
+              fontSize: "24px",
               fontWeight: "700",
+              lineHeight: "1.4",
               marginBottom: "16px",
-              lineHeight: "1.2",
-              color: "#1d2d3c", // тёмный текст
+              color: "#1d2d3c",
             }}
           >
-            РЕМОНТ КВАРТИРЫ ПОД КЛЮЧ
+            <div>РЕМОНТ КВАРТИРЫ ПОД КЛЮЧ</div>
+            <div style={{ whiteSpace: "nowrap", fontWeight: "400" }}>
+              от{" "}
+              <span style={{ color: "#ff6a00", fontWeight: "700" }}>
+                5 500 ₽/м<sup>2</sup>
+              </span>
+            </div>
           </h1>
 
           <p
             style={{
-              fontSize: "16px",
-              marginBottom: "20px",
-              color: "#8DD13B", // зелёная строка
+              fontSize: "18px",
+              marginBottom: "12px",
+              color: "#8DD13B",
               fontStyle: "italic",
-              fontWeight: "600",
+              fontWeight: "700",
             }}
           >
             Гарантия до 3 лет — Честно, чётко и по договору
@@ -136,7 +155,7 @@ function App() {
               textAlign: "left",
               maxWidth: "400px",
               margin: "0 auto 24px",
-              color: "#1d2d3c", // тёмный текст
+              color: "#1d2d3c",
             }}
           >
             <p>✔️ Бесплатный выезд замерщика</p>
@@ -164,12 +183,13 @@ function App() {
             }}
             onMouseOver={(e) => (e.target.style.backgroundColor = "#e55a00")}
             onMouseOut={(e) => (e.target.style.backgroundColor = "#ff6a00")}
-            onClick={() => setShowModal(true)}
+            onClick={() => setShowModalCallback(true)}
           >
             Узнать стоимость ремонта
           </button>
         </div>
       </section>
+
       {/* мы в тг */}
       <section
         style={{
@@ -248,7 +268,7 @@ function App() {
             {
               icon: "🎯",
               title: "Опыт, проверенный временем",
-              text: "Мы работаем более 10 лет и успели реализовать десятки проектов. Для нас ремонт — это не просто стены и обои, а комфорт и надёжность для жизни.",
+              text: "Мы работаем более 10 лет и успели реализовать сотни проектов! Для нас ремонт — это не просто стены и обои, а комфорт и надёжность для жизни.",
             },
             {
               icon: "🤝",
