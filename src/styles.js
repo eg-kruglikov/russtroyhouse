@@ -4,6 +4,8 @@ export const styles = {
     backgroundColor: "#f1f3f6",
     // backgroundColor: "#fffaf1",
     color: "#333",
+    maxWidth: "1000px",
+    margin: "0 auto",
   },
   header: {
     backgroundColor: "#1c2e52",
@@ -26,6 +28,9 @@ export const styles = {
     padding: "40px 16px",
     textAlign: "center",
     boxSizing: "border-box",
+    maxWidth: "1200px",
+    margin: "0 auto",
+    backgroundColor: "#f9f9f9",
   },
   sectionTitle: {
     fontSize: "26px",

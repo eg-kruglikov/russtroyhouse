@@ -1,18 +1,21 @@
 import { useState } from "react";
 
-const ModalConfirmCall = ({ showModal, onClose, setShowModal }) => {
+const ModalConfirmCall = ({
+  showModal,
+  onClose,
+  setShowModal,
+  setHidenTel,
+}) => {
   if (!showModal) return null;
-
+  const isMobile = window.innerWidth <= 768;
   const confirmCall = () => {
-    if (window.ym) {
-      ym(101296472, "reachGoal", "call_confirmed");
-    }
-    if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    ym(101296472, "reachGoal", "call_confirmed");
+    if (isMobile) {
       window.location.href = "tel:+79264081811";
-    } else {
-      navigator.clipboard.writeText("+7 (926) 408-18-11");
-      alert("Номер скопирован в буфер. Позвоните со своего телефона.");
+      setShowModal(false);
+      return;
     }
+    setHidenTel(false);
     setShowModal(false);
   };
 
@@ -50,7 +53,9 @@ const ModalConfirmCall = ({ showModal, onClose, setShowModal }) => {
             marginBottom: "24px",
           }}
         >
-          Нажмите "Да", чтобы позвонить.
+          {isMobile
+            ? 'Нажмите "Да", чтобы позвонить.'
+            : 'Нажмите "Да", чтобы показать номер.'}
         </p>
 
         <div style={{ display: "flex", justifyContent: "center", gap: "16px" }}>

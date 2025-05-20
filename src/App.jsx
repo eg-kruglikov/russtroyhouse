@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { styles, headerStyles } from "./styles";
-import { works, services } from "./moks";
+import { works, services, repairTypes } from "./moks";
 import logo from "./assets/logo_russtroyhouse_header.png";
 import ModalCallback from "./components/modalCallback";
 import background from "./assets/background.jpg";
@@ -9,29 +9,27 @@ import officeMain from "./assets/office_main.jpg";
 import mobileImage from "./assets/about_mobile.jpg";
 import desktopImage from "./assets/about_desktop.jpg";
 import ModalConfirmCall from "./components/ModalConfirmCall";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
 
 function App() {
   const [showModalCallback, setShowModalCallback] = useState(false);
   const [showModalConfirmCall, setShowModalConfirmCall] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+
+  const [hidenTel, setHidenTel] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    const handleResize = () => setIsMobile(window.innerWidth < 600);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
-    <div style={styles.page}>
+    <div
+      style={{
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#f1f3f6",
+        // backgroundColor: "#fffaf1",
+        color: "#333",
+      }}
+    >
       <ModalCallback
         showModal={showModalCallback}
         setShowModal={setShowModalCallback}
@@ -39,6 +37,7 @@ function App() {
       <ModalConfirmCall
         showModal={showModalConfirmCall}
         setShowModal={setShowModalConfirmCall}
+        setHidenTel={setHidenTel}
       />
       {/* шапочка */}
       <header
@@ -50,8 +49,8 @@ function App() {
           backgroundColor: "#ffffff", // чисто белый фон
           padding: "6px 0", // чуть меньше отступов по высоте
           zIndex: 1000,
-          borderBottom: isScrolled ? "1px solid #ddd" : "1px solid #eee",
-          boxShadow: isScrolled ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+          borderBottom: "1px solid #ddd",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           transition: "box-shadow 0.3s ease, border-bottom 0.3s ease",
         }}
       >
@@ -67,28 +66,73 @@ function App() {
         >
           <img src={logo} alt="РусУютСтрой" style={{ height: "5vh" }} />{" "}
           {/* уменьшил логотип */}
-          <a
-            href="tel:+79264081811"
-            style={{
-              color: "#222222",
-              fontSize: "15px",
-              textDecoration: "none",
-              fontWeight: "600",
-              fontFamily: "'Segoe UI', 'Roboto', 'Arial', sans-serif",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              setShowModalConfirmCall(true);
-            }}
-          >
-            <span role="img" aria-label="phone">
-              📞
-            </span>
-            +7 (926) 408-18-11
-          </a>
+          {hidenTel ? (
+            <a
+              href="tel:+79264081811"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModalConfirmCall(true);
+              }}
+              style={{
+                color: "#222",
+                fontSize: "15px",
+                textDecoration: "none",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontFamily: "'Segoe UI', 'Roboto', sans-serif",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+            >
+              <span role="img" aria-label="phone">
+                📞
+              </span>
+              <span style={{ color: "#000" }}>+7 (926)</span>
+              <span
+                style={{
+                  marginLeft: "4px",
+                  display: "inline-block",
+                  color: "#000", // для fallback
+                  WebkitMaskImage:
+                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 90%)",
+                  maskImage:
+                    "linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 90%)",
+                  WebkitMaskSize: "100% 100%",
+                  maskSize: "100% 100%",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  opacity: 1,
+                }}
+              >
+                408-18-11
+              </span>
+            </a>
+          ) : (
+            <a
+              href="tel:+79264081811"
+              style={{
+                color: "#222222",
+                fontSize: "15px",
+                textDecoration: "none",
+                fontWeight: "600",
+                fontFamily: "'Segoe UI', 'Roboto', 'Arial', sans-serif",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModalConfirmCall(true);
+              }}
+            >
+              <span role="img" aria-label="phone">
+                📞
+              </span>
+              +7 (926) 408-18-11
+            </a>
+          )}
         </div>
       </header>
 
@@ -105,6 +149,8 @@ function App() {
           alignItems: "center",
           justifyContent: "center",
           boxSizing: "border-box",
+
+          margin: "0 auto",
         }}
       >
         <div
@@ -189,51 +235,96 @@ function App() {
           </button>
         </div>
       </section>
-
-      {/* мы в тг */}
+      {/* new */}
       <section
+        id="why-us"
         style={{
-          paddingTop: "16px",
-          backgroundColor: "#f8f8f8",
-          textAlign: "center",
+          backgroundColor: "#f8f9fb",
+          padding: "50px 16px",
+          boxSizing: "border-box",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
-        <h2
-          style={{ fontSize: "32px", marginBottom: "16px", color: "#1d2d3c" }}
-        >
-          Мы в Telegram
-        </h2>
-        <p
+        <div
           style={{
-            fontSize: "18px",
-            maxWidth: "700px",
-            margin: "0 auto 32px",
-            color: "#444",
+            display: "flex",
+            flexWrap: "wrap", // 👈 для мобил
+            gap: "24px",
+            justifyContent: "center",
           }}
         >
-          Рассказываем о нюансах ремонта, делимся опытом, показываем, как
-          создаём уют в квартирах и домах. Присоединяйтесь!
-        </p>
-        <a
-          href="https://t.me/russtroyhouse"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            padding: "12px 24px",
-            fontSize: "16px",
-            backgroundColor: "#0088cc",
-            color: "#fff",
-            borderRadius: "8px",
-            textDecoration: "none",
-            transition: "background-color 0.3s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#0077b3")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#0088cc")}
-        >
-          Перейти в канал
-        </a>
+          {repairTypes.map((type, index) => (
+            <div
+              key={index}
+              style={{
+                flex: "1 1 300px", // 👈 автоматическая адаптация
+                minWidth: "280px",
+                maxWidth: "100%",
+                backgroundColor: type.bgColor,
+                padding: "24px",
+                borderRadius: "16px",
+                color: type.textColor,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "700",
+                  marginBottom: "16px",
+                  borderBottom: `2px solid ${
+                    type.accentColor || type.textColor
+                  }`,
+                  paddingBottom: "6px",
+                  color: type.headingColor || type.textColor,
+                }}
+              >
+                {type.title}
+              </h2>
+
+              <p
+                style={{
+                  fontSize: "15px",
+                  marginBottom: "24px",
+                  lineHeight: "1.5",
+                  color: type.textColor,
+                }}
+              >
+                {type.description}
+              </p>
+
+              <div style={{ display: "grid", gap: "16px" }}>
+                {type.photos.map((photo, i) => (
+                  <div key={i}>
+                    <img
+                      src={photo.url}
+                      alt={photo.caption}
+                      style={{
+                        width: "100%",
+                        height: "180px",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                      }}
+                    />
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        marginTop: "8px",
+                        color: type.textColor,
+                        opacity: 0.8,
+                      }}
+                    >
+                      {photo.caption}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
+
       {/* почему мы */}
       <section
         id="why-us"
@@ -241,6 +332,8 @@ function App() {
           backgroundColor: "#f8f9fb",
           paddingTop: "50px",
           boxSizing: "border-box",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
         <div
@@ -313,9 +406,11 @@ function App() {
       <section
         id="services"
         style={{
-          padding: "60px 16px",
+          padding: "60px 0px",
           backgroundColor: "#f9f9f9",
           textAlign: "center",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
         <h2
@@ -368,8 +463,10 @@ function App() {
       <section
         id="works"
         style={{
-          backgroundColor: "#f4f4f4",
+          backgroundColor: "#f9f9f9",
           padding: "60px 0",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
         <h2
@@ -476,14 +573,71 @@ function App() {
         </div>
       </section>
 
+      {/* мы в тг */}
+      <section
+        style={{
+          paddingTop: "16px",
+          backgroundColor: "#f8f8f8",
+          textAlign: "center",
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}
+      >
+        <h2
+          style={{ fontSize: "32px", marginBottom: "16px", color: "#1d2d3c" }}
+        >
+          Мы в Telegram
+        </h2>
+        <p
+          style={{
+            fontSize: "18px",
+            maxWidth: "700px",
+            margin: "0 auto 32px",
+            color: "#444",
+          }}
+        >
+          Рассказываем о нюансах ремонта, делимся опытом, показываем, как
+          создаём уют в квартирах и домах. Присоединяйтесь!
+        </p>
+        <a
+          href="https://t.me/russtroyhouse"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            padding: "12px 24px",
+            fontSize: "16px",
+            backgroundColor: "#0088cc",
+            color: "#fff",
+            borderRadius: "8px",
+            textDecoration: "none",
+            transition: "background-color 0.3s",
+          }}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#0077b3")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#0088cc")}
+        >
+          Перейти в канал
+        </a>
+      </section>
+
       {/* НАШ ОФИС */}
-      <section id="office" style={styles.section}>
+      <section
+        id="office"
+        style={{
+          padding: "40px 16px",
+          textAlign: "center",
+          boxSizing: "border-box",
+          maxWidth: "1200px",
+          margin: "0 auto",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
         <h2 style={styles.sectionTitle}>Наш офис</h2>
         <div
           style={{
-            maxWidth: "900px",
-            margin: "0 auto",
             textAlign: "center",
+            maxWidth: "1200px",
+            margin: "0 auto",
           }}
         >
           <img
