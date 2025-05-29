@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import background from "./assets/background.jpg";
-import logo from "./assets/logo_russtroyhouse_header.png";
+import logo from "./assets/logo_white.png";
 
 const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -19,7 +19,7 @@ const App = () => {
       <header
         style={{
           position: "fixed",
-          width: "100vw",
+          width: "calc(100vw - 31px)",
           height: "60px",
           backgroundColor: "#486072",
           marginTop: "-8px",
@@ -34,6 +34,7 @@ const App = () => {
             justifyContent: "space-between",
             margin: "0 auto",
             height: "100%",
+            
           }}
         >
           {/* Логотип */}
