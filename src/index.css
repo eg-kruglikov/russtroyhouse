@@ -1,6 +1,4 @@
 :root {
-  background-сolor: "#486072",
-
 }
 @keyframes fadeInUp {
   from {
@@ -16,4 +14,13 @@
 .bookmark-reminder {
   opacity: 0;
   animation: fadeInUp 0.1s ease-out 3s forwards;
+}
+
+body {
+  margin: 0;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  background-color: #486072;
+  overflow-x: visible !important;
+  position: relative;
 }
