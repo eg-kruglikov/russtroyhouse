@@ -566,12 +566,47 @@ function App() {
               display: "flex",
               alignItems: "center",
               gap: "8px",
+              top: isMobile ? "80svh" : "79.6svh",
             }}
           >
             🎨 Дизайн проекты →
           </a>
         </div>
       </section>
+      <img
+        src={phoneIcon}
+        alt="phoneIcon"
+        style={{
+          width: isMobile ? "60px" : "90px",
+          height: "auto",
+          position: "fixed",
+          zIndex: 1,
+          top: isMobile ? "80svh" : "79.6svh",
+          left: isMobile ? "calc(85% - 7px)" : "79%",
+          transform: "translateX(-50%)",
+        }}
+      />
+      <button
+        style={{
+          position: "absolute",
+          zIndex: 1,
+          top: "75svh",
+          left: "50.5%",
+          transform: "translate(-50%, -52.6%)",
+          backgroundColor: "#FFD700",
+          color: "#000",
+          fontWeight: "790",
+          fontSize: "24px",
+          padding: isMobile ? "16px 26px" : "26px 40px",
+          border: "none",
+          borderRadius: "40px",
+          cursor: "pointer",
+          boxShadow: "0 6px 16px rgba(0,0,0,0.35)",
+          transition: "transform 0.2s ease",
+        }}
+      >
+        ЗАКАЗАТЬ
+      </button>
 
       {/* мы в тг */}
       <section

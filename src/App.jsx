@@ -4,11 +4,18 @@ import logo from "./assets/logo_white.png";
 import { useRef } from "react";
 import FlowSlider from "./components/FlowSlider/FlowSlider";
 import hero from "./assets/hero.png";
-import phoneIcon from "./assets/phone-icon.png";
+
+import chairPlantOutline from "./assets/chair-plant-outline.png";
+import MobilePhoneWidget from "./components/windows/MobilePhoneWidget";
+import DesktopPhoneWidget from "./components/windows/DesktopPhoneWidget";
+import QuestionModal from "./components/windows/QuestionModal";
 
 const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [phoneWidgetIsOpen, setPhoneWidgetIsOpen] = useState(false);
+  const [questioModalOpen, setQuestioModalOpen] = useState(false);
+
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -46,10 +53,11 @@ const App = () => {
       style={{
         position: "relative",
         width: "100%",
-        maxWidth: "1152px",
+        maxWidth: "1300px",
         margin: "0 auto",
       }}
     >
+      {/* изображения "ремонт начинается здась" */}
       <img
         src={hero}
         alt="РЕМОНТ НАЧИНАЕТСЯ ЗДЕСЬ"
@@ -59,31 +67,39 @@ const App = () => {
           height: "auto",
           position: "absolute",
           zIndex: 1,
-          top: "61.4svh",
+          top: isMobile ? "64.1svh" : "61svh",
           left: "50.5%",
-          transform: "translate(-50%, -52.6%)",
-        }}
-      />
-      <img
-        src={phoneIcon}
-        alt="phoneIcon"
-        style={{
-          width: isMobile ? "60px" : "90px",
-          height: "auto",
-          position: "absolute",
-          zIndex: 1,
-          top: isMobile ? "88svh" : "79.6svh",
-          left: isMobile ? "calc(92% - 7px)" : "92%",
-          transform: "translateX(-50%)",
+          transform: isMobile
+            ? "translate(-50%, -86%)"
+            : "translate(-50%, -44%)",
         }}
       />
 
+      {/* панель кнопок "позвонить" "обратный звонок" */}
+
+      {isMobile ? (
+        <MobilePhoneWidget
+          isOpen={phoneWidgetIsOpen}
+          setIsOpen={setPhoneWidgetIsOpen}
+          setQuestioModalOpen={setQuestioModalOpen}
+        />
+      ) : (
+        <DesktopPhoneWidget
+          isOpen={phoneWidgetIsOpen}
+          setIsOpen={setPhoneWidgetIsOpen}
+          setQuestioModalOpen={setQuestioModalOpen}
+        />
+      )}
+
+      {/* кнопка "ЗАКАЗАТЬ" */}
+
       <button
         style={{
+          display: phoneWidgetIsOpen ? "none" : "inline-block",
           position: "absolute",
           zIndex: 1,
+          top: isMobile ? "80svh" : "85svh",
           left: "50.5%",
-          top: "85svh",
           transform: "translate(-50%, -52.6%)",
           backgroundColor: "#FFD700",
           color: "#000",
@@ -99,6 +115,14 @@ const App = () => {
       >
         ЗАКАЗАТЬ
       </button>
+
+      {/* модалка обратной связи */}
+
+      <QuestionModal
+        isOpen={questioModalOpen}
+        onClose={() => setQuestioModalOpen(false)}
+        isMobile={isMobile}
+      />
 
       <div
         style={{
@@ -129,12 +153,13 @@ const App = () => {
           <div
             style={{
               maxWidth: "1060px",
+
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               margin: "0 auto",
               height: "100%",
-              padding: "0 3vw",
+              padding: "0 8vw",
             }}
           >
             {/* Логотип */}
@@ -148,7 +173,7 @@ const App = () => {
 
             {/* Навигация — десктоп */}
             {!isMobile && (
-              <nav style={{ display: "flex", gap: "32px" }}>
+              <nav style={{ display: "flex", gap: "2vw" }}>
                 {navLinks.map((item, i) => (
                   <a
                     key={i}
@@ -254,17 +279,15 @@ const App = () => {
             backgroundSize: "cover",
             backgroundPosition: "30% center",
             // height: isMobile ? `${viewportHeight}px` : "100vh",
-            height: "100svh",
+            height: "calc(100svh - 54px)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             textAlign: "center",
-            paddingTop: "80px",
             boxSizing: "border-box",
-
             margin: "0 auto",
-            // marginTop: "-50px",
+            marginTop: "54px",
 
             overflow: "hidden",
             position: "relative",
@@ -274,24 +297,25 @@ const App = () => {
         {/* Кто мы */}
         <section
           style={{
-            backgroundColor: "#1c1c1c",
+            background:
+              "linear-gradient(0deg, rgba(2, 4, 4, 1) 0%, rgba(18, 16, 14, 0.91) 50%, rgba(34, 27, 24, 0.34) 100%)",
 
             textAlign: "center",
 
             display: "flex",
             justifyContent: "center",
             flexDirection: "column",
-            marginLeft: "-5px",
           }}
         >
           <div
             style={{
               marginRight: "auto",
-              fontSize: "48px",
+              fontSize: isMobile ? "48px" : "130px",
               marginBottom: "24px",
               color: "#486072",
               marginTop: "14px",
               fontWeight: 700,
+              marginLeft: isMobile ? "-5px" : "-10px",
             }}
           >
             КТО МЫ?
@@ -300,7 +324,7 @@ const App = () => {
             style={{
               maxWidth: "70%",
               margin: "0 auto",
-              fontSize: "12px",
+              fontSize: isMobile ? "12px" : "20px",
               fontWeight: 520,
               lineHeight: "200%",
               color: "rgba(255, 255, 255, 1)",
@@ -320,6 +344,7 @@ const App = () => {
             ЕЖЕДНЕВНЫЕ ФОТООТЧЁТЫ В МЕССЕНДЖЕРЕ — ВЫ ВСЕГДА ЗНАЕТЕ, ЧТО
             ПРОИСХОДИТ НА ОБЪЕКТЕ.
           </p>
+          <img src={chairPlantOutline} alt="chairPlantOutline" />
         </section>
 
         {/* контур интерера (картинка) */}
@@ -327,7 +352,7 @@ const App = () => {
         <section
           style={{
             backgroundColor: "#000",
-            padding: "80px 0px",
+
             textAlign: "center",
             maxWidth: "1400px",
             margin: "0 auto",
@@ -338,93 +363,109 @@ const App = () => {
         <section
           style={{
             backgroundColor: "#000",
-            padding: "80px 0px",
+            padding: "80px 16px",
             textAlign: "center",
-            maxWidth: "1400px",
-            margin: "0 auto",
           }}
         >
-          <h2 style={{ fontSize: "28px", marginBottom: "40px", color: "#fff" }}>
+          <h2
+            style={{
+              fontSize: "48px",
+              color: "#f2cb05",
+              fontWeight: 700,
+              marginBottom: "40px",
+            }}
+          >
             НАШИ УСЛУГИ
           </h2>
+
           <div
             style={{
-              maxWidth: "800px",
               margin: "0 auto",
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: "24px",
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: "500px",
+              gap: "36px",
             }}
           >
             {[
               {
                 title: "КОСМЕТИЧЕСКИЙ РЕМОНТ",
                 text: "Лёгкое обновление – покраска, обои, замена покрытий, освежение интерьера.",
-                number: 1,
+                number: "1",
               },
               {
                 title: "КАПИТАЛЬНЫЙ РЕМОНТ",
                 text: "Замена коммуникаций, выравнивание стен, перепланировка, демонтаж, полная замена электрики.",
-                number: 2,
+                number: "2",
               },
               {
                 title: "ДИЗАЙНЕРСКИЙ РЕМОНТ",
                 text: "Уникальные интерьеры под ключ. Визуальные концепции и премиальные материалы. Зонирование кухни – гостиной.",
-                number: 3,
+                number: "3",
               },
             ].map((item) => (
               <div
                 key={item.number}
-                style={{ textAlign: "left", color: "#fff" }}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "16px",
+                  color: "#fff",
+                  textAlign: "left",
+                }}
               >
                 <div
                   style={{
-                    fontSize: "20px",
-                    marginBottom: "6px",
-                    fontWeight: "bold",
+                    width: "50px",
+                    height: "50px",
+                    minWidth: "50px",
+                    backgroundColor: "#011324",
+                    color: "#f2cb05",
+                    borderRadius: "50%",
+                    border: "2px solid #f2cb05",
                     display: "flex",
+                    justifyContent: "center",
                     alignItems: "center",
-                    gap: "12px",
+                    fontSize: "24px",
+                    fontWeight: 500,
                   }}
                 >
-                  <span
+                  {item.number}
+                </div>
+
+                <div>
+                  <div
                     style={{
-                      backgroundColor: "#333",
-                      borderRadius: "50%",
-                      width: "30px",
-                      height: "30px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      fontWeight: "bold",
                       fontSize: "16px",
+                      marginBottom: "8px",
                     }}
                   >
-                    {item.number}
-                  </span>
-                  {item.title}
+                    {item.title}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: "15px",
+                      color: "#ccc",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {item.text}
+                  </p>
                 </div>
-                <p
-                  style={{
-                    color: "#ccc",
-                    fontSize: "16px",
-                    paddingLeft: "42px",
-                  }}
-                >
-                  {item.text}
-                </p>
               </div>
             ))}
           </div>
 
           <button
             style={{
-              marginTop: "40px",
-              backgroundColor: yellow,
+              marginTop: "48px",
+              backgroundColor: "#f2cb05",
               color: "#000",
-              padding: "12px 24px",
+              padding: "14px 28px",
               fontWeight: "bold",
               border: "none",
-              borderRadius: "6px",
+              borderRadius: "30px",
               cursor: "pointer",
             }}
           >
