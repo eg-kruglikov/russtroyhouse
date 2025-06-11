@@ -20,7 +20,7 @@ body {
   margin: 0;
   padding-left: 5vw;
   padding-right: 5vw;
-  background-color: #486072;
+  background-color: #0a1a23;
   overflow-x: visible !important;
   position: relative;
 }
@@ -28,4 +28,21 @@ body {
 html,
 body {
   overflow-x: hidden;
+}
+
+@keyframes dash-move-left {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: -40px;
+  }
+}
+@keyframes dash-move-right {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 40px;
+  }
 }

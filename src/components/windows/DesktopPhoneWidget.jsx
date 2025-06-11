@@ -24,7 +24,7 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
           display: "flex",
           flexDirection: "row-reverse",
           alignItems: "center",
-          backgroundColor: "#111",
+          backgroundColor: "rgba(17, 17, 17, 0.85)",
           borderRadius: "50px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
           overflow: "hidden",

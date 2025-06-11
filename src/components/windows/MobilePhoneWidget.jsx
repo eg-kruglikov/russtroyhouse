@@ -61,7 +61,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
               right: "88px", // отступ от трубки
               width: "200px",
               height: "160px",
-              backgroundColor: "#111",
+              backgroundColor: "rgba(17, 17, 17, 0.85)",
               borderRadius: "24px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
               display: "flex",

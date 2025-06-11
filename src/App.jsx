@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import background from "./assets/background.jpg";
-import logo from "./assets/logo_white.png";
-import { useRef } from "react";
+import map from "./assets/map.png";
 import FlowSlider from "./components/FlowSlider/FlowSlider";
 import hero from "./assets/hero.png";
 
@@ -9,14 +8,13 @@ import chairPlantOutline from "./assets/chair-plant-outline.png";
 import MobilePhoneWidget from "./components/windows/MobilePhoneWidget";
 import DesktopPhoneWidget from "./components/windows/DesktopPhoneWidget";
 import QuestionModal from "./components/windows/QuestionModal";
+import Header from "./components/blocks/Header";
+import Footer from "./components/blocks/Footer";
 
 const App = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [phoneWidgetIsOpen, setPhoneWidgetIsOpen] = useState(false);
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
-
-  const menuRef = useRef(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 720);
@@ -25,28 +23,7 @@ const App = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpen]);
-
-  const navLinks = ["Главная", "О нас", "Портфолио", "Услуги", "Контакты"];
-
-  const yellow = "#FFD700";
-  const dark = "#486072";
   const light = "#ffffff";
-  const colorTextHeader = "#cdcdcd";
 
   return (
     <div
@@ -127,7 +104,7 @@ const App = () => {
       <div
         style={{
           fontFamily: "sans-serif",
-          backgroundColor: dark,
+
           color: light,
 
           overflow: "hidden",
@@ -137,140 +114,8 @@ const App = () => {
         }}
       >
         {/* Шапка */}
-        <header
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "54px",
-            backgroundColor: "#486072",
-            padding: "6px 0",
 
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              maxWidth: "1060px",
-
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              margin: "0 auto",
-              height: "100%",
-              padding: "0 8vw",
-            }}
-          >
-            {/* Логотип */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={logo}
-                alt="Логотип"
-                style={{ height: isMobile ? "24px" : "37px" }}
-              />
-            </div>
-
-            {/* Навигация — десктоп */}
-            {!isMobile && (
-              <nav style={{ display: "flex", gap: "2vw" }}>
-                {navLinks.map((item, i) => (
-                  <a
-                    key={i}
-                    href="#"
-                    style={{
-                      color: colorTextHeader,
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "1px",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {item}
-                  </a>
-                ))}
-              </nav>
-            )}
-
-            {/* Бургер-иконка — мобилка */}
-            {isMobile && (
-              <div
-                tabIndex={0}
-                onClick={() => setMenuOpen(!menuOpen)}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  cursor: "pointer",
-                  padding: "8px",
-
-                  border: "none",
-                  outline: "none",
-                  WebkitTapHighlightColor: "transparent", // 💥 это убивает синий прямоугольник
-                }}
-              >
-                <div
-                  style={{
-                    width: "24px",
-                    height: "3px",
-                    backgroundColor: "#fff",
-                    margin: "3px 0",
-                  }}
-                />
-                <div
-                  style={{
-                    width: "24px",
-                    height: "3px",
-                    backgroundColor: "#fff",
-                    margin: "3px 0",
-                  }}
-                />
-                <div
-                  style={{
-                    width: "24px",
-                    height: "3px",
-                    backgroundColor: "#fff",
-                    margin: "3px 0",
-                  }}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Мобильное выпадающее меню */}
-          {isMobile && menuOpen && (
-            <div
-              ref={menuRef}
-              style={{
-                position: "absolute",
-                top: "70px",
-                right: "5.6vw",
-                backgroundColor: "#1c1c1c",
-                borderRadius: "12px",
-                padding: "16px 24px",
-                boxShadow: "0 8px 16px rgba(0,0,0,0.4)",
-                zIndex: 1001,
-              }}
-            >
-              {navLinks.map((item, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  style={{
-                    display: "block",
-                    marginBottom: "12px",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontWeight: "600",
-                    fontSize: "16px",
-                  }}
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-          )}
-        </header>
+        <Header isMobile={isMobile} />
 
         {/* Hero */}
         <section
@@ -312,10 +157,10 @@ const App = () => {
               marginRight: "auto",
               fontSize: isMobile ? "48px" : "130px",
               marginBottom: "24px",
-              color: "#486072",
-              marginTop: "14px",
+              color: "#E6CD0B",
+              marginTop: isMobile ? "-5px" : "-24px",
               fontWeight: 700,
-              marginLeft: isMobile ? "-5px" : "-10px",
+              marginLeft: isMobile ? "-3px" : "-10px",
             }}
           >
             КТО МЫ?
@@ -363,16 +208,17 @@ const App = () => {
         <section
           style={{
             backgroundColor: "#000",
-            padding: "80px 16px",
+            padding: "8px 16px",
             textAlign: "center",
           }}
         >
           <h2
             style={{
-              fontSize: "48px",
+              fontSize: isMobile ? "36px" : "48px",
               color: "#f2cb05",
               fontWeight: 700,
               marginBottom: "40px",
+              whiteSpace: "nowrap",
             }}
           >
             НАШИ УСЛУГИ
@@ -385,6 +231,7 @@ const App = () => {
               flexDirection: "column",
               maxWidth: "500px",
               gap: "36px",
+              padding: "0px 26px",
             }}
           >
             {[
@@ -414,24 +261,26 @@ const App = () => {
                   textAlign: "left",
                 }}
               >
-                <div
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    minWidth: "50px",
-                    backgroundColor: "#011324",
-                    color: "#f2cb05",
-                    borderRadius: "50%",
-                    border: "2px solid #f2cb05",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: "24px",
-                    fontWeight: 500,
-                  }}
-                >
-                  {item.number}
-                </div>
+                {!isMobile && (
+                  <div
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      minWidth: "50px",
+                      backgroundColor: "#011324",
+                      color: "#f2cb05",
+                      borderRadius: "50%",
+                      border: "2px solid #f2cb05",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "24px",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {item.number}
+                  </div>
+                )}
 
                 <div>
                   <div
@@ -486,6 +335,69 @@ const App = () => {
         >
           <FlowSlider isMobile={isMobile} />
         </section>
+
+        {/* карта с пунктиром */}
+        <div
+          style={{
+            position: "relative",
+            margin: "0 auto",
+            width: "100%",
+            padding: "32px 0",
+          }}
+        >
+          {/* Верхний пунктир */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "2px",
+              background:
+                "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
+              backgroundSize: "40px 8px",
+              animation: "dash-move-left 2s linear infinite",
+            }}
+          />
+
+          <section
+            style={{
+              backgroundImage: `url(${map})`,
+              backgroundSize: "cover",
+              backgroundPosition: "30% center",
+              // height: isMobile ? `${viewportHeight}px` : "100vh",
+              height: "20vh",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+              boxSizing: "border-box",
+              margin: "0 auto",
+
+              overflow: "hidden",
+              position: "relative",
+            }}
+          ></section>
+
+          {/* Нижний пунктир */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: "2px",
+              background:
+                "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
+              backgroundSize: "40px 8px",
+              animation: "dash-move-right 2s linear infinite",
+            }}
+          />
+
+          {/* Карта */}
+        </div>
+        <Footer />
       </div>
     </div>
   );
