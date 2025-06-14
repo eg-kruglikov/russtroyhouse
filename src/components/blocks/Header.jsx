@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo_white.png";
 
-const Header = ({ isMobile }) => {
+const Header = ({
+  isMobile,
+  scrollToHero,
+  scrollToAbout,
+  scrollToServices,
+  scrollToportfolio,
+  scrollToContacts,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -20,7 +27,13 @@ const Header = ({ isMobile }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuOpen]);
-  const navLinks = ["Главная", "О нас", "Портфолио", "Услуги", "Контакты"];
+  const navLinks = [
+    { name: "Главная", href: scrollToHero },
+    { name: "О нас", href: scrollToAbout },
+    { name: "Услуги", href: scrollToServices },
+    { name: "Портфолио", href: scrollToportfolio },
+    { name: "Контакты", href: scrollToContacts },
+  ];
   const colorTextHeader = "#cdcdcd";
   return (
     <header
@@ -61,10 +74,12 @@ const Header = ({ isMobile }) => {
         {!isMobile && (
           <nav style={{ display: "flex", gap: "2vw" }}>
             {navLinks.map((item, i) => (
-              <a
+              <button
+                onClick={item.href}
                 key={i}
-                href="#"
                 style={{
+                  all: "unset",
+                  cursor: "pointer",
                   color: colorTextHeader,
                   fontSize: "18px",
                   fontWeight: "600",
@@ -73,8 +88,8 @@ const Header = ({ isMobile }) => {
                   textDecoration: "none",
                 }}
               >
-                {item}
-              </a>
+                {item.name}
+              </button>
             ))}
           </nav>
         )}
@@ -139,10 +154,12 @@ const Header = ({ isMobile }) => {
           }}
         >
           {navLinks.map((item, i) => (
-            <a
+            <button
               key={i}
-              href="#"
+              onClick={item.href}
               style={{
+                all: "unset",
+                cursor: "pointer",
                 display: "block",
                 marginBottom: "12px",
                 color: "#fff",
@@ -151,8 +168,8 @@ const Header = ({ isMobile }) => {
                 fontSize: "16px",
               }}
             >
-              {item}
-            </a>
+              {item.name}
+            </button>
           ))}
         </div>
       )}

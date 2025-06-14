@@ -20,9 +20,9 @@ const images = [
 
 export default function FlowSlider(isMobile) {
   return (
-    <div style={{ padding: "20px 0", backgroundColor: "#111" }}>
+    <div style={{ padding: "20px 0", backgroundColor: "#0a1a23" }}>
       <Swiper
-        spaceBetween={20}
+        spaceBetween={1}
         slidesPerView={"auto"}
         freeMode={true}
         grabCursor={true}
@@ -30,7 +30,7 @@ export default function FlowSlider(isMobile) {
           delay: 0,
           disableOnInteraction: false,
         }}
-        speed={3000}
+        speed={2000}
         loop={true}
         style={{ padding: "10px", overflow: "visible" }}
       >
@@ -42,7 +42,7 @@ export default function FlowSlider(isMobile) {
 
               borderRadius: "12px",
               overflow: "hidden",
-              transition: "transform 0.3s ease",
+              transition: "transform 6s ease",
             }}
             className="zoom-on-hover"
           >
@@ -50,8 +50,8 @@ export default function FlowSlider(isMobile) {
               src={src}
               alt={`Slide ${idx}`}
               style={{
-                width: "100%",
-                height: "100%",
+                width: "450px",
+
                 objectFit: "cover",
               }}
             />

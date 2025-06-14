@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import background from "./assets/background.jpg";
 import map from "./assets/map.png";
 import FlowSlider from "./components/FlowSlider/FlowSlider";
@@ -10,6 +10,7 @@ import DesktopPhoneWidget from "./components/windows/DesktopPhoneWidget";
 import QuestionModal from "./components/windows/QuestionModal";
 import Header from "./components/blocks/Header";
 import Footer from "./components/blocks/Footer";
+import Map from "./components/blocks/map";
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -22,6 +23,25 @@ const App = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+  const heroRef = useRef(null);
+  const aboutRef = useRef(null);
+  const servicesRef = useRef(null);
+  const portfolioRef = useRef(null);
+  const contactsRef = useRef(null);
+
+  const scrollToWithOffset = (ref) => {
+    const yOffset = -65; // высота шапки
+    const y =
+      ref.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
+
+  // Отдельные функции на каждый блок
+  const scrollToHero = () => scrollToWithOffset(heroRef);
+  const scrollToAbout = () => scrollToWithOffset(aboutRef);
+  const scrollToServices = () => scrollToWithOffset(servicesRef);
+  const scrollToContacts = () => scrollToWithOffset(contactsRef);
+  const scrollToportfolio = () => scrollToWithOffset(portfolioRef);
 
   const light = "#ffffff";
 
@@ -114,16 +134,23 @@ const App = () => {
         }}
       >
         {/* Шапка */}
-
-        <Header isMobile={isMobile} />
-
+        <Header
+          isMobile={isMobile}
+          scrollToHero={scrollToHero}
+          scrollToAbout={scrollToAbout}
+          scrollToServices={scrollToServices}
+          scrollToportfolio={scrollToportfolio}
+          scrollToContacts={scrollToContacts}
+        />
+        id="about"
         {/* Hero */}
         <section
+          ref={heroRef}
           style={{
             backgroundImage: `url(${background})`,
             backgroundSize: "cover",
             backgroundPosition: "30% center",
-            // height: isMobile ? `${viewportHeight}px` : "100vh",
+
             height: "calc(100svh - 54px)",
             display: "flex",
             flexDirection: "column",
@@ -136,20 +163,21 @@ const App = () => {
 
             overflow: "hidden",
             position: "relative",
+            scrollMarginTop: "54px",
           }}
         ></section>
-
         {/* Кто мы */}
         <section
+          ref={aboutRef}
           style={{
             background:
               "linear-gradient(0deg, rgba(2, 4, 4, 1) 0%, rgba(18, 16, 14, 0.91) 50%, rgba(34, 27, 24, 0.34) 100%)",
-
             textAlign: "center",
-
             display: "flex",
             justifyContent: "center",
             flexDirection: "column",
+            scrollMarginTop: "54px",
+            height: "100svh",
           }}
         >
           <div
@@ -191,9 +219,7 @@ const App = () => {
           </p>
           <img src={chairPlantOutline} alt="chairPlantOutline" />
         </section>
-
         {/* контур интерера (картинка) */}
-
         <section
           style={{
             backgroundColor: "#000",
@@ -203,13 +229,15 @@ const App = () => {
             margin: "0 auto",
           }}
         ></section>
-
         {/* Наши услуги */}
         <section
+          ref={servicesRef}
           style={{
             backgroundColor: "#000",
             padding: "8px 16px",
             textAlign: "center",
+            scrollMarginTop: "60px",
+            height: "100svh",
           }}
         >
           <h2
@@ -296,6 +324,7 @@ const App = () => {
                     style={{
                       fontSize: "15px",
                       color: "#ccc",
+
                       lineHeight: 1.5,
                     }}
                   >
@@ -321,12 +350,13 @@ const App = () => {
             ЗАКАЗАТЬ ЗВОНОК
           </button>
         </section>
-
         {/* Фото */}
         <section
+          id="portfolio"
+          ref={portfolioRef}
           style={{
             backgroundColor: "#000",
-
+            scrollMarginTop: "54px",
             textAlign: "center",
             maxWidth: "1400px",
             margin: "0 auto",
@@ -335,9 +365,10 @@ const App = () => {
         >
           <FlowSlider isMobile={isMobile} />
         </section>
-
         {/* карта с пунктиром */}
         <div
+          id="contacts"
+          ref={contactsRef}
           style={{
             position: "relative",
             margin: "0 auto",
@@ -359,26 +390,9 @@ const App = () => {
               animation: "dash-move-left 2s linear infinite",
             }}
           />
+          {/* карта */}
 
-          <section
-            style={{
-              backgroundImage: `url(${map})`,
-              backgroundSize: "cover",
-              backgroundPosition: "30% center",
-              // height: isMobile ? `${viewportHeight}px` : "100vh",
-              height: "20vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-              boxSizing: "border-box",
-              margin: "0 auto",
-
-              overflow: "hidden",
-              position: "relative",
-            }}
-          ></section>
+          <Map />
 
           {/* Нижний пунктир */}
           <div
@@ -392,6 +406,7 @@ const App = () => {
                 "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
               backgroundSize: "40px 8px",
               animation: "dash-move-right 2s linear infinite",
+              scrollMarginTop: "54px",
             }}
           />
 
