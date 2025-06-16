@@ -5,7 +5,7 @@ import React from "react";
 const Footer = () => (
   <footer
     style={{
-      backgroundColor: "#0a1a23",
+      backgroundColor: "#04141D",
       color: "#fff",
       padding: "32px 16px",
       textAlign: "center",

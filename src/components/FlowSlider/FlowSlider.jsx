@@ -20,7 +20,7 @@ const images = [
 
 export default function FlowSlider(isMobile) {
   return (
-    <div style={{ padding: "20px 0", backgroundColor: "#0a1a23" }}>
+    <div style={{ padding: "20px 0", backgroundColor: "#04141D" }}>
       <Swiper
         spaceBetween={1}
         slidesPerView={"auto"}

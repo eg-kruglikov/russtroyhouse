@@ -10,7 +10,8 @@ import DesktopPhoneWidget from "./components/windows/DesktopPhoneWidget";
 import QuestionModal from "./components/windows/QuestionModal";
 import Header from "./components/blocks/Header";
 import Footer from "./components/blocks/Footer";
-import Map from "./components/blocks/map";
+import Map from "./components/blocks/Map";
+import Services from "./components/blocks/Services";
 
 const App = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -59,12 +60,12 @@ const App = () => {
         src={hero}
         alt="РЕМОНТ НАЧИНАЕТСЯ ЗДЕСЬ"
         style={{
-          width: "113%",
+          width: isMobile ? "116%" : "113%",
           maxWidth: "800px",
           height: "auto",
           position: "absolute",
           zIndex: 1,
-          top: isMobile ? "64.1svh" : "61svh",
+          top: isMobile ? "66.3svh" : "63.2svh",
           left: "50.5%",
           transform: isMobile
             ? "translate(-50%, -86%)"
@@ -109,6 +110,7 @@ const App = () => {
           boxShadow: "0 6px 16px rgba(0,0,0,0.35)",
           transition: "transform 0.2s ease",
         }}
+        onClick={() => setQuestioModalOpen(true)}
       >
         ЗАКАЗАТЬ
       </button>
@@ -177,7 +179,7 @@ const App = () => {
             justifyContent: "center",
             flexDirection: "column",
             scrollMarginTop: "54px",
-            height: "100svh",
+            minHeight: "100vh",
           }}
         >
           <div
@@ -230,126 +232,11 @@ const App = () => {
           }}
         ></section>
         {/* Наши услуги */}
-        <section
-          ref={servicesRef}
-          style={{
-            backgroundColor: "#000",
-            padding: "8px 16px",
-            textAlign: "center",
-            scrollMarginTop: "60px",
-            height: "100svh",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: isMobile ? "36px" : "48px",
-              color: "#f2cb05",
-              fontWeight: 700,
-              marginBottom: "40px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            НАШИ УСЛУГИ
-          </h2>
-
-          <div
-            style={{
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              maxWidth: "500px",
-              gap: "36px",
-              padding: "0px 26px",
-            }}
-          >
-            {[
-              {
-                title: "КОСМЕТИЧЕСКИЙ РЕМОНТ",
-                text: "Лёгкое обновление – покраска, обои, замена покрытий, освежение интерьера.",
-                number: "1",
-              },
-              {
-                title: "КАПИТАЛЬНЫЙ РЕМОНТ",
-                text: "Замена коммуникаций, выравнивание стен, перепланировка, демонтаж, полная замена электрики.",
-                number: "2",
-              },
-              {
-                title: "ДИЗАЙНЕРСКИЙ РЕМОНТ",
-                text: "Уникальные интерьеры под ключ. Визуальные концепции и премиальные материалы. Зонирование кухни – гостиной.",
-                number: "3",
-              },
-            ].map((item) => (
-              <div
-                key={item.number}
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "16px",
-                  color: "#fff",
-                  textAlign: "left",
-                }}
-              >
-                {!isMobile && (
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      minWidth: "50px",
-                      backgroundColor: "#011324",
-                      color: "#f2cb05",
-                      borderRadius: "50%",
-                      border: "2px solid #f2cb05",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      fontSize: "24px",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {item.number}
-                  </div>
-                )}
-
-                <div>
-                  <div
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {item.title}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: "15px",
-                      color: "#ccc",
-
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {item.text}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button
-            style={{
-              marginTop: "48px",
-              backgroundColor: "#f2cb05",
-              color: "#000",
-              padding: "14px 28px",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "30px",
-              cursor: "pointer",
-            }}
-          >
-            ЗАКАЗАТЬ ЗВОНОК
-          </button>
-        </section>
+        <Services
+          isMobile={isMobile}
+          servicesRef={servicesRef}
+          setQuestioModalOpen={setQuestioModalOpen}
+        />
         {/* Фото */}
         <section
           id="portfolio"

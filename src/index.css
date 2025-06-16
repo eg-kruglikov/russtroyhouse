@@ -18,9 +18,9 @@
 
 body {
   margin: 0;
-  padding-left: 5vw;
-  padding-right: 5vw;
-  background-color: #0a1a23;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  background-color: #04141d;
   overflow-x: visible !important;
   position: relative;
 }

@@ -33,8 +33,16 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
       >
         {/* Кнопка-трубка */}
         <button
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={() => {
+            setIsOpen((prev) => !prev);
+            navigator.vibrate?.(50);
+          }}
           type="button"
+          onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.9)")}
+          onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.9)")}
+          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           style={{
             all: "unset",
             width: 100,
