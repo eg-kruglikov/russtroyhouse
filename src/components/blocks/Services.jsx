@@ -23,11 +23,13 @@ const Services = ({ isMobile, servicesRef, setQuestioModalOpen }) => {
     <section
       ref={servicesRef}
       style={{
-        backgroundColor: "#000",
+        background: "linear-gradient(to bottom, #000000 0%, #04141d 100%)",
         padding: "8px 16px",
         textAlign: "center",
         scrollMarginTop: "60px",
-        minHeight: "100vh",
+        Height: "100svh",
+        marginLeft: "5.5vw",
+        marginRight: "5.5vw",
       }}
     >
       <h2

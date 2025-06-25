@@ -9,7 +9,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
       <button
         onClick={() => {
           setIsOpen((prev) => !prev);
-          navigator.vibrate?.(50);
+          navigator.vibrate?.(30);
         }}
         type="button"
         onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.9)")}

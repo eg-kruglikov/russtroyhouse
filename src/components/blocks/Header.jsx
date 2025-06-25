@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo_white.png";
 
+import "../styles/header.css";
+
 const Header = ({
   isMobile,
   scrollToHero,
@@ -12,21 +14,6 @@ const Header = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
-
-    if (menuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpen]);
   const navLinks = [
     { name: "Главная", href: scrollToHero },
     { name: "О нас", href: scrollToAbout },
@@ -35,6 +22,12 @@ const Header = ({
     { name: "Контакты", href: scrollToContacts },
   ];
   const colorTextHeader = "#cdcdcd";
+
+  const changeStateBurger = (e) => {
+    e.stopPropagation();
+    navigator.vibrate?.(30);
+    setMenuOpen((prev) => !prev);
+  };
   return (
     <header
       style={{
@@ -45,7 +38,6 @@ const Header = ({
         height: "54px",
         backgroundColor: "#04141D",
         padding: "6px 0",
-
         zIndex: 1000,
       }}
     >
@@ -97,43 +89,12 @@ const Header = ({
         {/* Бургер-иконка — мобилка */}
         {isMobile && (
           <div
-            tabIndex={0}
-            onClick={() => setMenuOpen(!menuOpen)}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              cursor: "pointer",
-              padding: "8px",
-
-              border: "none",
-              outline: "none",
-              WebkitTapHighlightColor: "transparent", // 💥 это убивает синий прямоугольник
-            }}
+            className={`burger ${menuOpen ? "open" : ""}`}
+            onClick={changeStateBurger}
           >
-            <div
-              style={{
-                width: "24px",
-                height: "3px",
-                backgroundColor: "#fff",
-                margin: "3px 0",
-              }}
-            />
-            <div
-              style={{
-                width: "24px",
-                height: "3px",
-                backgroundColor: "#fff",
-                margin: "3px 0",
-              }}
-            />
-            <div
-              style={{
-                width: "24px",
-                height: "3px",
-                backgroundColor: "#fff",
-                margin: "3px 0",
-              }}
-            />
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         )}
       </div>
@@ -156,7 +117,10 @@ const Header = ({
           {navLinks.map((item, i) => (
             <button
               key={i}
-              onClick={item.href}
+              onClick={() => {
+                item.href(), setMenuOpen(false);
+                navigator.vibrate?.(30);
+              }}
               style={{
                 all: "unset",
                 cursor: "pointer",
@@ -166,6 +130,7 @@ const Header = ({
                 textDecoration: "none",
                 fontWeight: "600",
                 fontSize: "16px",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
               {item.name}

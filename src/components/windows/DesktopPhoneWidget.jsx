@@ -11,8 +11,8 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
       style={{
         position: "fixed",
         bottom: "9%",
-        right: isNarrow ? "8.6%" : "50%",
-        transform: isNarrow ? "none" : "translateX(550px)",
+        right: "10%",
+        transform: "none",
         zIndex: 1000,
       }}
     >

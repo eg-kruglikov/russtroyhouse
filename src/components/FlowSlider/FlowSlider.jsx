@@ -18,6 +18,10 @@ const images = [
   "/images/slider/img5.jpg",
 ];
 
+const cosmeticImages = ["/img1.jpg", "/img2.jpg", "/img3.jpg"];
+const capitalImages = ["/img4.jpg", "/img5.jpg", "/img6.jpg"];
+const designerImages = ["/img7.jpg", "/img8.jpg", "/img9.jpg"];
+
 export default function FlowSlider(isMobile) {
   return (
     <div style={{ padding: "20px 0", backgroundColor: "#04141D" }}>
