@@ -27,7 +27,7 @@ body {
 html,
 body {
   overflow-x: hidden;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
 
 @keyframes dash-move-left {

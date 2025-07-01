@@ -23,6 +23,7 @@ const Home = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
   const heroRef = useRef(null);
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
@@ -48,29 +49,12 @@ const Home = () => {
   return (
     <div
       style={{
-        position: "relative",
-        width: "100%",
+        width: "100vw",
 
         margin: "0 auto",
       }}
     >
       {/* изображения "ремонт начинается здась" */}
-      <img
-        src={hero}
-        alt="РЕМОНТ НАЧИНАЕТСЯ ЗДЕСЬ"
-        style={{
-          width: isMobile ? "105%" : "113%",
-          maxWidth: "800px",
-          height: "auto",
-          position: "absolute",
-          zIndex: 1,
-          top: isMobile ? "64.4svh" : "61.2svh",
-          left: "50.5%",
-          transform: isMobile
-            ? "translate(-50%, -86%)"
-            : "translate(-50%, -44%)",
-        }}
-      />
 
       {/* Иконка трубки, панель кнопок "позвонить" "обратный звонок" */}
 
@@ -99,7 +83,7 @@ const Home = () => {
           left: "50.5%",
           transform: "translate(-50%, -52.6%)",
           backgroundColor: "#FFD700",
-          color: "#000",
+          color: "#ffff",
           fontWeight: "790",
           fontSize: "24px",
           padding: isMobile ? "16px 26px" : "26px 40px",
@@ -121,25 +105,6 @@ const Home = () => {
         onClose={() => setQuestioModalOpen(false)}
         isMobile={isMobile}
       />
-
-      {/* контур интерера (картинка) */}
-
-      <section
-        style={{
-          position: "absolute",
-          zIndex: 1,
-
-          top: isMobile ? "190svh" : "175svh",
-          right: "0%",
-        }}
-      >
-        {" "}
-        <img
-          src={chairPlantOutline}
-          alt="chairPlantOutline"
-          height={isMobile ? "100px" : "350px"}
-        />
-      </section>
 
       <div
         style={{
@@ -167,80 +132,126 @@ const Home = () => {
         <section
           ref={heroRef}
           style={{
-            backgroundImage: `url(${background})`,
-            backgroundSize: "cover",
-            backgroundPosition: "30% 60%",
             height: "calc(100svh - 54px)",
-
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            textAlign: "center",
+            // textAlign: "center",
             boxSizing: "border-box",
             marginTop: "54px",
-            overflow: "hidden",
+
             position: "relative",
             scrollMarginTop: "54px",
-            marginLeft: "5.5vw",
-            marginRight: "5.5vw",
-          }}
-        ></section>
-        {/* Кто мы */}
-        <section
-          id="about"
-          ref={aboutRef}
-          style={{
-            background:
-              "linear-gradient(0deg, rgba(2, 4, 4, 1) 0%, rgba(18, 16, 14, 0.91) 50%, rgba(34, 27, 24, 0.34) 100%)",
-            textAlign: "center",
-            display: "flex",
-
-            flexDirection: "column",
-            scrollMarginTop: "54px",
-            minHeight: "100vh",
-            marginLeft: "5.5vw",
-            marginRight: "5.5vw",
           }}
         >
+          {" "}
+          <img
+            src="/images/background.jpg"
+            alt="Интерьер"
+            style={{
+              width: "auto",
+
+              height: "100%",
+              objectFit: "cover",
+              transform: isMobile ? "translate(18%, 0%)" : "translate(0%, 0%)",
+            }}
+          />
+          <img
+            src={hero}
+            alt="РЕМОНТ НАЧИНАЕТСЯ ЗДЕСЬ"
+            style={{
+              width: isMobile ? "105%" : "113%",
+              maxWidth: "680px",
+              height: "auto",
+              position: "absolute",
+              zIndex: 1,
+              top: isMobile ? "57.4svh" : "61svh",
+              left: "50.5%",
+              transform: isMobile
+                ? "translate(-50%, -86%)"
+                : "translate(-50%, -65%)",
+            }}
+          />
+        </section>
+        {/* Кто мы */}
+        <section
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "center",
+            scrollMarginTop: "54px",
+            height: isMobile ? "auto" : "71vh",
+
+            position: "relative",
+            padding: "20px",
+          }}
+        >
+          <img
+            src="/images/homePage/about.webp"
+            style={{
+              height: isMobile ? "auto" : "69%",
+              width: isMobile ? "100%" : "auto",
+              borderRadius: "10px",
+            }}
+            alt="о нас"
+          />
           <div
             style={{
-              marginRight: "auto",
-              fontSize: isMobile ? "48px" : "130px",
-              marginBottom: "24px",
-              color: "#E6CD0B",
-              marginTop: isMobile ? "-5px" : "-24px",
-              fontWeight: 700,
-              marginLeft: isMobile ? "-3px" : "-10px",
+              padding: "24px",
+              width: isMobile ? "100%" : "auto",
+
+              color: "#ffffff",
+              fontFamily: "sans-serif",
+              borderRadius: "8px",
+              marginRight: "2%",
+              // marginLeft: "1%",
             }}
           >
-            КТО МЫ?
+            <h2
+              style={{
+                fontSize: isMobile ? "40px" : "70px",
+                fontWeight: "700",
+                margin: "0 0 16px 0",
+                color: "#FFD600",
+                marginBottom: "0px",
+              }}
+            >
+              КТО МЫ ?
+            </h2>
+            <p
+              style={{
+                fontSize: "20px",
+                fontWeight: "500",
+                lineHeight: "1.1",
+                marginBottom: "33px",
+                marginTop: "4px",
+              }}
+            >
+              мы строительная компания, <br />
+              работаем более 10 лет и успели <br />
+              реализовать сотни проектов! <br />
+              для нас ремонт — это не просто <br />
+              стены и обои, а комфорт <br />и надёжность для жизни.
+            </p>
+            <button
+              style={{
+                padding: "4px 10px",
+                backgroundColor: "transparent",
+                border: "2px solid #FFD600",
+                borderRadius: "22px",
+                color: "#ffff",
+                fontWeight: "600",
+                fontSize: "16px",
+                cursor: "pointer",
+              }}
+            >
+              подробнее
+            </button>
           </div>
-          <p
-            style={{
-              maxWidth: "70%",
-              margin: "0 auto",
-              fontSize: isMobile ? "12px" : "20px",
-              fontWeight: 520,
-              lineHeight: "200%",
-              color: "rgba(255, 255, 255, 1)",
-            }}
-          >
-            МЫ РАБОТАЕМ БОЛЕЕ 10 ЛЕТ И УСПЕЛИ РЕАЛИЗОВАТЬ СОТНИ ПРОЕКТОВ! ДЛЯ
-            НАС РЕМОНТ — ЭТО НЕ ПРОСТО СТЕНЫ И ОБОИ, А КОМФОРТ И НАДЁЖНОСТЬ ДЛЯ
-            ЖИЗНИ. <br />
-            <br />
-            ЗАКЛЮЧАЕМ ОФИЦИАЛЬНЫЙ ДОГОВОР С ЧЁТКИМИ СРОКАМИ, ФИКСИРОВАННОЙ
-            СМЕТОЙ И ГАРАНТИЕЙ НА ВСЕ ВИДЫ РАБОТ ДО 3 ЛЕТ. <br />
-            <br />
-            МЫ НЕ ОБЕЩАЕМ «ЕВРОРЕМОНТ ЗА 3 ДНЯ», НО ТОЧНО СДЕЛАЕМ КРАСИВО,
-            АККУРАТНО И БЕЗ НЕРВОВ. БОЛЬШИНСТВО КЛИЕНТОВ ПРИХОДЯТ ПО
-            РЕКОМЕНДАЦИИ. <br />
-            <br />
-            ЕЖЕДНЕВНЫЕ ФОТООТЧЁТЫ В МЕССЕНДЖЕРЕ — ВЫ ВСЕГДА ЗНАЕТЕ, ЧТО
-            ПРОИСХОДИТ НА ОБЪЕКТЕ.
-          </p>
         </section>
+
         {/* Наши услуги */}
         <Services
           isMobile={isMobile}

@@ -2,12 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const images = [
-  "/images/photoGrid/homePage/img1.jpg",
-  "/images/photoGrid/homePage/img2.jpg",
-  "/images/photoGrid/homePage/img3.jpg",
-  "/images/photoGrid/homePage/img4.jpg",
-  "/images/photoGrid/homePage/img5.jpg",
-  "/images/photoGrid/homePage/img6.jpg",
+  "/images/homePage/img1.jpg",
+  "/images/homePage/img2.jpg",
+  "/images/homePage/img3.jpg",
+  "/images/homePage/img4.jpg",
+  "/images/homePage/img5.jpg",
+  "/images/homePage/img6.jpg",
 ];
 
 const PhotoGrid = ({ isMobile }) => {

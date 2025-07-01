@@ -7,6 +7,7 @@ import {
 import Home from "./components/Home";
 import ProjectPage from "./components/ProjectPage";
 import { useEffect } from "react";
+import ScrollToTop from "./components/ScrollToTop";
 
 const RedirectHandler = () => {
   useEffect(() => {
@@ -23,6 +24,7 @@ const App = () => {
   return (
     <Router>
       <RedirectHandler />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/project/:id" element={<ProjectPage />} />

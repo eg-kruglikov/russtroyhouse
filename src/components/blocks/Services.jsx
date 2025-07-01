@@ -1,129 +1,226 @@
 import React, { useRef, useState } from "react";
 
 const Services = ({ isMobile, servicesRef, setQuestioModalOpen }) => {
-  const moks = [
-    {
-      title: "КОСМЕТИЧЕСКИЙ РЕМОНТ",
-      text: "Лёгкое обновление – покраска, обои, замена покрытий, освежение интерьера.",
-      number: "1",
-    },
-    {
-      title: "КАПИТАЛЬНЫЙ РЕМОНТ",
-      text: "Замена коммуникаций, выравнивание стен, перепланировка, демонтаж, полная замена электрики.",
-      number: "2",
-    },
-    {
-      title: "ДИЗАЙНЕРСКИЙ РЕМОНТ",
-      text: "Уникальные интерьеры под ключ. Визуальные концепции и премиальные материалы. Зонирование кухни – гостиной.",
-      number: "3",
-    },
-  ];
-
   return (
     <section
       ref={servicesRef}
       style={{
-        background: "linear-gradient(to bottom, #000000 0%, #04141d 100%)",
-        padding: "8px 16px",
         textAlign: "center",
         scrollMarginTop: "60px",
-        Height: "100svh",
+        height: isMobile ? "auto" : "130vh",
         marginLeft: "5.5vw",
         marginRight: "5.5vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <h2
         style={{
-          fontSize: isMobile ? "36px" : "78px",
+          fontSize: isMobile ? "34px" : "42px",
           color: "#f2cb05",
           fontWeight: 700,
-          marginBottom: isMobile ? "30px" : "50px",
+          marginBottom: isMobile ? "10px" : "8%",
           whiteSpace: "nowrap",
+          marginTop: "0px",
         }}
       >
         НАШИ УСЛУГИ
       </h2>
-
       <div
         style={{
-          margin: "0 auto",
+          height: isMobile ? "auto" : "29%",
+          width: "64vw",
           display: "flex",
-          flexDirection: "column",
-          maxWidth: "500px",
-          gap: isMobile ? "20px" : "36px",
-          padding: "0px 26px",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          marginRight: isMobile ? "0%" : "20vw",
         }}
       >
-        {moks.map((item) => (
-          <div
-            key={item.number}
+        <img
+          src="/images/homePage/services1.webp"
+          style={{
+            height: isMobile ? "auto" : "100%",
+            width: isMobile ? "100%" : "auto",
+            alignSelf: "center",
+          }}
+          alt="о нас"
+        />
+        <div
+          style={{
+            height: "100%",
+            width: "330px",
+            alignSelf: "center",
+            display: "flex",
+            flexDirection: "column",
+            textAlign: isMobile ? "center" : "start",
+            marginLeft: isMobile ? "0px" : "5vw",
+          }}
+        >
+          <p
             style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "16px",
-              color: "#fff",
-              textAlign: "left",
+              fontSize: isMobile ? "20px" : "28px",
+              marginBottom: isMobile ? "18px" : "0%",
+              marginTop: isMobile ? "4px" : "20px",
             }}
           >
-            {!isMobile && (
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  flexShrink: 0, // <--- важно, чтобы не сжимался!
-                  marginTop: "40px",
-                  marginRight: "20px",
-                  backgroundColor: "#011324",
-                  color: "#f2cb05",
-                  borderRadius: "50%",
-
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "84px",
-                  fontWeight: 500,
-                }}
-              >
-                {item.number}
-              </div>
-            )}
-
-            <div>
-              <div
-                style={{
-                  fontWeight: "bold",
-                  fontSize: isMobile ? "16px" : "26px",
-                  marginBottom: isMobile ? "0px" : "8px",
-                }}
-              >
-                {item.title}
-              </div>
+            косметический ремонт
+          </p>
+          {!isMobile && (
+            <p
+              style={{
+                fontSize: "16px",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 300,
+                lineHeight: "normal",
+                letterSpacing: "0.09em",
+              }}
+            >
+              Лёгкое обновление - покраска, обои, замена покрытий, освежение
+              интерьера.
+            </p>
+          )}
+        </div>
+      </div>
+      <div
+        style={{
+          height: isMobile ? "auto" : "29%",
+          width: "64vw",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          marginLeft: isMobile ? "0%" : "20vw",
+        }}
+      >
+        {!isMobile && (
+          <div
+            style={{
+              height: "100%",
+              width: "280px",
+              alignSelf: "center",
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "end",
+              marginRight: "10%",
+              justifyContent: "center",
+            }}
+          >
+            <>
               <p
                 style={{
-                  fontSize: isMobile ? "15px" : "20px",
-                  color: "#ccc",
-                  letterSpacing: "2px",
-                  lineHeight: 1.5,
+                  fontSize: "26px",
+                  marginBottom: "0%",
+                  fontWeight: 700,
                 }}
               >
-                {item.text}
+                капитальный ремонт
               </p>
-            </div>
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 300,
+                  lineHeight: "normal",
+                  letterSpacing: "0.09em",
+                }}
+              >
+                Замена коммуникаций, выравнивание стен, перепланировка,
+                демонтаж, полная замена электрики.
+              </p>
+            </>
           </div>
-        ))}
-      </div>
+        )}
+        <img
+          src="/images/homePage/services2.webp"
+          style={{
+            height: isMobile ? "auto" : "100%",
+            width: isMobile ? "100%" : "auto",
+            alignSelf: "center",
+          }}
+          alt="о нас"
+        />
 
+        {isMobile && (
+          <p
+            style={{
+              fontSize: isMobile ? "20px" : "28px",
+              marginBottom: isMobile ? "18px" : "0%",
+              marginTop: isMobile ? "4px" : "20px",
+            }}
+          >
+            капитальный ремонт
+          </p>
+        )}
+      </div>
+      <div
+        style={{
+          height: isMobile ? "auto" : "29%",
+          width: "64vw",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "center",
+          marginRight: isMobile ? "0%" : "20vw",
+        }}
+      >
+        <img
+          src="/images/homePage/services3.webp"
+          style={{
+            height: isMobile ? "auto" : "100%",
+            width: isMobile ? "100%" : "auto",
+            alignSelf: "center",
+          }}
+          alt="о нас"
+        />
+        <div
+          style={{
+            height: "100%",
+            width: "330px",
+            alignSelf: "center",
+            display: "flex",
+            flexDirection: "column",
+            textAlign: isMobile ? "center" : "start",
+            marginLeft: isMobile ? "0px" : "5vw",
+            justifyContent: "center",
+          }}
+        >
+          <p
+            style={{
+              fontSize: isMobile ? "20px" : "28px",
+              marginBottom: isMobile ? "18px" : "0%",
+              marginTop: isMobile ? "4px" : "20px",
+            }}
+          >
+            дизайнерский ремонт
+          </p>
+          {!isMobile && (
+            <p
+              style={{
+                fontSize: "16px",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 300,
+                lineHeight: "normal",
+                letterSpacing: "0.09em",
+              }}
+            >
+              Уникальные интерьеры под ключ. Визуальные концепции и премиальные
+              материалы. Зонирование кухни - гостинной.
+            </p>
+          )}
+        </div>
+      </div>
       <button
         style={{
           backgroundColor: "#f2cb05",
-          color: "#000",
-          padding: "20px 32px",
+          color: isMobile ? "#000" : "#ffff",
+          padding: isMobile ? "17px 24px" : "25px 48px",
           fontWeight: "bold",
           border: "none",
-          borderRadius: "30px",
+          borderRadius: "45px",
           cursor: "pointer",
-          fontSize: "18px",
-          marginTop: isMobile ? "10px" : "60px",
+          fontSize: isMobile ? "14px" : "24px",
+          marginTop: isMobile ? "18px" : "40px",
+          marginBottom: isMobile ? "10px" : "40px",
+          alignSelf: "center",
         }}
         onClick={() => setQuestioModalOpen(true)}
       >
