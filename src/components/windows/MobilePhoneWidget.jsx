@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import phoneIcon from "../../assets/phone-icon.png";
 
 const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
+  const confirmCall = () => {
+    ym(101296472, "reachGoal", "call_confirmed");
+    window.location.href = "tel:+79264081811";
+  };
   return (
     <>
       {/* Кнопка трубки (всегда видна) */}
@@ -21,7 +25,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
           all: "unset",
           position: "fixed",
           bottom: "6svh",
-          right: "34px",
+          right: "20px",
           width: "70px",
           height: "70px",
           background: "#f2cb05",
@@ -34,6 +38,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
           zIndex: 1001,
           WebkitTapHighlightColor: "transparent",
           transition: "transform 0.1s ease",
+          outline: "none",
         }}
       >
         <img
@@ -57,9 +62,9 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
             transition={{ duration: 0.25 }}
             style={{
               position: "fixed",
-              bottom: "6svh",
-              right: "88px", // отступ от трубки
-              width: "200px",
+              bottom: "11svh",
+              right: "65px", // отступ от трубки
+              left: "58px",
               height: "160px",
               backgroundColor: "rgba(17, 17, 17, 0.85)",
               borderRadius: "24px",
@@ -71,8 +76,6 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
 
               gap: "12px",
               zIndex: 1000,
-              paddingRight: "38px",
-              paddingLeft: "10px",
             }}
           >
             <button
@@ -84,7 +87,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
                 fontWeight: "bold",
                 fontSize: "17px",
                 height: "60px",
-                width: "185px",
+                width: "80%",
                 whiteSpace: "nowrap",
               }}
               onClick={() => setQuestioModalOpen(true)}
@@ -92,6 +95,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
               ЗАКАЗАТЬ ЗВОНОК
             </button>
             <button
+              onClick={confirmCall}
               style={{
                 background: "#f2cb05",
                 border: "none",
@@ -99,7 +103,7 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
                 borderRadius: "28px",
                 fontWeight: "bold",
                 fontSize: "17px",
-                width: "185px",
+                width: "80%",
                 height: "60px",
                 whiteSpace: "nowrap",
               }}

@@ -1,10 +1,17 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import phoneIcon from "../../assets/phone-icon.png";
-import useIsNarrowScreen from "../../hooks/useIsNarrowScreen";
+import { useState } from "react";
 
 const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
-  const isNarrow = useIsNarrowScreen(1328);
+  const [numberDisplayed, setNumberDisplayed] = useState(false);
+
+  const showNumber = () => {
+    if (!numberDisplayed) {
+      ym(101296472, "reachGoal", "call_confirmed");
+      setNumberDisplayed(true);
+    }
+  };
 
   return (
     <div
@@ -56,6 +63,8 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
             flexShrink: 0,
             userSelect: "none",
             boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+            outline: "none",
+            WebkitTapHighlightColor: "transparent",
           }}
         >
           <img
@@ -80,6 +89,21 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
               }}
             >
               <button
+                onTouchStart={(e) =>
+                  (e.currentTarget.style.transform = "scale(0.9)")
+                }
+                onTouchEnd={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                onMouseDown={(e) =>
+                  (e.currentTarget.style.transform = "scale(0.9)")
+                }
+                onMouseUp={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
                 style={{
                   background: "#f2cb05",
                   border: "none",
@@ -89,13 +113,31 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
                   fontSize: "18px",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
-                  minWidth: "200px", // <-- ключевая строчка
+                  minWidth: "200px",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
                 }}
                 onClick={() => setQuestioModalOpen(true)}
               >
                 ЗАКАЗАТЬ ЗВОНОК
               </button>
               <button
+                onTouchStart={(e) =>
+                  (e.currentTarget.style.transform = "scale(0.9)")
+                }
+                onTouchEnd={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                onMouseDown={(e) =>
+                  (e.currentTarget.style.transform = "scale(0.9)")
+                }
+                onMouseUp={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                onClick={showNumber}
                 style={{
                   background: "#f2cb05",
                   border: "none",
@@ -105,9 +147,11 @@ const DesktopPhoneWidget = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
                   fontSize: "18px",
                   cursor: "pointer",
                   minWidth: "230px",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
                 }}
               >
-                ПОЗВОНИТЬ
+                {numberDisplayed ? "+7 (926) 408-18-11" : "ПОЗВОНИТЬ"}
               </button>
             </motion.div>
           )}

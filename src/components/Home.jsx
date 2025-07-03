@@ -5,7 +5,7 @@ import hero from "../assets/hero.png";
 import chairPlantOutline from "../assets/chair-plant-outline.png";
 import MobilePhoneWidget from "../components/windows/MobilePhoneWidget";
 import DesktopPhoneWidget from "../components/windows/DesktopPhoneWidget";
-import QuestionModal from "../components/windows/QuestionModal";
+import QuestionModal from "./windows/FeedbackModal";
 import Header from "../components/blocks/Header";
 import Footer from "../components/blocks/Footer";
 import Map from "../components/blocks/Map";
@@ -73,30 +73,6 @@ const Home = () => {
       )}
 
       {/* кнопка "ЗАКАЗАТЬ" */}
-
-      <button
-        style={{
-          display: phoneWidgetIsOpen ? "none" : "inline-block",
-          position: "absolute",
-          zIndex: 1,
-          top: isMobile ? "80svh" : "88svh",
-          left: "50.5%",
-          transform: "translate(-50%, -52.6%)",
-          backgroundColor: "#FFD700",
-          color: "#ffff",
-          fontWeight: "790",
-          fontSize: "24px",
-          padding: isMobile ? "16px 26px" : "26px 40px",
-          border: "none",
-          borderRadius: "40px",
-          cursor: "pointer",
-          boxShadow: "0 6px 16px rgba(0,0,0,0.35)",
-          transition: "transform 0.2s ease",
-        }}
-        onClick={() => setQuestioModalOpen(true)}
-      >
-        ЗАКАЗАТЬ
-      </button>
 
       {/* модалка обратной связи */}
 
@@ -173,6 +149,53 @@ const Home = () => {
                 : "translate(-50%, -65%)",
             }}
           />
+          <button
+            onTouchStart={(e) =>
+              (e.currentTarget.style.transform =
+                "translate(-50%, -52.6%) scale(0.9)")
+            }
+            onTouchEnd={(e) =>
+              (e.currentTarget.style.transform =
+                "translate(-50%, -52.6%) scale(1)")
+            }
+            onMouseDown={(e) =>
+              (e.currentTarget.style.transform =
+                "translate(-50%, -52.6%) scale(0.9)")
+            }
+            onMouseUp={(e) =>
+              (e.currentTarget.style.transform =
+                "translate(-50%, -52.6%) scale(1)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.transform =
+                "translate(-50%, -52.6%) scale(1)")
+            }
+            disabled={phoneWidgetIsOpen}
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              top: isMobile ? "72svh" : "80svh",
+
+              left: "50.5%",
+              transform: "translate(-50%, -52.6%)",
+              backgroundColor: "#FFD700",
+              color: "#ffff",
+              fontWeight: "790",
+              fontSize: "24px",
+              padding: isMobile ? "16px 26px" : "26px 40px",
+              border: "none",
+              borderRadius: "40px",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.35)",
+              transition: "transform 0.2s ease",
+              outline: "none",
+              WebkitTapHighlightColor: "transparent",
+              opacity: phoneWidgetIsOpen ? "0.5" : "1",
+            }}
+            onClick={() => setQuestioModalOpen(true)}
+          >
+            ЗАКАЗАТЬ
+          </button>
         </section>
         {/* Кто мы */}
         <section
@@ -257,6 +280,7 @@ const Home = () => {
           isMobile={isMobile}
           servicesRef={servicesRef}
           setQuestioModalOpen={setQuestioModalOpen}
+          phoneWidgetIsOpen={phoneWidgetIsOpen}
         />
         {/* Фото */}
         <section
@@ -271,6 +295,49 @@ const Home = () => {
           }}
         >
           <PhotoGrid isMobile={isMobile} />
+        </section>
+        <section
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "visible",
+            height: isMobile ? "20vh" : "50vh",
+          }}
+        >
+          {" "}
+          <button
+            type="button"
+            onTouchStart={(e) =>
+              (e.currentTarget.style.transform = "scale(0.97)")
+            }
+            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseDown={(e) =>
+              (e.currentTarget.style.transform = "scale(0.97)")
+            }
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            style={{
+              backgroundColor: "#f2cb05",
+              color: isMobile ? "#000" : "#ffff",
+              padding: isMobile ? "17px 24px" : "32px 48px",
+              fontWeight: "bold",
+              border: "none",
+              borderRadius: "45px",
+              cursor: "pointer",
+              fontSize: isMobile ? "18px" : "30px",
+              marginTop: isMobile ? "-28px" : "0px",
+              marginBottom: isMobile ? "10px" : "40px",
+              alignSelf: "center",
+              outline: "none",
+              WebkitTapHighlightColor: "transparent",
+              opacity: phoneWidgetIsOpen ? "0.5" : "1",
+            }}
+            onClick={() => setQuestioModalOpen(true)}
+            disabled={phoneWidgetIsOpen}
+          >
+            получить пример проекта
+          </button>
         </section>
         {/* карта с пунктиром */}
         <div

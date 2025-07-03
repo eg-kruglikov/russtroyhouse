@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 
-const Services = ({ isMobile, servicesRef, setQuestioModalOpen }) => {
+const Services = ({
+  isMobile,
+  servicesRef,
+  setQuestioModalOpen,
+  phoneWidgetIsOpen,
+}) => {
   return (
     <section
       ref={servicesRef}
@@ -209,6 +214,12 @@ const Services = ({ isMobile, servicesRef, setQuestioModalOpen }) => {
         </div>
       </div>
       <button
+        type="button"
+        onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+        onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         style={{
           backgroundColor: "#f2cb05",
           color: isMobile ? "#000" : "#ffff",
@@ -221,8 +232,12 @@ const Services = ({ isMobile, servicesRef, setQuestioModalOpen }) => {
           marginTop: isMobile ? "18px" : "40px",
           marginBottom: isMobile ? "10px" : "40px",
           alignSelf: "center",
+          outline: "none",
+          WebkitTapHighlightColor: "transparent",
+          opacity: phoneWidgetIsOpen ? "0.5" : "1",
         }}
         onClick={() => setQuestioModalOpen(true)}
+        disabled={phoneWidgetIsOpen}
       >
         ЗАКАЗАТЬ ЗВОНОК
       </button>

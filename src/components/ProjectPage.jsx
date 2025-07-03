@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import QuestionModal from "./windows/QuestionModal";
+import QuestionModal from "./windows/FeedbackModal";
 const ProjectPage = () => {
   const { id } = useParams();
 
@@ -122,7 +122,7 @@ const ProjectPage = () => {
         </div>
 
         <img
-          src="/images/photoGrid/project1/1.jpg"
+          src="/images/photolibrary/project1/1.jpg"
           alt="проект"
           style={{
             height: "100%", // растягивается по высоте окна
@@ -190,7 +190,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/2.jpg"
+            src="/images/photolibrary/project1/2.jpg"
             alt="Интерьер"
             style={{
               width: "100%",
@@ -215,7 +215,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/11.jpg"
+            src="/images/photolibrary/project1/11.jpg"
             alt="Деталь 1"
             style={{
               height: isMobile ? "auto" : "55.5%",
@@ -236,7 +236,7 @@ const ProjectPage = () => {
             }}
           >
             <img
-              src="/images/photoGrid/project1/3.jpg"
+              src="/images/photolibrary/project1/3.jpg"
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -311,7 +311,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/4.jpg"
+            src="/images/photolibrary/project1/4.jpg"
             alt="Интерьер"
             style={{
               width: "100%",
@@ -345,7 +345,7 @@ const ProjectPage = () => {
             }}
           >
             <img
-              src="/images/photoGrid/project1/5.jpg"
+              src="/images/photolibrary/project1/5.jpg"
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -365,7 +365,7 @@ const ProjectPage = () => {
             }}
           >
             <img
-              src="/images/photoGrid/project1/12.jpg"
+              src="/images/photolibrary/project1/12.jpg"
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -414,7 +414,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/6.jpg"
+            src="/images/photolibrary/project1/6.jpg"
             alt="Интерьер"
             style={{
               width: "100%",
@@ -471,7 +471,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/7.jpg"
+            src="/images/photolibrary/project1/7.jpg"
             alt="Интерьер"
             style={{
               width: "100%",
@@ -531,7 +531,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/9.jpg"
+            src="/images/photolibrary/project1/9.jpg"
             alt="Интерьер"
             style={{
               width: "100%",
@@ -587,7 +587,7 @@ const ProjectPage = () => {
           }}
         >
           <img
-            src="/images/photoGrid/project1/8.jpg"
+            src="/images/photolibrary/project1/8.jpg"
             alt="Интерьер"
             style={{
               width: isMobile ? "96%" : "100%",

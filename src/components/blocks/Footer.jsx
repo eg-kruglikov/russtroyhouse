@@ -37,9 +37,6 @@ const Footer = () => (
           rus_pd@mail.ru
         </a>{" "}
         ·{" "}
-        <a href="tel:+79264081811" style={{ color: "#fff" }}>
-          +7 (926) 408-18-11
-        </a>
       </div>
     </div>
   </footer>

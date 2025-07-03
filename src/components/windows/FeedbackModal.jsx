@@ -3,8 +3,12 @@ import React, { useState } from "react";
 const QuestionModal = ({ isOpen, onClose, isMobile }) => {
   if (!isOpen) return null;
 
+  const [name, setName] = useState("");
   const [phone, setPhone] = useState("+7");
+  const [comment, setComment] = useState("");
   const [error, setError] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handlePhoneChange = (e) => {
     let value = e.target.value;
@@ -25,14 +29,62 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // if (name.trim().length < 2) {
+    //   setError("Пожалуйста, введите корректное имя");
+    //   return;
+    // }
+
     if (phone.length !== 12 || error) {
-      alert("Проверьте правильность номера");
+      setError("Проверьте правильность номера");
       return;
     }
-    console.log("Данные отправлены:", { phone });
-    onClose();
+
+    const phoneDigitsOnly = phone.replace(/\D/g, "");
+    if (phoneDigitsOnly.length < 10) {
+      setError("Введите корректный номер телефона (минимум 10 цифр)");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    const token = import.meta.env.VITE_TELEGRAM_TOKEN;
+    const chatIds = [
+      import.meta.env.VITE_TELEGRAM_CHAT_ID_EGOR,
+      // import.meta.env.VITE_TELEGRAM_CHAT_ID_ANTON,
+    ];
+    const now = new Date().toLocaleString("ru-RU");
+    const message = `\u{1F4DE} Новая заявка с сайта:\n\n\u{1F464} Имя: ${name}\n\u{1F4F1} Телефон: ${phone}\n\u{1F4DD} Комментарий: ${
+      comment || "—"
+    }\n\u{23F0} Время: ${now}`;
+
+    try {
+      for (const id of chatIds) {
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: id,
+            text: message,
+          }),
+        });
+      }
+      ym(101296472, "reachGoal", "form_sent");
+      setSubmitted(true);
+      setName("");
+      setPhone("+7");
+      setComment("");
+      onClose();
+    } catch (err) {
+      setError("Ошибка при отправке. Попробуйте позже.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,6 +99,7 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
         zIndex: 9999,
         padding: "16px",
         fontFamily: "sans-serif",
+        animation: "fadeIn 0.3s ease-out", // 👈 добавили fade-in
       }}
       onClick={onClose}
     >
@@ -59,9 +112,29 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           padding: "32px 24px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
           color: "#fff",
+          position: "relative", // <--- добавь вот это!
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: isMobile ? "10px" : "20px",
+            right: isMobile ? "14px" : "24px",
+            background: "transparent",
+            border: "none",
+            fontSize: "28px",
+            color: loading ? "black" : "#939393",
+            cursor: "pointer",
+            lineHeight: "1",
+          }}
+          aria-label="Закрыть"
+          disabled={loading}
+        >
+          &times;
+        </button>
+
         <h2
           style={{
             fontSize: isMobile ? "13px" : "26px",
@@ -78,6 +151,8 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           style={{ display: "flex", flexDirection: "column", gap: "16px" }}
         >
           <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="ИМЯ"
             style={{
@@ -139,6 +214,8 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           </div>
 
           <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
             placeholder="ВАШ ТЕКСТ"
             rows="4"
             style={{
@@ -174,10 +251,20 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           </p>
 
           <button
+            onTouchStart={(e) =>
+              (e.currentTarget.style.transform = "scale(0.9)")
+            }
+            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseDown={(e) =>
+              (e.currentTarget.style.transform = "scale(0.9)")
+            }
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             type="submit"
+            disabled={loading}
             style={{
               marginTop: "12px",
-              backgroundColor: "#f2cb05",
+              backgroundColor: loading ? "grey" : "#f2cb05",
               border: "none",
               padding: "16px 24px",
               borderRadius: "36px",
@@ -187,9 +274,11 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
               width: isMobile ? "150px" : "30%",
               color: "#000",
               marginLeft: isMobile ? "53px" : "190px",
+              outline: "none",
+              WebkitTapHighlightColor: "transparent",
             }}
           >
-            ОТПРАВИТЬ
+            {loading ? "Отправка..." : "ОТПРАВИТЬ"}
           </button>
         </form>
       </div>
