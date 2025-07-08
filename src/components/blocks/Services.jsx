@@ -25,9 +25,10 @@ const Services = ({
           fontSize: isMobile ? "34px" : "42px",
           color: "#f2cb05",
           fontWeight: 700,
-          marginBottom: isMobile ? "10px" : "8%",
+          marginBottom: isMobile ? "15px" : "0px",
           whiteSpace: "nowrap",
           marginTop: "0px",
+          height: "10%",
         }}
       >
         НАШИ УСЛУГИ
@@ -213,34 +214,47 @@ const Services = ({
           )}
         </div>
       </div>
-      <button
-        type="button"
-        onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-        onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+
+      <div
         style={{
-          backgroundColor: "#f2cb05",
-          color: isMobile ? "#000" : "#ffff",
-          padding: isMobile ? "17px 24px" : "25px 48px",
-          fontWeight: "bold",
-          border: "none",
-          borderRadius: "45px",
-          cursor: "pointer",
-          fontSize: isMobile ? "14px" : "24px",
-          marginTop: isMobile ? "18px" : "40px",
-          marginBottom: isMobile ? "10px" : "40px",
-          alignSelf: "center",
-          outline: "none",
-          WebkitTapHighlightColor: "transparent",
-          opacity: phoneWidgetIsOpen ? "0.5" : "1",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "20%",
         }}
-        onClick={() => setQuestioModalOpen(true)}
-        disabled={phoneWidgetIsOpen}
       >
-        ЗАКАЗАТЬ ЗВОНОК
-      </button>
+        <button
+          type="button"
+          onTouchStart={(e) =>
+            (e.currentTarget.style.transform = "scale(0.97)")
+          }
+          onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          style={{
+            backgroundColor: "#f2cb05",
+            color: isMobile ? "#000" : "#ffff",
+            padding: isMobile ? "17px 24px" : "25px 48px",
+            fontWeight: "bold",
+            border: "none",
+            borderRadius: "45px",
+            cursor: "pointer",
+            fontSize: isMobile ? "14px" : "24px",
+            // marginTop: isMobile ? "18px" : "40px",
+            marginBottom: isMobile ? "15px" : "0px",
+
+            alignSelf: "center",
+            outline: "none",
+            WebkitTapHighlightColor: "transparent",
+            opacity: phoneWidgetIsOpen ? "0.5" : "1",
+          }}
+          onClick={() => setQuestioModalOpen(true)}
+          disabled={phoneWidgetIsOpen}
+        >
+          ЗАКАЗАТЬ ЗВОНОК
+        </button>
+      </div>
     </section>
   );
 };

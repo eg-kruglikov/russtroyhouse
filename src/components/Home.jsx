@@ -103,7 +103,6 @@ const Home = () => {
           scrollToportfolio={scrollToportfolio}
           scrollToContacts={scrollToContacts}
         />
-
         {/* Hero */}
         <section
           ref={heroRef}
@@ -199,6 +198,7 @@ const Home = () => {
         </section>
         {/* Кто мы */}
         <section
+          ref={aboutRef}
           style={{
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
@@ -208,7 +208,7 @@ const Home = () => {
             height: isMobile ? "auto" : "71vh",
 
             position: "relative",
-            padding: "20px",
+            padding: isMobile ? "20px" : "0px",
           }}
         >
           <img
@@ -274,7 +274,6 @@ const Home = () => {
             </button>
           </div>
         </section>
-
         {/* Наши услуги */}
         <Services
           isMobile={isMobile}
@@ -282,7 +281,6 @@ const Home = () => {
           setQuestioModalOpen={setQuestioModalOpen}
           phoneWidgetIsOpen={phoneWidgetIsOpen}
         />
-        {/* Фото */}
         <section
           id="portfolio"
           ref={portfolioRef}
@@ -292,54 +290,58 @@ const Home = () => {
 
             margin: "0 auto",
             overflow: "visible",
+            height: isMobile ? "auto" : "200vh",
           }}
         >
-          <PhotoGrid isMobile={isMobile} />
-        </section>
-        <section
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "visible",
-            height: isMobile ? "20vh" : "50vh",
-          }}
-        >
-          {" "}
-          <button
-            type="button"
-            onTouchStart={(e) =>
-              (e.currentTarget.style.transform = "scale(0.97)")
-            }
-            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform = "scale(0.97)")
-            }
-            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          <PhotoGrid
+            isMobile={isMobile}
+            scrollToportfolio={scrollToportfolio}
+          />
+          <div
             style={{
-              backgroundColor: "#f2cb05",
-              color: isMobile ? "#000" : "#ffff",
-              padding: isMobile ? "17px 24px" : "32px 48px",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "45px",
-              cursor: "pointer",
-              fontSize: isMobile ? "18px" : "30px",
-              marginTop: isMobile ? "-28px" : "0px",
-              marginBottom: isMobile ? "10px" : "40px",
-              alignSelf: "center",
-              outline: "none",
-              WebkitTapHighlightColor: "transparent",
-              opacity: phoneWidgetIsOpen ? "0.5" : "1",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "visible",
+              height: "20%",
             }}
-            onClick={() => setQuestioModalOpen(true)}
-            disabled={phoneWidgetIsOpen}
           >
-            получить пример проекта
-          </button>
+            <button
+              type="button"
+              onTouchStart={(e) =>
+                (e.currentTarget.style.transform = "scale(0.97)")
+              }
+              onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onMouseDown={(e) =>
+                (e.currentTarget.style.transform = "scale(0.97)")
+              }
+              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "scale(1)")
+              }
+              style={{
+                backgroundColor: "#f2cb05",
+                color: isMobile ? "#000" : "#ffff",
+                padding: isMobile ? "17px 24px" : "32px 48px",
+                fontWeight: "bold",
+                border: "none",
+                borderRadius: "45px",
+                cursor: "pointer",
+                fontSize: isMobile ? "18px" : "30px",
+                marginTop: isMobile ? "30px" : "0px",
+                marginBottom: isMobile ? "30px" : "0px",
+                alignSelf: "center",
+                outline: "none",
+                WebkitTapHighlightColor: "transparent",
+                opacity: phoneWidgetIsOpen ? "0.5" : "1",
+              }}
+              onClick={() => setQuestioModalOpen(true)}
+              disabled={phoneWidgetIsOpen}
+            >
+              получить пример проекта
+            </button>
+          </div>
         </section>
-        {/* карта с пунктиром */}
         <div
           id="contacts"
           ref={contactsRef}
@@ -350,7 +352,6 @@ const Home = () => {
             padding: "32px 0",
           }}
         >
-          {/* Верхний пунктир */}
           <div
             style={{
               position: "absolute",
@@ -364,11 +365,9 @@ const Home = () => {
               animation: "dash-move-left 2s linear infinite",
             }}
           />
-          {/* карта */}
 
           <Map />
 
-          {/* Нижний пунктир */}
           <div
             style={{
               position: "absolute",
@@ -383,10 +382,8 @@ const Home = () => {
               scrollMarginTop: "54px",
             }}
           />
-
-          {/* Карта */}
         </div>
-        <Footer />
+        // <Footer />
       </div>
     </div>
   );

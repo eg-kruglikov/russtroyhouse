@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Home from "./components/Home";
 import ProjectPage from "./components/ProjectPage";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ScrollToTop from "./components/ScrollToTop";
 
 const RedirectHandler = () => {
