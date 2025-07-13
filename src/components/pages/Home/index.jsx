@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import background from "../assets/background.jpg";
-import hero from "../assets/hero.png";
 
-import chairPlantOutline from "../assets/chair-plant-outline.png";
-import MobilePhoneWidget from "../components/windows/MobilePhoneWidget";
-import DesktopPhoneWidget from "../components/windows/DesktopPhoneWidget";
-import QuestionModal from "./windows/FeedbackModal";
-import Header from "../components/blocks/Header";
-import Footer from "../components/blocks/Footer";
-import Map from "../components/blocks/Map";
-import Services from "../components/blocks/Services";
-import PhotoGrid from "../components/blocks/PhotoGrid";
+import hero from "../../../assets/hero.png";
+
+import MobilePhoneWidget from "../../windows/MobilePhoneWidget";
+import DesktopPhoneWidget from "../../windows/DesktopPhoneWidget";
+import QuestionModal from "../../windows/FeedbackModal";
+import Header from "../../blocks/Header";
+import Footer from "../../blocks/Footer";
+import Map from "../../blocks/Map";
+import Services from "../../blocks/Services";
+import PhotoGrid from "../../blocks/PhotoGrid";
+
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -29,6 +30,17 @@ const Home = () => {
   const servicesRef = useRef(null);
   const portfolioRef = useRef(null);
   const contactsRef = useRef(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollTo === "portfolio") {
+      scrollToportfolio(); // вызов твоей рабочей функции
+    }
+
+    // сбросим state, чтобы не мешал при следующих переходах
+    window.history.replaceState({}, document.title);
+  }, [location]);
 
   const scrollToWithOffset = (ref) => {
     const yOffset = -65; // высота шапки

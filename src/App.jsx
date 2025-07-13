@@ -4,8 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Home from "./components/Home";
-import ProjectPage from "./components/ProjectPage";
+import Home from "./components/pages/Home";
+import ProjectPage from "./components/pages/ProjectPage";
 import { useEffect, useRef } from "react";
 import ScrollToTop from "./components/ScrollToTop";
 
