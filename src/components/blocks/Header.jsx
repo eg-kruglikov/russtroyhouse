@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import logo from "../../assets/logo_white.png";
-
+import { usePressEffect } from "../../hooks/useSomething";
 import "../styles/header.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Header = ({
   isMobile,
@@ -13,21 +14,43 @@ const Header = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const burgerRef = useRef(null);
+
+  const press = usePressEffect();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        burgerRef.current &&
+        !burgerRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const navLinks = [
     { name: "Главная", href: scrollToHero },
     { name: "О нас", href: scrollToAbout },
     { name: "Услуги", href: scrollToServices },
-    { name: "Портфолио", href: scrollToportfolio },
+    { name: "Дизайн-проекты", href: scrollToportfolio },
     { name: "Контакты", href: scrollToContacts },
   ];
   const colorTextHeader = "#cdcdcd";
 
   const changeStateBurger = (e) => {
-    e.stopPropagation();
     navigator.vibrate?.(30);
     setMenuOpen((prev) => !prev);
   };
+
   return (
     <header
       style={{
@@ -67,6 +90,7 @@ const Header = ({
           <nav style={{ display: "flex", gap: "2vw" }}>
             {navLinks.map((item, i) => (
               <button
+                {...press}
                 onClick={item.href}
                 key={i}
                 style={{
@@ -89,6 +113,7 @@ const Header = ({
         {/* Бургер-иконка — мобилка */}
         {isMobile && (
           <div
+            ref={burgerRef}
             className={`burger ${menuOpen ? "open" : ""}`}
             onClick={changeStateBurger}
           >
@@ -100,44 +125,56 @@ const Header = ({
       </div>
 
       {/* Мобильное выпадающее меню */}
-      {isMobile && menuOpen && (
-        <div
-          ref={menuRef}
-          style={{
-            position: "absolute",
-            top: "70px",
-            right: "5.6vw",
-            backgroundColor: "#1c1c1c",
-            borderRadius: "12px",
-            padding: "16px 24px",
-            boxShadow: "0 8px 16px rgba(0,0,0,0.4)",
-            zIndex: 1001,
-          }}
-        >
-          {navLinks.map((item, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                item.href(), setMenuOpen(false);
-                navigator.vibrate?.(30);
-              }}
-              style={{
-                all: "unset",
-                cursor: "pointer",
-                display: "block",
-                marginBottom: "12px",
-                color: "#fff",
-                textDecoration: "none",
-                fontWeight: "600",
-                fontSize: "16px",
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobile && menuOpen && (
+          <motion.div
+            ref={menuRef}
+            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+            transition={{ duration: 0.05, ease: "easeOut" }}
+            style={{
+              position: "absolute",
+              top: "70px",
+              right: "5vw",
+              left: "5vw",
+              backgroundColor: "#04141D",
+              borderRadius: "12px",
+              padding: "16px 24px",
+              boxShadow: "0 8px 16px rgba(0,0,0,0.4)",
+              zIndex: 1001,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {navLinks.map((item, i) => (
+              <button
+                {...press}
+                key={i}
+                onClick={() => {
+                  item.href(), setMenuOpen(false);
+                  navigator.vibrate?.(30);
+                }}
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  display: "block",
+                  marginBottom: "12px",
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  fontSize: "22px",
+                  WebkitTapHighlightColor: "transparent",
+                  margin: "10px",
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

@@ -6,6 +6,12 @@ const Map = () => {
 
   return (
     <section
+      onClick={() => {
+        window.open(
+          "https://yandex.ru/maps/?pt=37.844056,55.921869&z=17&l=map",
+          "_blank"
+        );
+      }}
       style={{
         backgroundImage: `url(${map})`,
         backgroundSize: "cover",

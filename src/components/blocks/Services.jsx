@@ -44,6 +44,7 @@ const Services = ({
         }}
       >
         <img
+          loading="lazy"
           src="/images/homePage/services1.webp"
           style={{
             height: isMobile ? "auto" : "100%",
@@ -137,6 +138,7 @@ const Services = ({
           </div>
         )}
         <img
+          loading="lazy"
           src="/images/homePage/services2.webp"
           style={{
             height: isMobile ? "auto" : "100%",
@@ -169,6 +171,7 @@ const Services = ({
         }}
       >
         <img
+          loading="lazy"
           src="/images/homePage/services3.webp"
           style={{
             height: isMobile ? "auto" : "100%",

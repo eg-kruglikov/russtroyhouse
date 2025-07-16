@@ -64,6 +64,7 @@ const Home = () => {
         width: "100vw",
 
         margin: "0 auto",
+        userSelect: "none",
       }}
     >
       {/* изображения "ремонт начинается здась" */}
@@ -136,6 +137,7 @@ const Home = () => {
           <img
             src="/images/background.jpg"
             alt="Интерьер"
+            loading="lazy"
             style={{
               width: "auto",
 
@@ -146,6 +148,7 @@ const Home = () => {
           />
           <img
             src={hero}
+            loading="lazy"
             alt="РЕМОНТ НАЧИНАЕТСЯ ЗДЕСЬ"
             style={{
               width: isMobile ? "105%" : "113%",
@@ -224,6 +227,7 @@ const Home = () => {
           }}
         >
           <img
+            loading="lazy"
             src="/images/homePage/about.webp"
             style={{
               height: isMobile ? "auto" : "69%",
@@ -270,7 +274,7 @@ const Home = () => {
               для нас ремонт — это не просто <br />
               стены и обои, а комфорт <br />и надёжность для жизни.
             </p>
-            <button
+            {/* <button
               style={{
                 padding: "4px 10px",
                 backgroundColor: "transparent",
@@ -283,7 +287,7 @@ const Home = () => {
               }}
             >
               подробнее
-            </button>
+            </button> */}
           </div>
         </section>
         {/* Наши услуги */}
@@ -302,6 +306,8 @@ const Home = () => {
 
             margin: "0 auto",
             overflow: "visible",
+            marginLeft: isMobile ? "0%" : "5%",
+            marginRight: isMobile ? "0%" : "5%",
             height: isMobile ? "auto" : "200vh",
           }}
         >
@@ -395,7 +401,7 @@ const Home = () => {
             }}
           />
         </div>
-        // <Footer />
+        <Footer />
       </div>
     </div>
   );

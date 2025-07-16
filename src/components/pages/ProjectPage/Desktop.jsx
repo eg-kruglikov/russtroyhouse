@@ -6,8 +6,7 @@ const ProjectPageDesktop = () => {
   const [data, setData] = useState(null);
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
   const [widthSecondBlock, setWidthSecondBlock] = useState(0);
-
-  console.log(widthSecondBlock);
+  const [hasImage11, setHasImage11] = useState(false);
 
   const [blockHeights, setBlockHeights] = useState({
     block1: 0,
@@ -58,6 +57,12 @@ const ProjectPageDesktop = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const img = new Image();
+    img.src = `/images/photolibrary/project${id}/11.jpg`;
+    img.onload = () => setHasImage11(true);
+    img.onerror = () => setHasImage11(false);
+  }, [id]);
   const updateBlockHeight = (blockName, height) => {
     setBlockHeights((prev) => ({
       ...prev,
@@ -120,6 +125,11 @@ const ProjectPageDesktop = () => {
       }}
     >
       <div
+        onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+        onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         style={{
           position: "fixed",
           top: "2%",
@@ -131,10 +141,12 @@ const ProjectPageDesktop = () => {
           fontSize: "26px",
           cursor: "pointer",
           zIndex: 1000,
+          fontFamily: "sans-serif",
+          WebkitTapHighlightColor: "transparent",
         }}
         onClick={() => navigate("/", { state: { scrollTo: "portfolio" } })}
       >
-        Назад
+        НА ГЛАВНУЮ
       </div>
       {/* <QuestionModal
         isOpen={questioModalOpen}
@@ -211,6 +223,7 @@ const ProjectPageDesktop = () => {
           </div>
 
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/1.jpg`}
             alt="проект"
             style={{
@@ -276,6 +289,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/2.jpg`}
               alt="Интерьер"
               style={{
@@ -313,6 +327,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/3.jpg`}
               alt="Деталь 1"
               style={{
@@ -333,6 +348,7 @@ const ProjectPageDesktop = () => {
               }}
             >
               <img
+                loading="lazy"
                 src={`/images/photolibrary/project${id}/4.jpg`}
                 alt="Интерьер"
                 style={{
@@ -356,7 +372,7 @@ const ProjectPageDesktop = () => {
                 fontSize: "16px",
                 lineHeight: "25px",
                 width: "180px",
-                marginLeft: "10vw",
+                marginLeft: "0vw",
               }}
             >
               {data?.text2}
@@ -417,6 +433,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/5.jpg`}
               alt="Интерьер"
               style={{
@@ -455,6 +472,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/6.jpg`}
               alt="Деталь 1"
               style={{
@@ -476,6 +494,7 @@ const ProjectPageDesktop = () => {
               }}
             >
               <img
+                loading="lazy"
                 src={`/images/photolibrary/project${id}/7.jpg`}
                 alt="Интерьер"
                 style={{
@@ -526,6 +545,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/8.jpg`}
               alt="Интерьер"
               style={{
@@ -591,6 +611,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/9.jpg`}
               alt="Интерьер"
               style={{
@@ -656,6 +677,7 @@ const ProjectPageDesktop = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/10.jpg`}
               alt="Интерьер"
               style={{
@@ -720,14 +742,15 @@ const ProjectPageDesktop = () => {
               position: "relative",
               color: "white",
               fontFamily: "sans-serif",
+              display: hasImage11 ? "flex" : "none",
 
-              display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/11.jpg`}
               alt="Деталь 1"
               style={{
@@ -743,7 +766,7 @@ const ProjectPageDesktop = () => {
           </div>
           <div
             style={{
-              display: "flex",
+              display: hasImage11 ? "flex" : "none",
               flex: 1,
               alignItems: "center",
               justifyContent: "center",

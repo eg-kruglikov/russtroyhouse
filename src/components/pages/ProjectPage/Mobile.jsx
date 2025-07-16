@@ -17,6 +17,7 @@ const ProjectPage = () => {
   }, [id]);
 
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
+  const [hasImage11, setHasImage11] = useState(false);
 
   const navigate = useNavigate();
 
@@ -47,6 +48,13 @@ const ProjectPage = () => {
     block5: 0,
   });
 
+  useEffect(() => {
+    const img = new Image();
+    img.src = `/images/photolibrary/project${id}/11.jpg`;
+    img.onload = () => setHasImage11(true);
+    img.onerror = () => setHasImage11(false);
+  }, [id]);
+
   const refs = {
     block1: useRef(null),
     block2: useRef(null),
@@ -61,8 +69,6 @@ const ProjectPage = () => {
       [blockName]: height,
     }));
   };
-
-  console.log(blockHeights, refs.block5);
 
   useEffect(() => {
     const observers = {};
@@ -96,22 +102,28 @@ const ProjectPage = () => {
       }}
     >
       <div
+        onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+        onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         style={{
           position: "fixed",
-          top: "2%",
-          left: "4%",
-
+          top: "1%",
+          left: "1%",
+          fontFamily: "sans-serif",
           color: "#fff",
           padding: "10px 16px",
           borderRadius: "5px",
           fontWeight: "bold",
-          fontSize: "26px",
+          fontSize: "20px",
           cursor: "pointer",
           zIndex: 1000,
+          WebkitTapHighlightColor: "transparent",
         }}
         onClick={() => navigate("/", { state: { scrollTo: "portfolio" } })}
       >
-        Назад
+        НА ГЛАВНУЮ
       </div>
       {/* <QuestionModal
         isOpen={questioModalOpen}
@@ -176,6 +188,7 @@ const ProjectPage = () => {
         </div>
 
         <img
+          loading="lazy"
           src={`/images/photolibrary/project${id}/1.jpg`}
           alt="проект"
           style={{
@@ -240,6 +253,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/2.jpg`}
             alt="Интерьер"
             style={{
@@ -266,6 +280,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/3.jpg`}
             alt="Деталь 1"
             style={{
@@ -287,6 +302,7 @@ const ProjectPage = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/4.jpg`}
               alt="Интерьер"
               style={{
@@ -308,6 +324,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/5.jpg`}
             alt="Интерьер"
             style={{
@@ -342,7 +359,7 @@ const ProjectPage = () => {
               position: "absolute",
 
               height: "auto",
-              top: "9%",
+              top: "17px",
               left: "15%",
               right: "-180%",
             }}
@@ -378,6 +395,7 @@ const ProjectPage = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/6.jpg`}
               alt="Интерьер"
               style={{
@@ -402,6 +420,7 @@ const ProjectPage = () => {
             }}
           >
             <img
+              loading="lazy"
               src={`/images/photolibrary/project${id}/7.jpg`}
               alt="Интерьер"
               style={{
@@ -426,6 +445,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/8.jpg`}
             alt="Интерьер"
             style={{
@@ -460,7 +480,7 @@ const ProjectPage = () => {
               position: "absolute",
 
               height: "auto",
-              top: "7%",
+              top: "17px",
               left: "15%",
               right: "-180%",
             }}
@@ -481,6 +501,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/9.jpg`}
             alt="Интерьер"
             style={{
@@ -504,6 +525,7 @@ const ProjectPage = () => {
           }}
         >
           <img
+            loading="lazy"
             src={`/images/photolibrary/project${id}/10.jpg`}
             alt="Интерьер"
             style={{
@@ -514,67 +536,74 @@ const ProjectPage = () => {
           />
         </div>
 
-        <div
-          style={{
-            width: "100%",
-
-            height: "auto",
-            objectFit: "contain",
-            aspectRatio: "1 / 1",
-            display: "flex",
-            alignItems: "flex-end",
-            position: "relative",
-          }}
-        >
-          <img
-            src={`/images/photolibrary/project${id}/11.jpg`}
-            alt="Интерьер"
+        {
+          <div
             style={{
-              width: "96%",
+              width: "100%",
 
-              height: "96%",
-              padding: "2%",
-            }}
-          />
-        </div>
-        <div
-          style={{
-            width: "30%",
-            height: `calc(${blockHeights.block5}px + 2%)`,
-            marginTop: "2%",
-            marginBottom: "2%",
-            backgroundColor: "#274251",
-            borderRadius: "7px",
-            alignItems: "center",
-            position: "relative",
-            marginLeft: "5%",
-            display: "block",
-          }}
-        >
-          <p
-            ref={refs.block5}
-            style={{
-              marginTop: "0%",
-              marginBottom: "0%",
-              fontSize: "18px",
-              fontWeight: "500",
-              lineHeight: "20px",
-              position: "absolute",
               height: "auto",
-              top: "9%",
-              left: "15%",
-              right: "-180%",
-              display: "block", // ← показываем только на мобиле
+              objectFit: "contain",
+              aspectRatio: "1 / 1",
+              display: hasImage11 ? "flex" : "none",
+
+              alignItems: "flex-end",
+              position: "relative",
             }}
           >
-            {data?.text8}
-          </p>
-        </div>
+            <img
+              loading="lazy"
+              src={`/images/photolibrary/project${id}/11.jpg`}
+              alt="Интерьер"
+              style={{
+                width: "96%",
+
+                height: "96%",
+                padding: "2%",
+              }}
+            />
+          </div>
+        }
+        {
+          <div
+            style={{
+              width: "30%",
+              height: `calc(${blockHeights.block5}px + 2%)`,
+              marginTop: "2%",
+              marginBottom: "2%",
+              backgroundColor: "#274251",
+              borderRadius: "7px",
+              alignItems: "center",
+              position: "relative",
+              marginLeft: "5%",
+              display: hasImage11 ? "block" : "none",
+            }}
+          >
+            <p
+              ref={refs.block5}
+              style={{
+                marginTop: "0%",
+                marginBottom: "0%",
+                fontSize: "18px",
+                fontWeight: "500",
+                lineHeight: "20px",
+                position: "absolute",
+                height: "auto",
+                top: "17px",
+
+                left: "15%",
+                right: "-180%",
+                display: "block",
+              }}
+            >
+              {data?.text8}
+            </p>
+          </div>
+        }
 
         <div
           style={{
             width: "100%",
-            height: "20vh",
+            height: "5vh",
           }}
         ></div>
       </div>
