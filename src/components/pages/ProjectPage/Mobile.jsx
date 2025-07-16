@@ -543,7 +543,7 @@ const ProjectPage = () => {
 
               height: "auto",
               objectFit: "contain",
-              aspectRatio: "1 / 1",
+
               display: hasImage11 ? "flex" : "none",
 
               alignItems: "flex-end",
@@ -557,7 +557,6 @@ const ProjectPage = () => {
               style={{
                 width: "96%",
 
-                height: "96%",
                 padding: "2%",
               }}
             />

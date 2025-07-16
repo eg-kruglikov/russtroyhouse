@@ -297,11 +297,33 @@ const Home = () => {
           setQuestioModalOpen={setQuestioModalOpen}
           phoneWidgetIsOpen={phoneWidgetIsOpen}
         />
+        <div
+          style={{
+            scrollMarginTop: "54px",
+            textAlign: "center",
+
+            margin: "0 auto",
+
+            height: isMobile ? "20vh" : "35vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <p
+            style={{
+              fontSize: isMobile ? "10vw" : "90px",
+              marginTop: isMobile ? "10vh" : "20vh",
+            }}
+          >
+            Дизайн-проекты
+          </p>
+        </div>
         <section
           id="portfolio"
           ref={portfolioRef}
           style={{
-            scrollMarginTop: "54px",
+            // scrollMarginTop: "54px",
             textAlign: "center",
 
             margin: "0 auto",

@@ -255,7 +255,7 @@ const Services = ({
           onClick={() => setQuestioModalOpen(true)}
           disabled={phoneWidgetIsOpen}
         >
-          ЗАКАЗАТЬ ЗВОНОК
+          УЗНАТЬ СТОИМОСТЬ
         </button>
       </div>
     </section>

@@ -136,8 +136,8 @@ const Header = ({
             style={{
               position: "absolute",
               top: "70px",
-              right: "5vw",
-              left: "5vw",
+              right: "20vw",
+              left: "20vw",
               backgroundColor: "#04141D",
               borderRadius: "12px",
               padding: "16px 24px",
@@ -164,9 +164,10 @@ const Header = ({
                   color: "#fff",
                   textDecoration: "none",
                   fontWeight: "600",
-                  fontSize: "22px",
+                  fontSize: "20px",
                   WebkitTapHighlightColor: "transparent",
                   margin: "10px",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.name}
