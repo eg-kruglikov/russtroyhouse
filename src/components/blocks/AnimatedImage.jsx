@@ -35,7 +35,7 @@ const AnimatedImage = ({ src, alt, projectId, isMobile }) => {
         src={src}
         alt={alt}
         style={{
-          aspectRatio: isMobile ? "4 / 3" : "auto",
+          aspectRatio: "4 / 3",
           width: "100%",
           height: "100%",
           objectFit: "cover",
