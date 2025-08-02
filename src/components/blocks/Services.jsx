@@ -5,6 +5,7 @@ const Services = ({
   servicesRef,
   setQuestioModalOpen,
   phoneWidgetIsOpen,
+  widthFirstBlock,
 }) => {
   return (
     <section
@@ -13,250 +14,418 @@ const Services = ({
         textAlign: "center",
         scrollMarginTop: "60px",
         height: isMobile ? "auto" : "130vh",
-        marginLeft: "5.5vw",
-        marginRight: "5.5vw",
+
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: isMobile ? "100vw" : "100vw",
       }}
     >
-      <h2
-        style={{
-          fontSize: isMobile ? "34px" : "42px",
-          color: "#f2cb05",
-          fontWeight: 700,
-          marginBottom: isMobile ? "15px" : "0px",
-          whiteSpace: "nowrap",
-          marginTop: "0px",
-          height: "10%",
-        }}
-      >
-        НАШИ УСЛУГИ
-      </h2>
       <div
         style={{
-          height: isMobile ? "auto" : "29%",
-          width: "64vw",
           display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "center",
-          marginRight: isMobile ? "0%" : "20vw",
+          flexDirection: "column",
+          alignItems: "center",
+          width: isMobile ? "80%" : widthFirstBlock,
+          height: isMobile ? "auto" : "100%",
         }}
       >
-        <img
-          loading="lazy"
-          src="/images/homePage/services1.webp"
+        <h2
           style={{
-            height: isMobile ? "auto" : "100%",
-            width: isMobile ? "100%" : "auto",
-            alignSelf: "center",
-          }}
-          alt="о нас"
-        />
-        <div
-          style={{
-            height: "100%",
-            width: "330px",
-            alignSelf: "center",
-            display: "flex",
-            flexDirection: "column",
-            textAlign: isMobile ? "center" : "start",
-            marginLeft: isMobile ? "0px" : "5vw",
+            fontSize: isMobile ? "12vw" : "42px",
+            color: "#f2cb05",
+            fontWeight: 700,
+            marginBottom: isMobile ? "15px" : "0px",
+            whiteSpace: "nowrap",
+            marginTop: "0px",
+            height: "10%",
           }}
         >
-          <p
-            style={{
-              fontSize: isMobile ? "20px" : "28px",
-              marginBottom: isMobile ? "18px" : "0%",
-              marginTop: isMobile ? "4px" : "20px",
-            }}
-          >
-            косметический ремонт
-          </p>
-          {!isMobile && (
-            <p
-              style={{
-                fontSize: "16px",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 300,
-                lineHeight: "normal",
-                letterSpacing: "0.09em",
-              }}
-            >
-              Лёгкое обновление - покраска, обои, замена покрытий, освежение
-              интерьера.
-            </p>
-          )}
-        </div>
-      </div>
-      <div
-        style={{
-          height: isMobile ? "auto" : "29%",
-          width: "64vw",
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "center",
-          marginLeft: isMobile ? "0%" : "20vw",
-        }}
-      >
-        {!isMobile && (
+          НАШИ УСЛУГИ
+        </h2>
+
+        {/* косметический ремонт */}
+        <div
+          style={{
+            height: isMobile ? "auto" : "29%",
+            width: "100%",
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "center",
+          }}
+        >
           <div
             style={{
-              height: "100%",
-              width: "280px",
-              alignSelf: "center",
+              height: isMobile ? "auto" : "100%",
+              width: "100%",
               display: "flex",
-              flexDirection: "column",
-              textAlign: "end",
-              marginRight: "10%",
-              justifyContent: "center",
+              flexDirection: isMobile ? "column" : "row",
+
+              alignItems: "flex-start",
             }}
           >
-            <>
+            <div
+              style={{
+                position: "relative",
+                width: isMobile ? "100%" : "auto",
+                height: isMobile ? "auto" : "100%",
+              }}
+            >
+              <img
+                loading="lazy"
+                src="/images/homePage/services1.webp"
+                style={{
+                  height: isMobile ? "auto" : "100%",
+                  width: isMobile ? "100%" : "auto",
+                  alignSelf: "center",
+                  display: "block",
+                }}
+                alt="о нас"
+              />
+              <div
+                style={{
+                  width: "100%",
+                  height: "20%", // например, сделать желтую плашку по высоте
+                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  bottom: 0,
+                  left: 0,
+                  position: "absolute",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    marginLeft: "20px",
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  Цена от
+                </div>
+                <div style={{ color: "yellow", fontSize: "20px" }}>
+                  {" "}
+                  &nbsp;3400
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  &nbsp;руб/м²
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                height: "100%",
+                width: "330px",
+                alignSelf: "center",
+                display: "flex",
+                flexDirection: "column",
+                textAlign: isMobile ? "center" : "start",
+                marginLeft: isMobile ? "0px" : "5%",
+                justifyContent: "center",
+              }}
+            >
               <p
                 style={{
-                  fontSize: "26px",
-                  marginBottom: "0%",
-                  fontWeight: 700,
+                  fontSize: isMobile ? "20px" : "28px",
+                  marginBottom: isMobile ? "18px" : "0%",
+                  marginTop: isMobile ? "4px" : "20px",
+                }}
+              >
+                косметический ремонт
+              </p>
+              {!isMobile && (
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 300,
+                    lineHeight: "normal",
+                    letterSpacing: "0.09em",
+                  }}
+                >
+                  Лёгкое обновление - покраска, обои, замена покрытий, освежение
+                  интерьера.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* капитальный ремонт */}
+        <div
+          style={{
+            height: isMobile ? "auto" : "29%",
+            width: "100%",
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              height: isMobile ? "auto" : "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: isMobile ? "column-reverse" : "row",
+
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: "330px",
+                alignSelf: "center",
+                display: "flex",
+                flexDirection: "column",
+                textAlign: isMobile ? "center" : "end",
+                marginRight: isMobile ? "0px" : "5%",
+                justifyContent: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: isMobile ? "20px" : "28px",
+                  marginBottom: isMobile ? "18px" : "0%",
+                  marginTop: isMobile ? "4px" : "20px",
                 }}
               >
                 капитальный ремонт
               </p>
-              <p
+              {!isMobile && (
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 300,
+                    lineHeight: "normal",
+                    letterSpacing: "0.09em",
+                  }}
+                >
+                  Замена коммуникаций, выравнивание стен, перепланировка,
+                  демонтаж, полная замена электрики.
+                </p>
+              )}
+            </div>
+            <div
+              style={{
+                position: "relative",
+                width: isMobile ? "100%" : "auto",
+                height: isMobile ? "auto" : "100%",
+              }}
+            >
+              <img
+                loading="lazy"
+                src="/images/homePage/services2.webp"
                 style={{
-                  fontSize: "16px",
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 300,
-                  lineHeight: "normal",
-                  letterSpacing: "0.09em",
+                  height: isMobile ? "auto" : "100%",
+                  width: isMobile ? "100%" : "auto",
+                  alignSelf: "center",
+                  display: "block",
+                }}
+                alt="о нас"
+              />
+              <div
+                style={{
+                  width: "100%",
+                  height: "20%",
+                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  bottom: 0,
+                  left: 0,
+                  position: "absolute",
+                  display: "flex",
+                  alignItems: "center",
                 }}
               >
-                Замена коммуникаций, выравнивание стен, перепланировка,
-                демонтаж, полная замена электрики.
-              </p>
-            </>
-          </div>
-        )}
-        <img
-          loading="lazy"
-          src="/images/homePage/services2.webp"
-          style={{
-            height: isMobile ? "auto" : "100%",
-            width: isMobile ? "100%" : "auto",
-            alignSelf: "center",
-          }}
-          alt="о нас"
-        />
+                <div
+                  style={{
+                    marginLeft: "20px",
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  Цена от
+                </div>
+                <div style={{ color: "yellow", fontSize: "20px" }}>
+                  {" "}
+                  &nbsp;11600
+                </div>
 
-        {isMobile && (
-          <p
-            style={{
-              fontSize: isMobile ? "20px" : "28px",
-              marginBottom: isMobile ? "18px" : "0%",
-              marginTop: isMobile ? "4px" : "20px",
-            }}
-          >
-            капитальный ремонт
-          </p>
-        )}
-      </div>
-      <div
-        style={{
-          height: isMobile ? "auto" : "29%",
-          width: "64vw",
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "center",
-          marginRight: isMobile ? "0%" : "20vw",
-        }}
-      >
-        <img
-          loading="lazy"
-          src="/images/homePage/services3.webp"
-          style={{
-            height: isMobile ? "auto" : "100%",
-            width: isMobile ? "100%" : "auto",
-            alignSelf: "center",
-          }}
-          alt="о нас"
-        />
+                <div
+                  style={{
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  &nbsp;руб/м²
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* дизайнерский ремонт */}
         <div
           style={{
-            height: "100%",
-            width: "330px",
-            alignSelf: "center",
+            height: isMobile ? "auto" : "29%",
+            width: "100%",
             display: "flex",
-            flexDirection: "column",
-            textAlign: isMobile ? "center" : "start",
-            marginLeft: isMobile ? "0px" : "5vw",
+            flexDirection: isMobile ? "column" : "row",
             justifyContent: "center",
           }}
         >
-          <p
+          <div
             style={{
-              fontSize: isMobile ? "20px" : "28px",
-              marginBottom: isMobile ? "18px" : "0%",
-              marginTop: isMobile ? "4px" : "20px",
+              height: isMobile ? "auto" : "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+
+              alignItems: "flex-start",
             }}
           >
-            дизайнерский ремонт
-          </p>
-          {!isMobile && (
-            <p
+            <div
               style={{
-                fontSize: "16px",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 300,
-                lineHeight: "normal",
-                letterSpacing: "0.09em",
+                position: "relative",
+                width: isMobile ? "100%" : "auto",
+                height: isMobile ? "auto" : "100%",
               }}
             >
-              Уникальные интерьеры под ключ. Визуальные концепции и премиальные
-              материалы. Зонирование кухни - гостинной.
-            </p>
-          )}
+              <img
+                loading="lazy"
+                src="/images/homePage/services3.webp"
+                style={{
+                  height: isMobile ? "auto" : "100%",
+                  width: isMobile ? "100%" : "auto",
+                  alignSelf: "center",
+                  display: "block",
+                }}
+                alt="о нас"
+              />
+              <div
+                style={{
+                  width: "100%",
+                  height: "20%",
+                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  bottom: 0,
+                  left: 0,
+                  position: "absolute",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    marginLeft: "20px",
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  Цена от
+                </div>
+                <div style={{ color: "yellow", fontSize: "20px" }}>
+                  {" "}
+                  &nbsp;17 200
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "20px",
+                    color: "#ffff",
+                  }}
+                >
+                  &nbsp;руб/м²
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                height: "100%",
+                width: "330px",
+                alignSelf: "center",
+                display: "flex",
+                flexDirection: "column",
+                textAlign: isMobile ? "center" : "start",
+                marginLeft: isMobile ? "0px" : "5%",
+                justifyContent: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: isMobile ? "20px" : "28px",
+                  marginBottom: isMobile ? "18px" : "0%",
+                  marginTop: isMobile ? "4px" : "20px",
+                }}
+              >
+                дизайнерский ремонт
+              </p>
+              {!isMobile && (
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 300,
+                    lineHeight: "normal",
+                    letterSpacing: "0.09em",
+                  }}
+                >
+                  Уникальные интерьеры под ключ. Визуальные концепции и
+                  премиальные материалы. Зонирование кухни - гостинной.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "20%",
-        }}
-      >
-        <button
-          type="button"
-          onTouchStart={(e) =>
-            (e.currentTarget.style.transform = "scale(0.97)")
-          }
-          onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        <div
           style={{
-            backgroundColor: "#f2cb05",
-            color: isMobile ? "#000" : "#ffff",
-            padding: isMobile ? "17px 24px" : "25px 48px",
-            fontWeight: "bold",
-            border: "none",
-            borderRadius: "45px",
-            cursor: "pointer",
-            fontSize: isMobile ? "14px" : "24px",
-            // marginTop: isMobile ? "18px" : "40px",
-            marginBottom: isMobile ? "15px" : "0px",
-
-            alignSelf: "center",
-            outline: "none",
-            WebkitTapHighlightColor: "transparent",
-            opacity: phoneWidgetIsOpen ? "0.5" : "1",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "20%",
           }}
-          onClick={() => setQuestioModalOpen(true)}
-          disabled={phoneWidgetIsOpen}
         >
-          УЗНАТЬ СТОИМОСТЬ
-        </button>
+          <button
+            type="button"
+            onTouchStart={(e) =>
+              (e.currentTarget.style.transform = "scale(0.97)")
+            }
+            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseDown={(e) =>
+              (e.currentTarget.style.transform = "scale(0.97)")
+            }
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            style={{
+              backgroundColor: "#f2cb05",
+              color: isMobile ? "#000" : "#ffff",
+              padding: isMobile ? "17px 24px" : "25px 48px",
+              fontWeight: "bold",
+              border: "none",
+              borderRadius: "45px",
+              cursor: "pointer",
+              fontSize: isMobile ? "14px" : "24px",
+              // marginTop: isMobile ? "18px" : "40px",
+              marginBottom: isMobile ? "15px" : "0px",
+
+              alignSelf: "center",
+              outline: "none",
+              WebkitTapHighlightColor: "transparent",
+              opacity: phoneWidgetIsOpen ? "0.5" : "1",
+            }}
+            onClick={() => setQuestioModalOpen(true)}
+            disabled={phoneWidgetIsOpen}
+          >
+            УЗНАТЬ СТОИМОСТЬ
+          </button>
+        </div>
       </div>
     </section>
   );
