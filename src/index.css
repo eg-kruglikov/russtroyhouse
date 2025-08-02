@@ -15,3 +15,34 @@
   opacity: 0;
   animation: fadeInUp 0.1s ease-out 3s forwards;
 }
+
+body {
+  margin: 0;
+
+  background-color: #04141d;
+  overflow-x: visible !important;
+  position: relative;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  /* scroll-behavior: smooth; */
+}
+
+@keyframes dash-move-left {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: -40px;
+  }
+}
+@keyframes dash-move-right {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 40px;
+  }
+}
