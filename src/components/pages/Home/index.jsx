@@ -17,6 +17,16 @@ const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [phoneWidgetIsOpen, setPhoneWidgetIsOpen] = useState(false);
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
+  const [widthFirstBlock, setWidthFirstBlock] = useState(0);
+
+  const heroRef = useRef(null);
+  const aboutRef = useRef(null);
+  const servicesRef = useRef(null);
+  const portfolioRef = useRef(null);
+  const contactsRef = useRef(null);
+  const firstBlock = useRef(null);
+
+  const location = useLocation();
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 720);
@@ -24,14 +34,6 @@ const Home = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const heroRef = useRef(null);
-  const aboutRef = useRef(null);
-  const servicesRef = useRef(null);
-  const portfolioRef = useRef(null);
-  const contactsRef = useRef(null);
-
-  const location = useLocation();
 
   useEffect(() => {
     if (location.state?.scrollTo === "portfolio") {
@@ -41,6 +43,37 @@ const Home = () => {
     // сбросим state, чтобы не мешал при следующих переходах
     window.history.replaceState({}, document.title);
   }, [location]);
+
+  console.log(widthFirstBlock);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (firstBlock.current) {
+        setWidthFirstBlock(firstBlock.current.offsetWidth);
+      }
+    };
+
+    const observers = {};
+
+    // Наблюдение за шириной secondBlock
+    if (firstBlock.current) {
+      observers["secondBlock"] = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          setWidthFirstBlock(entry.contentRect.width);
+        }
+      });
+
+      observers["secondBlock"].observe(firstBlock.current);
+    }
+
+    // Слушаем ресайз окна
+    window.addEventListener("resize", updateWidth);
+    updateWidth(); // при первом рендере
+
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, []);
 
   const scrollToWithOffset = (ref) => {
     const yOffset = -65; // высота шапки
@@ -221,60 +254,69 @@ const Home = () => {
             justifyContent: "center",
             scrollMarginTop: "54px",
             height: isMobile ? "auto" : "71vh",
-
             position: "relative",
             padding: isMobile ? "20px" : "0px",
           }}
         >
-          <img
-            loading="lazy"
-            src="/images/homePage/about.webp"
-            style={{
-              height: isMobile ? "auto" : "69%",
-              width: isMobile ? "100%" : "auto",
-              borderRadius: "10px",
-            }}
-            alt="о нас"
-          />
           <div
+            ref={firstBlock}
             style={{
-              padding: "24px",
-              width: isMobile ? "100%" : "auto",
-
-              color: "#ffffff",
-              fontFamily: "sans-serif",
-              borderRadius: "8px",
-              marginRight: "2%",
-              // marginLeft: "1%",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
             }}
           >
-            <h2
+            <img
+              loading="lazy"
+              src="/images/homePage/about.webp"
               style={{
-                fontSize: isMobile ? "40px" : "70px",
-                fontWeight: "700",
-                margin: "0 0 16px 0",
-                color: "#FFD600",
-                marginBottom: "0px",
+                height: isMobile ? "auto" : "69%",
+                width: isMobile ? "100%" : "auto",
+                borderRadius: "10px",
+              }}
+              alt="о нас"
+            />
+            <div
+              style={{
+                padding: "24px",
+                width: isMobile ? "100%" : "auto",
+
+                color: "#ffffff",
+                fontFamily: "sans-serif",
+                borderRadius: "8px",
+                marginRight: "2%",
+                // marginLeft: "1%",
               }}
             >
-              КТО МЫ ?
-            </h2>
-            <p
-              style={{
-                fontSize: "20px",
-                fontWeight: "500",
-                lineHeight: "1.1",
-                marginBottom: "33px",
-                marginTop: "4px",
-              }}
-            >
-              мы строительная компания, <br />
-              работаем более 10 лет и успели <br />
-              реализовать сотни проектов! <br />
-              для нас ремонт — это не просто <br />
-              стены и обои, а комфорт <br />и надёжность для жизни.
-            </p>
-            {/* <button
+              <h2
+                style={{
+                  fontSize: isMobile ? "40px" : "70px",
+                  fontWeight: "700",
+                  margin: "0 0 16px 0",
+                  color: "#FFD600",
+                  marginBottom: "0px",
+                }}
+              >
+                КТО МЫ ?
+              </h2>
+              <p
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "500",
+                  lineHeight: "1.1",
+                  marginBottom: "33px",
+                  marginTop: "4px",
+                }}
+              >
+                мы строительная компания, <br />
+                работаем более 10 лет и успели <br />
+                реализовать сотни проектов! <br />
+                для нас ремонт — это не просто <br />
+                стены и обои, а комфорт <br />и надёжность для жизни.
+              </p>
+              {/* <button
               style={{
                 padding: "4px 10px",
                 backgroundColor: "transparent",
@@ -288,6 +330,7 @@ const Home = () => {
             >
               подробнее
             </button> */}
+            </div>
           </div>
         </section>
         {/* Наши услуги */}
@@ -296,6 +339,7 @@ const Home = () => {
           servicesRef={servicesRef}
           setQuestioModalOpen={setQuestioModalOpen}
           phoneWidgetIsOpen={phoneWidgetIsOpen}
+          widthFirstBlock={widthFirstBlock}
         />
         <div
           style={{
@@ -313,7 +357,7 @@ const Home = () => {
           <p
             style={{
               fontSize: isMobile ? "10vw" : "90px",
-              marginTop: isMobile ? "10vh" : "20vh",
+              marginTop: isMobile ? "10vh" : "10vh",
             }}
           >
             Дизайн-проекты

@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import more from "../../assets/more.png";
 
-const AnimatedImage = ({ src, alt, projectId, isMobile }) => {
+const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -40,9 +41,37 @@ const AnimatedImage = ({ src, alt, projectId, isMobile }) => {
           height: "100%",
           objectFit: "cover",
           pointerEvents: "none",
+          position: "relative",
         }}
       />
       <div
+        style={{
+          position: "absolute",
+
+          top: "15px", // Отступ сверху
+          left: "50%", // Центр по горизонтали
+          transform: "translateX(-50%)",
+          fontSize: isMobile ? "4.6vw" : "2.1vw",
+          whiteSpace: "nowrap",
+
+          fontWeight: "500",
+          textShadow: "2px 2px 6px rgba(0, 0, 0, 0.9)",
+        }}
+      >
+        {title}
+      </div>
+      <img
+        loading="lazy"
+        src={more}
+        style={{
+          position: "absolute",
+          bottom: "4%",
+          left: "0%",
+          height: "auto",
+          width: isMobile ? "35%" : "25%",
+        }}
+      />
+      {/* <div
         style={{
           display: isMobile ? "inline-block" : "none",
           position: "absolute",
@@ -57,7 +86,7 @@ const AnimatedImage = ({ src, alt, projectId, isMobile }) => {
         }}
       >
         узнать больше
-      </div>
+      </div> */}
     </div>
   );
 };
