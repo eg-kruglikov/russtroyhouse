@@ -6,8 +6,13 @@ import {
 } from "react-router-dom";
 import Home from "./components/pages/Home";
 import ProjectPage from "./components/pages/ProjectPage";
-import { useEffect, useRef } from "react";
 import ScrollToTop from "./components/ScrollToTop";
+
+import CapitalRepairPage from "./components/pages/Repair/CapitalRepairPage";
+import CosmeticRepairPage from "./components/pages/Repair/CosmeticRepairPage";
+import DesignerRepairPage from "./components/pages/Repair/DesignerRepairPage";
+
+import { useEffect } from "react";
 
 const RedirectHandler = () => {
   useEffect(() => {
@@ -28,6 +33,12 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/project/:id" element={<ProjectPage />} />
+
+        {/* Страницы ремонтов */}
+        <Route path="/repair/capital" element={<CapitalRepairPage />} />
+        <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
+        <Route path="/repair/designer" element={<DesignerRepairPage />} />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

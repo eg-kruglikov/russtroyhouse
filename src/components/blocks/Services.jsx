@@ -165,6 +165,7 @@ const Services = ({
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
             justifyContent: "center",
+            marginBottom: "20px",
           }}
         >
           <div
@@ -181,24 +182,28 @@ const Services = ({
             <div
               style={{
                 height: "100%",
-                width: "330px",
+                width: isMobile ? "100%" : "400px",
+                padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: isMobile ? "row" : "column",
                 textAlign: isMobile ? "center" : "end",
                 marginRight: isMobile ? "0px" : "5%",
-                justifyContent: "center",
+                justifyContent: isMobile ? "space-between" : "center",
+                alignItems: isMobile ? "center" : "flex-end",
               }}
             >
-              <p
+              <div
                 style={{
-                  fontSize: isMobile ? "20px" : "28px",
-                  marginBottom: isMobile ? "18px" : "0%",
-                  marginTop: isMobile ? "4px" : "20px",
+                  fontSize: isMobile ? "5vw" : "28px",
+                  marginBottom: isMobile ? "0" : "0%",
+                  marginTop: isMobile ? "0" : "20px",
                 }}
               >
-                капитальный ремонт
-              </p>
+                {" "}
+                Капитальный ремонт
+              </div>
+
               {!isMobile && (
                 <p
                   style={{
@@ -213,7 +218,25 @@ const Services = ({
                   демонтаж, полная замена электрики.
                 </p>
               )}
+              <button
+                style={{
+                  backgroundColor: "transparent",
+                  color: "white",
+                  border: "2px solid #FFD700", // жёлтая рамка
+                  borderRadius: "20px",
+                  padding: "4px 0px",
+                  fontSize: isMobile ? "3.5vw" : "20px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  width: isMobile ? "25vw" : "150px",
+                  height: "35px",
+                }}
+              >
+                подробнее
+              </button>
             </div>
+
             <div
               style={{
                 position: "relative",

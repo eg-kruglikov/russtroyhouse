@@ -6,6 +6,13 @@ const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
+    if (window.ym) {
+      // Сообщаем о просмотре новой страницы (виртуальный хит)
+      window.ym(101296472, "hit", `/project/${projectId}`);
+      // Дополнительно фиксируем, что визит не отказ
+      window.ym(101296472, "notBounce");
+    }
+
     setTimeout(() => {
       navigate(`/project/${projectId}`);
     }, 100);

@@ -113,6 +113,19 @@ const ProjectPageDesktop = () => {
     };
   }, []);
 
+  const handleClick = () => {
+    // Сообщаем Метрике о виртуальном переходе
+    if (window.ym) {
+      window.ym(101296472, "hit", "/?fromProject=1");
+      window.ym(101296472, "notBounce");
+    }
+
+    // Делаем реальный navigate
+    setTimeout(() => {
+      navigate("/", { state: { scrollTo: "portfolio" } });
+    }, 100);
+  };
+
   return (
     <div
       style={{
@@ -144,7 +157,7 @@ const ProjectPageDesktop = () => {
           fontFamily: "sans-serif",
           WebkitTapHighlightColor: "transparent",
         }}
-        onClick={() => navigate("/", { state: { scrollTo: "portfolio" } })}
+        onClick={handleClick}
       >
         НА ГЛАВНУЮ
       </div>
