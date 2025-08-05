@@ -19,13 +19,13 @@ const DesignerRepairPageDesktop = () => {
         }}
       >
         <img
-          src="/assets/designer_hero.jpg"
+          src="/images/repair/designer/hero.jpg"
           alt="Дизайнерский ремонт"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            filter: "brightness(0.7)",
+            filter: "brightness(0.8)",
           }}
         />
         <div

@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate, useNavigationType } from "react-router-dom";
 
 const Desktop = () => {
+  const action = useNavigationType();
+
+  useEffect(() => {
+    if (action === "POP") {
+      console.log("← Пользователь нажал Назад!");
+    }
+  }, [action]);
+  console.log("-->");
   return (
     <div
       style={{
@@ -13,7 +22,7 @@ const Desktop = () => {
       {/* Hero секция */}
       <div style={{ position: "relative", width: "100%", height: "500px" }}>
         <img
-          src="/assets/desktop_capital_hero.jpg"
+          src="/images/repair/capital/hero.jpg"
           alt="Капитальный ремонт"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />

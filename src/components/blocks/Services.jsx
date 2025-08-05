@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Services = ({
   isMobile,
@@ -7,6 +8,21 @@ const Services = ({
   phoneWidgetIsOpen,
   widthFirstBlock,
 }) => {
+  const navigate = useNavigate();
+  const handleClick = (url) => {
+    const page = `/repair/${url}`;
+    if (window.ym) {
+      // Сообщаем о просмотре новой страницы (виртуальный хит)
+      window.ym(101296472, "hit", page);
+      // Дополнительно фиксируем, что визит не отказ
+      window.ym(101296472, "notBounce");
+    }
+
+    setTimeout(() => {
+      navigate(page);
+    }, 100);
+  };
+
   return (
     <section
       ref={servicesRef}
@@ -122,24 +138,26 @@ const Services = ({
             <div
               style={{
                 height: "100%",
-                width: "330px",
+                width: isMobile ? "100%" : "400px",
+                padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: isMobile ? "row" : "column",
                 textAlign: isMobile ? "center" : "start",
                 marginLeft: isMobile ? "0px" : "5%",
-                justifyContent: "center",
+                justifyContent: isMobile ? "space-between" : "center",
+                alignItems: "flex-start",
               }}
             >
-              <p
+              <div
                 style={{
-                  fontSize: isMobile ? "20px" : "28px",
-                  marginBottom: isMobile ? "18px" : "0%",
-                  marginTop: isMobile ? "4px" : "20px",
+                  fontSize: isMobile ? "5vw" : "28px",
+                  marginBottom: isMobile ? "50px" : "0%",
+                  marginTop: isMobile ? "0" : "20px",
                 }}
               >
                 косметический ремонт
-              </p>
+              </div>
               {!isMobile && (
                 <p
                   style={{
@@ -154,6 +172,26 @@ const Services = ({
                   интерьера.
                 </p>
               )}
+              <button
+                onClick={() => {
+                  handleClick("cosmetic");
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                  color: "white",
+                  border: "2px solid #FFD700", // жёлтая рамка
+                  borderRadius: "20px",
+                  padding: "4px 0px",
+                  fontSize: isMobile ? "3.5vw" : "20px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  width: isMobile ? "25vw" : "150px",
+                  height: "35px",
+                }}
+              >
+                подробнее
+              </button>
             </div>
           </div>
         </div>
@@ -219,6 +257,9 @@ const Services = ({
                 </p>
               )}
               <button
+                onClick={() => {
+                  handleClick("capital");
+                }}
                 style={{
                   backgroundColor: "transparent",
                   color: "white",
@@ -371,24 +412,26 @@ const Services = ({
             <div
               style={{
                 height: "100%",
-                width: "330px",
+                width: isMobile ? "100%" : "400px",
+                padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: isMobile ? "row" : "column",
                 textAlign: isMobile ? "center" : "start",
                 marginLeft: isMobile ? "0px" : "5%",
-                justifyContent: "center",
+                justifyContent: isMobile ? "space-between" : "center",
+                alignItems: isMobile ? "center" : "flex-start",
               }}
             >
-              <p
+              <div
                 style={{
-                  fontSize: isMobile ? "20px" : "28px",
-                  marginBottom: isMobile ? "18px" : "0%",
-                  marginTop: isMobile ? "4px" : "20px",
+                  fontSize: isMobile ? "5vw" : "28px",
+                  marginBottom: isMobile ? "0" : "0%",
+                  marginTop: isMobile ? "0" : "20px",
                 }}
               >
                 дизайнерский ремонт
-              </p>
+              </div>
               {!isMobile && (
                 <p
                   style={{
@@ -403,6 +446,26 @@ const Services = ({
                   премиальные материалы. Зонирование кухни - гостинной.
                 </p>
               )}
+              <button
+                onClick={() => {
+                  handleClick("designer");
+                }}
+                style={{
+                  backgroundColor: "transparent",
+                  color: "white",
+                  border: "2px solid #FFD700", // жёлтая рамка
+                  borderRadius: "20px",
+                  padding: "4px 0px",
+                  fontSize: isMobile ? "3.5vw" : "20px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  width: isMobile ? "25vw" : "150px",
+                  height: "35px",
+                }}
+              >
+                подробнее
+              </button>
             </div>
           </div>
         </div>

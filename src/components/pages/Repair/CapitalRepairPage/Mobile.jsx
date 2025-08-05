@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Mobile = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleBack = () => {
+      console.log("⬅ Пользователь нажал Назад!", window.history.state);
+      // navigate("/", { replace: true });
+    };
+
+    window.addEventListener("popstate", handleBack);
+    return () => {
+      window.removeEventListener("popstate", handleBack);
+    };
+  }, [navigate]);
+  console.log("-->");
   return (
     <div
       style={{
@@ -13,7 +28,7 @@ const Mobile = () => {
       {/* Hero */}
       <div style={{ position: "relative", width: "100%", height: "240px" }}>
         <img
-          src="/assets/mobile_capital_hero.jpg"
+          src="/images/repair/capital/hero.jpg"
           alt="Капитальный ремонт"
           style={{
             width: "100%",

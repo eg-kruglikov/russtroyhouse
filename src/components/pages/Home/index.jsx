@@ -44,8 +44,6 @@ const Home = () => {
     window.history.replaceState({}, document.title);
   }, [location]);
 
-  console.log(widthFirstBlock);
-
   useEffect(() => {
     const updateWidth = () => {
       if (firstBlock.current) {
@@ -335,11 +333,13 @@ const Home = () => {
         </section>
         {/* Наши услуги */}
         <Services
+          // id="services"
           isMobile={isMobile}
           servicesRef={servicesRef}
           setQuestioModalOpen={setQuestioModalOpen}
           phoneWidgetIsOpen={phoneWidgetIsOpen}
           widthFirstBlock={widthFirstBlock}
+          scrollToServices={scrollToServices}
         />
         <div
           style={{

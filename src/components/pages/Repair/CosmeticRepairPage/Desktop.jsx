@@ -21,7 +21,7 @@ const Desktop = () => {
       >
         {/* ФОТО - добавь свою картинку */}
         <img
-          src="/assets/desktop_cosmetic_hero.jpg"
+          src="/images/repair/cosmetic/hero.jpg"
           alt="Косметический ремонт"
           style={{
             width: "100%",

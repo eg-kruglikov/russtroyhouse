@@ -102,6 +102,7 @@ const ProjectPage = () => {
       navigate("/", { state: { scrollTo: "portfolio" } });
     }, 100);
   };
+
   return (
     <div
       style={{

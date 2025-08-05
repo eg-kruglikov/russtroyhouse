@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Mobile = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleBack = () => {
+      console.log("⬅ Пользователь нажал Назад!");
+      // например, редирект на главную
+      // navigate("/", { replace: true });
+    };
+
+    window.addEventListener("popstate", handleBack);
+    return () => window.removeEventListener("popstate", handleBack);
+  }, [navigate]);
   return (
     <div
       style={{
@@ -14,7 +27,7 @@ const Mobile = () => {
       <div style={{ position: "relative" }}>
         {/* ФОТО - добавь свою картинку косметического ремонта */}
         <img
-          src="/assets/mobile_cosmetic_hero.jpg"
+          src="/images/repair/cosmetic/hero.jpg"
           alt="Косметический ремонт"
           style={{
             width: "100%",
