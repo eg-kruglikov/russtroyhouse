@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import hero from "../../../assets/hero.png";
+import hero from "../../assets/hero.png";
 
-import MobilePhoneWidget from "../../windows/MobilePhoneWidget";
-import DesktopPhoneWidget from "../../windows/DesktopPhoneWidget";
-import QuestionModal from "../../windows/FeedbackModal";
-import Header from "../../blocks/Header";
-import Footer from "../../blocks/Footer";
-import Map from "../../blocks/Map";
-import Services from "../../blocks/Services";
-import PhotoGrid from "../../blocks/PhotoGrid";
+import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
+import DesktopPhoneWidget from "../../components/windows/DesktopPhoneWidget";
+import QuestionModal from "../../components/windows/FeedbackModal";
+import Header from "../../components/blocks/Header";
+import Footer from "../../components/blocks/Footer";
+import Map from "../../components/blocks/Map";
+import Services from "../../components/blocks/Services";
+import PhotoGrid from "../../components/blocks/PhotoGrid";
 
 import { useLocation } from "react-router-dom";
+import WorkPlan from "../../components/blocks/WorkPlan";
+import HomePortfolioGrid from "../../components/blocks/HomePortfolioGrid";
+import { portfolioItems } from "../../data/portfolio";
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -194,7 +197,7 @@ const Home = () => {
                 : "translate(-50%, -65%)",
             }}
           />
-          <button
+          {/* <button
             onTouchStart={(e) =>
               (e.currentTarget.style.transform =
                 "translate(-50%, -52.6%) scale(0.9)")
@@ -240,7 +243,7 @@ const Home = () => {
             onClick={() => setQuestioModalOpen(true)}
           >
             ЗАКАЗАТЬ
-          </button>
+          </button> */}
         </section>
         {/* Кто мы */}
         <section
@@ -254,6 +257,8 @@ const Home = () => {
             height: isMobile ? "auto" : "71vh",
             position: "relative",
             padding: isMobile ? "20px" : "0px",
+            width: isMobile ? "calc(100vw - 40px)" : "100vw",
+            marginTop: "3vh",
           }}
         >
           <div
@@ -269,17 +274,19 @@ const Home = () => {
             <img
               loading="lazy"
               src="/images/homePage/about.webp"
+              alt="о нас"
               style={{
-                height: isMobile ? "auto" : "69%",
-                width: isMobile ? "100%" : "auto",
+                width: isMobile ? "100%" : "50%",
+                height: isMobile ? "200px" : "400px", // фиксированная высота
+                objectFit: "cover",
+                objectPosition: "center",
                 borderRadius: "10px",
               }}
-              alt="о нас"
             />
             <div
               style={{
                 padding: "24px",
-                width: isMobile ? "100%" : "auto",
+                width: isMobile ? "100%" : "34vw",
 
                 color: "#ffffff",
                 fontFamily: "sans-serif",
@@ -288,46 +295,54 @@ const Home = () => {
                 // marginLeft: "1%",
               }}
             >
-              <h2
+              <div
                 style={{
-                  fontSize: isMobile ? "40px" : "70px",
-                  fontWeight: "700",
-                  margin: "0 0 16px 0",
-                  color: "#FFD600",
-                  marginBottom: "0px",
+                  display: "flex",
+                  flexDirection: "row",
+                  marginBottom: isMobile ? "10px" : "36px",
                 }}
               >
-                КТО МЫ ?
-              </h2>
+                <h2
+                  style={{
+                    fontSize: isMobile ? "8vw" : "36px",
+                    fontWeight: "700",
+                    margin: "0 0 16px 0",
+                    color: "#FFD600",
+                    marginBottom: "0px",
+                  }}
+                >
+                  МЫ&nbsp;
+                </h2>
+                <h2
+                  style={{
+                    fontSize: isMobile ? "8vw" : "36px",
+                    fontWeight: "700",
+                    margin: "0 0 16px 0",
+                    color: "#ffff",
+                    marginBottom: "0px",
+                  }}
+                >
+                  - РуссУютСтрой!
+                </h2>
+              </div>
               <p
                 style={{
-                  fontSize: "20px",
+                  fontSize: isMobile ? "5vw" : "20px",
                   fontWeight: "500",
                   lineHeight: "1.1",
                   marginBottom: "33px",
                   marginTop: "4px",
+                  width: "80%",
                 }}
               >
-                мы строительная компания, <br />
-                работаем более 10 лет и успели <br />
-                реализовать сотни проектов! <br />
-                для нас ремонт — это не просто <br />
-                стены и обои, а комфорт <br />и надёжность для жизни.
+                <span style={{ color: "#f1c40f" }}>
+                  ВЕДУЩАЯ СТРОИТЕЛЬНАЯ КОМПАНИЯ
+                </span>{" "}
+                Москвы и Подмосковья. Более 10 лет делаем ремонт под ключ любой
+                сложности — от простых косметических до премиальных дизайнерских
+                решений. Для нас ремонт — это не просто стены и отделка, а уют,
+                комфорт и надёжность на годы вперёд.
               </p>
-              {/* <button
-              style={{
-                padding: "4px 10px",
-                backgroundColor: "transparent",
-                border: "2px solid #FFD600",
-                borderRadius: "22px",
-                color: "#ffff",
-                fontWeight: "600",
-                fontSize: "16px",
-                cursor: "pointer",
-              }}
-            >
-              подробнее
-            </button> */}
             </div>
           </div>
         </section>
@@ -341,6 +356,61 @@ const Home = () => {
           widthFirstBlock={widthFirstBlock}
           scrollToServices={scrollToServices}
         />
+        {/* портфолио  */}
+        {/* Портфолио (сетка 3×2) */}
+        <section
+          id="portfolio"
+          ref={portfolioRef}
+          style={{
+            scrollMarginTop: "54px",
+            marginTop: isMobile ? "6vh" : "10vh",
+          }}
+        >
+          {/* общий контейнер для заголовка и сетки с одинаковыми полями */}
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 1200,
+              margin: "0 auto",
+              padding: isMobile ? "0 16px" : "0 24px",
+              boxSizing: "border-box",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                marginBottom: isMobile ? 10 : 16,
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: isMobile ? "9vw" : 40,
+                  fontWeight: 800,
+                  margin: 0,
+                }}
+              >
+                Портфолио
+              </h2>
+              <div
+                style={{
+                  opacity: 0.8,
+                  fontSize: isMobile ? "4vw" : 16,
+                  marginTop: isMobile ? 6 : 8,
+                }}
+              >
+                Живые примеры наших работ
+              </div>
+            </div>
+
+            {/* сетка 3×2 / 2×3 / 1×6 */}
+            <HomePortfolioGrid
+              items={portfolioItems}
+              onTileClick={() => setQuestioModalOpen(true)}
+            />
+          </div>
+        </section>
+
+        {/* дизайн проекты */}
         <div
           style={{
             scrollMarginTop: "54px",
@@ -348,23 +418,23 @@ const Home = () => {
 
             margin: "0 auto",
 
-            height: isMobile ? "20vh" : "35vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            marginTop: isMobile ? "5vh" : "15vh",
           }}
         >
           <p
             style={{
-              fontSize: isMobile ? "10vw" : "90px",
-              marginTop: isMobile ? "10vh" : "10vh",
+              fontSize: isMobile ? "12vw" : "90px",
             }}
           >
             Дизайн-проекты
           </p>
         </div>
+
         <section
-          id="portfolio"
+          id="designProjects"
           ref={portfolioRef}
           style={{
             // scrollMarginTop: "54px",

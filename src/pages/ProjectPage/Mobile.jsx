@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import QuestionModal from "../../windows/FeedbackModal";
 
 const ProjectPage = () => {
   const [data, setData] = useState(null);

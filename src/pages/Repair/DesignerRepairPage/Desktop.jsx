@@ -74,6 +74,24 @@ const DesignerRepairPageDesktop = () => {
         </div>
       </div>
 
+      <div
+        style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          backgroundColor: "#0a1a26",
+        }}
+      >
+        <h2
+          style={{
+            color: "#fff",
+            fontSize: "32px",
+            marginBottom: "20px",
+          }}
+        >
+          У нас бесплатная смета с выездом замерщика!
+        </h2>
+      </div>
+
       {/* Описание */}
       <div
         style={{
@@ -205,42 +223,6 @@ const DesignerRepairPageDesktop = () => {
             />
           ))}
         </div>
-      </div>
-
-      {/* Призыв к действию */}
-      <div
-        style={{
-          textAlign: "center",
-          padding: "60px 20px",
-          backgroundColor: "#0a1a26",
-        }}
-      >
-        <h2
-          style={{
-            color: "#FFD700",
-            fontSize: "32px",
-            marginBottom: "20px",
-          }}
-        >
-          Бесплатный выезд замерщика и смета в подарок!
-        </h2>
-        <p style={{ fontSize: "18px", marginBottom: "30px" }}>
-          Закажите дизайнерский ремонт и получите детальный расчёт бесплатно
-        </p>
-        <button
-          style={{
-            backgroundColor: "#FFD700",
-            color: "#0a1a26",
-            border: "none",
-            borderRadius: "30px",
-            padding: "14px 40px",
-            fontWeight: "bold",
-            fontSize: "20px",
-            cursor: "pointer",
-          }}
-        >
-          Оставить заявку
-        </button>
       </div>
     </div>
   );

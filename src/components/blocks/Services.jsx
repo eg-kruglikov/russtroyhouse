@@ -29,7 +29,7 @@ const Services = ({
       style={{
         textAlign: "center",
         scrollMarginTop: "60px",
-        height: isMobile ? "auto" : "130vh",
+        height: "auto",
 
         display: "flex",
         flexDirection: "column",
@@ -43,10 +43,10 @@ const Services = ({
           flexDirection: "column",
           alignItems: "center",
           width: isMobile ? "80%" : widthFirstBlock,
-          height: isMobile ? "auto" : "100%",
+          height: "auto",
         }}
       >
-        <h2
+        <div
           style={{
             fontSize: isMobile ? "12vw" : "42px",
             color: "#f2cb05",
@@ -54,16 +54,16 @@ const Services = ({
             marginBottom: isMobile ? "15px" : "0px",
             whiteSpace: "nowrap",
             marginTop: "0px",
-            height: "10%",
+            height: isMobile ? "8vh" : "10vh",
           }}
         >
           НАШИ УСЛУГИ
-        </h2>
+        </div>
 
         {/* косметический ремонт */}
         <div
           style={{
-            height: isMobile ? "auto" : "29%",
+            height: isMobile ? "auto" : "29vh",
             width: "100%",
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
@@ -95,19 +95,21 @@ const Services = ({
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
+                  borderRadius: "10px",
                 }}
                 alt="о нас"
               />
               <div
                 style={{
                   width: "100%",
-                  height: "20%", // например, сделать желтую плашку по высоте
+                  height: "20%",
                   backgroundColor: "rgba(98, 98, 98, 0.65)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
+                  borderRadius: "10px",
                 }}
               >
                 <div
@@ -137,41 +139,43 @@ const Services = ({
 
             <div
               style={{
-                height: "100%",
-                width: isMobile ? "100%" : "400px",
+                height: isMobile ? "100%" : "auto",
+                width: isMobile ? "100%" : "50vw",
                 padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: isMobile ? "row" : "column",
-                textAlign: isMobile ? "center" : "start",
-                marginLeft: isMobile ? "0px" : "5%",
+                flexDirection: "column",
+                textAlign: isMobile ? "start" : "center",
                 justifyContent: isMobile ? "space-between" : "center",
-                alignItems: "flex-start",
+                alignItems: isMobile ? "flex-start" : "center",
               }}
             >
               <div
                 style={{
-                  fontSize: isMobile ? "5vw" : "28px",
-                  marginBottom: isMobile ? "50px" : "0%",
-                  marginTop: isMobile ? "0" : "20px",
+                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
+                  marginBottom: isMobile ? "3vh" : "20px",
+                  marginTop: isMobile ? "3vh" : "20px",
+                  textDecoration: "underline",
                 }}
               >
-                косметический ремонт
+                Косметический ремонт
               </div>
-              {!isMobile && (
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 300,
-                    lineHeight: "normal",
-                    letterSpacing: "0.09em",
-                  }}
-                >
-                  Лёгкое обновление - покраска, обои, замена покрытий, освежение
-                  интерьера.
-                </p>
-              )}
+
+              <div
+                style={{
+                  fontSize: isMobile ? "4.2vw" : "clamp(16px, 1.8vw, 18px)",
+                  fontWeight: "500",
+
+                  width: "80%",
+                }}
+              >
+                <span style={{ color: "#FFD700" }}>Короткие сроки</span> и{" "}
+                <span style={{ color: "#FFD700" }}>минимальные вложения</span> —
+                и вы будто переехали в новую квартиру. Мы обновим стены, заменим
+                покрытия и сделаем интерьер заметно свежее без пыли, шума и
+                затянувшихся ремонтов.
+              </div>
+
               <button
                 onClick={() => {
                   handleClick("cosmetic");
@@ -188,6 +192,7 @@ const Services = ({
                   transition: "all 0.3s ease",
                   width: isMobile ? "25vw" : "150px",
                   height: "35px",
+                  marginTop: "3vh",
                 }}
               >
                 подробнее
@@ -198,12 +203,14 @@ const Services = ({
         {/* капитальный ремонт */}
         <div
           style={{
-            height: isMobile ? "auto" : "29%",
+            height: isMobile ? "auto" : "35vh",
             width: "100%",
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
             justifyContent: "center",
-            marginBottom: "20px",
+
+            marginTop: isMobile ? "8vh" : "8vh",
+            marginBottom: isMobile ? "8vh" : "8vh",
           }}
         >
           <div
@@ -219,43 +226,47 @@ const Services = ({
           >
             <div
               style={{
-                height: "100%",
-                width: isMobile ? "100%" : "400px",
+                height: isMobile ? "100%" : "auto",
+                width: isMobile ? "100%" : "50vw",
                 padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: isMobile ? "row" : "column",
-                textAlign: isMobile ? "center" : "end",
-                marginRight: isMobile ? "0px" : "5%",
+                flexDirection: "column",
+                textAlign: isMobile ? "start" : "center",
                 justifyContent: isMobile ? "space-between" : "center",
-                alignItems: isMobile ? "center" : "flex-end",
+                alignItems: isMobile ? "start" : "center",
               }}
             >
               <div
                 style={{
-                  fontSize: isMobile ? "5vw" : "28px",
-                  marginBottom: isMobile ? "0" : "0%",
-                  marginTop: isMobile ? "0" : "20px",
+                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
+                  marginBottom: isMobile ? "3vh" : "20px",
+                  marginTop: isMobile ? "3vh" : "20px",
+                  fontWeight: 700,
                 }}
               >
                 {" "}
                 Капитальный ремонт
               </div>
 
-              {!isMobile && (
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 300,
-                    lineHeight: "normal",
-                    letterSpacing: "0.09em",
-                  }}
-                >
-                  Замена коммуникаций, выравнивание стен, перепланировка,
-                  демонтаж, полная замена электрики.
-                </p>
-              )}
+              <div
+                style={{
+                  fontSize: isMobile ? "4.2vw" : "clamp(16px, 1.8vw, 18px)",
+                  fontWeight: "500",
+
+                  width: "80%",
+                }}
+              >
+                <span style={{ color: "#FFD700" }}>
+                  Полное обновление квартиры
+                </span>{" "}
+                с заменой всех коммуникаций и перепланировкой под ваши нужды —{" "}
+                <span style={{ color: "#FFD700" }}>РЕМОНТ ЛЮБОЙ СЛОЖНОСТИ</span>
+                . Крепкие инженерные системы, качественные отделочные материалы,
+                идеально ровные стены и интерьер, который будет радовать каждый
+                день.
+              </div>
+
               <button
                 onClick={() => {
                   handleClick("capital");
@@ -272,6 +283,8 @@ const Services = ({
                   transition: "all 0.3s ease",
                   width: isMobile ? "25vw" : "150px",
                   height: "35px",
+                  boxShadow: "0 0 10px rgba(255, 215, 0, 0.4)",
+                  marginTop: "3vh",
                 }}
               >
                 подробнее
@@ -293,19 +306,21 @@ const Services = ({
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
+                  borderRadius: "10px",
                 }}
                 alt="о нас"
               />
               <div
                 style={{
                   width: "100%",
-                  height: "20%",
+                  height: "15%",
                   backgroundColor: "rgba(98, 98, 98, 0.65)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
+                  borderRadius: "10px",
                 }}
               >
                 <div
@@ -338,7 +353,7 @@ const Services = ({
         {/* дизайнерский ремонт */}
         <div
           style={{
-            height: isMobile ? "auto" : "29%",
+            height: isMobile ? "auto" : "35vh",
             width: "100%",
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
@@ -370,6 +385,7 @@ const Services = ({
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
+                  borderRadius: "10px",
                 }}
                 alt="о нас"
               />
@@ -377,12 +393,13 @@ const Services = ({
                 style={{
                   width: "100%",
                   height: "20%",
-                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  backgroundColor: "rgba(98, 98, 98, 0.8)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
+                  borderRadius: "10px",
                 }}
               >
                 <div
@@ -411,41 +428,63 @@ const Services = ({
             </div>
             <div
               style={{
-                height: "100%",
-                width: isMobile ? "100%" : "400px",
+                height: isMobile ? "100%" : "auto",
+                width: isMobile ? "100%" : "50vw",
                 padding: "1%",
                 alignSelf: "center",
                 display: "flex",
-                flexDirection: isMobile ? "row" : "column",
-                textAlign: isMobile ? "center" : "start",
-                marginLeft: isMobile ? "0px" : "5%",
-                justifyContent: isMobile ? "space-between" : "center",
-                alignItems: isMobile ? "center" : "flex-start",
+                flexDirection: "column",
+                textAlign: isMobile ? "start" : "center",
+
+                justifyContent: isMobile ? "center" : "center",
+                alignItems: isMobile ? "flex-start" : "center",
               }}
             >
               <div
                 style={{
-                  fontSize: isMobile ? "5vw" : "28px",
-                  marginBottom: isMobile ? "0" : "0%",
-                  marginTop: isMobile ? "0" : "20px",
+                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
+                  marginBottom: isMobile ? "3vh" : "20px",
+                  marginTop: isMobile ? "3vh" : "20px",
+                  fontWeight: 700,
+                  display: "inline-block",
+                  background:
+                    "linear-gradient(90deg, #FFD700 0%, #ffffff 50%, #FFD700 100%)",
+                  backgroundSize: "200% auto",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  animation: "shine 2.5s linear infinite",
                 }}
               >
-                дизайнерский ремонт
+                Дизайнерский ремонт
               </div>
-              {!isMobile && (
-                <p
+
+              <div
+                style={{
+                  fontWeight: "500",
+                  width: "80%",
+                }}
+              >
+                <div
                   style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 300,
-                    lineHeight: "normal",
-                    letterSpacing: "0.09em",
+                    color: "#fff",
+                    fontSize: isMobile ? "4.1vw" : "clamp(16px, 1.8vw, 18px)",
+                    fontWeight: 400,
                   }}
                 >
-                  Уникальные интерьеры под ключ. Визуальные концепции и
-                  премиальные материалы. Зонирование кухни - гостинной.
-                </p>
-              )}
+                  Ищете{" "}
+                  <span style={{ color: "#FFD700" }}>УНИКАЛЬНЫЙ ДИЗАЙН</span> ?
+                  <br />
+                  Мы создаём интерьеры под ключ, в которых продумано всё — от
+                  визуальной концепции до зонирования кухни-гостиной. У нас{" "}
+                  <span style={{ color: "#FFD700" }}>
+                    лучшие дизайнеры, опытные строители{" "}
+                  </span>{" "}
+                  и <span style={{ color: "#FFD700" }}> честные цены</span> без
+                  скрытых затрат.
+                </div>
+              </div>
+
               <button
                 onClick={() => {
                   handleClick("designer");
@@ -462,6 +501,8 @@ const Services = ({
                   transition: "all 0.3s ease",
                   width: isMobile ? "25vw" : "150px",
                   height: "35px",
+                  boxShadow: "0 0 10px rgba(255, 215, 0, 0.4)",
+                  marginTop: "3vh",
                 }}
               >
                 подробнее
@@ -470,12 +511,12 @@ const Services = ({
           </div>
         </div>
 
-        <div
+        {/* <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: "20%",
+            height: isMobile ? "13vh" : "20vh",
           }}
         >
           <button
@@ -498,8 +539,6 @@ const Services = ({
               borderRadius: "45px",
               cursor: "pointer",
               fontSize: isMobile ? "14px" : "24px",
-              // marginTop: isMobile ? "18px" : "40px",
-              marginBottom: isMobile ? "15px" : "0px",
 
               alignSelf: "center",
               outline: "none",
@@ -511,7 +550,7 @@ const Services = ({
           >
             УЗНАТЬ СТОИМОСТЬ
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -9,13 +9,16 @@ import {
 
 import { useEffect } from "react";
 
-import Home from "./components/pages/Home";
-import ProjectPage from "./components/pages/ProjectPage";
+import Home from "./pages/Home";
+import ProjectPage from "./pages/ProjectPage";
 import ScrollToTop from "./components/ScrollToTop";
 
-import CapitalRepairPage from "./components/pages/Repair/CapitalRepairPage";
-import CosmeticRepairPage from "./components/pages/Repair/CosmeticRepairPage";
-import DesignerRepairPage from "./components/pages/Repair/DesignerRepairPage";
+import CapitalRepairPage from "./pages/Repair/CapitalRepairPage";
+import CosmeticRepairPage from "./pages/Repair/CosmeticRepairPage";
+import DesignerRepairPage from "./pages/Repair/DesignerRepairPage";
+
+import PortfolioList from "./pages/Portfolio/List";
+import PortfolioProjectPage from "./pages/Portfolio/Project";
 
 // Компонент для обработки редиректа
 const RedirectHandler = () => {
@@ -67,6 +70,9 @@ const AppContent = () => {
         <Route path="/repair/designer" element={<DesignerRepairPage />} />
 
         <Route path="/project/:id" element={<ProjectPage />} />
+
+        <Route path="/portfolio" element={<PortfolioList />} />
+        <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigateWithMetrika } from "../../../../hooks/useNavigateWithMetrika";
+import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 
 const DesignerRepairPageMobile = () => {
   const navigateWithMetrika = useNavigateWithMetrika();

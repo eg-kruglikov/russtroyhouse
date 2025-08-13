@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import QuestionModal from "../../windows/FeedbackModal";
 
 const ProjectPageDesktop = () => {
   const [data, setData] = useState(null);
@@ -30,7 +29,7 @@ const ProjectPageDesktop = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/images/photolibrary/project${id}/data.json`)
+    fetch(`/images/photolibrary/designProjects/project${id}/data.json`)
       .then((res) => {
         if (!res.ok) throw new Error("Нет data.json");
         return res.json();
@@ -59,7 +58,7 @@ const ProjectPageDesktop = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = `/images/photolibrary/project${id}/11.jpg`;
+    img.src = `/images/photolibrary/designProjects/project${id}/11.jpg`;
     img.onload = () => setHasImage11(true);
     img.onerror = () => setHasImage11(false);
   }, [id]);
@@ -237,7 +236,7 @@ const ProjectPageDesktop = () => {
 
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/1.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/1.jpg`}
             alt="проект"
             style={{
               height: "100%", // растягивается по высоте окна
@@ -303,7 +302,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/2.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/2.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -342,7 +341,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/3.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/3.jpg`}
               alt="Деталь 1"
               style={{
                 height: "54%",
@@ -363,7 +362,7 @@ const ProjectPageDesktop = () => {
             >
               <img
                 loading="lazy"
-                src={`/images/photolibrary/project${id}/4.jpg`}
+                src={`/images/photolibrary/designProjects/project${id}/4.jpg`}
                 alt="Интерьер"
                 style={{
                   width: "100%",
@@ -448,7 +447,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/5.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/5.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -487,7 +486,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/6.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/6.jpg`}
               alt="Деталь 1"
               style={{
                 height: "54%",
@@ -509,7 +508,7 @@ const ProjectPageDesktop = () => {
             >
               <img
                 loading="lazy"
-                src={`/images/photolibrary/project${id}/7.jpg`}
+                src={`/images/photolibrary/designProjects/project${id}/7.jpg`}
                 alt="Интерьер"
                 style={{
                   width: "100%",
@@ -560,7 +559,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/8.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/8.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -626,7 +625,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/9.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/9.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -692,7 +691,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/10.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/10.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -765,7 +764,7 @@ const ProjectPageDesktop = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/11.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/11.jpg`}
               alt="Деталь 1"
               style={{
                 height: "90%",
