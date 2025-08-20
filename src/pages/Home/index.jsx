@@ -357,7 +357,7 @@ const Home = () => {
           scrollToServices={scrollToServices}
         />
         {/* портфолио  */}
-        {/* Портфолио (сетка 3×2) */}
+
         <section
           id="portfolio"
           ref={portfolioRef}

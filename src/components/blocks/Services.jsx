@@ -155,7 +155,6 @@ const Services = ({
                   fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
                   marginBottom: isMobile ? "3vh" : "20px",
                   marginTop: isMobile ? "3vh" : "20px",
-                  textDecoration: "underline",
                 }}
               >
                 Косметический ремонт

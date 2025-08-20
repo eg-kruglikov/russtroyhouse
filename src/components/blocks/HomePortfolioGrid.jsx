@@ -1,5 +1,8 @@
 // src/components/blocks/HomePortfolioGrid.jsx
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+/* -------- utils -------- */
 
 // страхуемся, если где-то .JPG вместо .jpg
 function jpgCandidates(src) {
@@ -22,16 +25,22 @@ function SmartImg({ srcs = [], alt = "", style }) {
   );
 }
 
+/* -------- component -------- */
+
 export default function HomePortfolioGrid({ items = [], onTileClick }) {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [vw, setVw] = useState(() => window.innerWidth);
 
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768);
+    const onResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setVw(window.innerWidth);
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const columns = isMobile ? 1 : window.innerWidth < 1100 ? 2 : 3;
+  const columns = isMobile ? 1 : vw < 1100 ? 2 : 3;
 
   return (
     <div
@@ -39,7 +48,7 @@ export default function HomePortfolioGrid({ items = [], onTileClick }) {
         width: "100%",
         maxWidth: 1200,
         margin: "0 auto",
-        padding: isMobile ? "0 16px" : "0 24px", // симметрия: не «уезжает» вправо
+        padding: isMobile ? "0 16px" : "0 24px", // симметричные поля
         boxSizing: "border-box",
       }}
     >
@@ -54,7 +63,7 @@ export default function HomePortfolioGrid({ items = [], onTileClick }) {
           <Tile
             key={i}
             title={item.title}
-            cover={item.images?.[0]} // берём ТОЛЬКО ПЕРВУЮ картинку как обложку
+            cover={item.images?.[0]}
             href={item.href}
             onClick={() => onTileClick?.(item, i)}
             isMobile={isMobile}
@@ -65,40 +74,36 @@ export default function HomePortfolioGrid({ items = [], onTileClick }) {
   );
 }
 
+/* -------- tile -------- */
+
 function Tile({ title, cover, href, onClick, isMobile }) {
   const candidates = jpgCandidates(cover).length
     ? jpgCandidates(cover)
     : ["/images/photolibrary/placeholder.jpg"];
 
-  return (
-    <a
-      href={href || "#"}
-      onClick={(e) => {
-        if (!href && onClick) {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      style={{
-        display: "block",
-        textDecoration: "none",
-        color: "#fff",
-        borderRadius: 16,
-        overflow: "hidden",
-        background: "#0f2431",
-        boxShadow: "0 10px 24px rgba(0,0,0,.25)",
-        transition: "transform .25s ease, box-shadow .25s ease",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 14px 34px rgba(0,0,0,.35)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 10px 24px rgba(0,0,0,.25)";
-      }}
-    >
-      {/* одна обложка на всю ширину плитки */}
+  const wrapperStyle = {
+    display: "block",
+    textDecoration: "none",
+    color: "#fff",
+    borderRadius: 16,
+    overflow: "hidden",
+    background: "#0f2431",
+    boxShadow: "0 10px 24px rgba(0,0,0,.25)",
+    transition: "transform .25s ease, box-shadow .25s ease",
+  };
+
+  const hoverIn = (e) => {
+    e.currentTarget.style.transform = "translateY(-2px)";
+    e.currentTarget.style.boxShadow = "0 14px 34px rgba(0,0,0,.35)";
+  };
+  const hoverOut = (e) => {
+    e.currentTarget.style.transform = "translateY(0)";
+    e.currentTarget.style.boxShadow = "0 10px 24px rgba(0,0,0,.25)";
+  };
+
+  const content = (
+    <>
+      {/* обложка */}
       <div style={{ width: "100%", height: isMobile ? 220 : 240 }}>
         <SmartImg
           srcs={candidates}
@@ -141,6 +146,57 @@ function Tile({ title, cover, href, onClick, isMobile }) {
           Подробнее
         </span>
       </div>
+    </>
+  );
+
+  // 1) Если нет href, но есть onClick — кнопка
+  if (!href && onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        onMouseEnter={hoverIn}
+        onMouseLeave={hoverOut}
+        style={{
+          ...wrapperStyle,
+          width: "100%",
+          padding: 0,
+          border: "none",
+          background: "transparent",
+          cursor: "pointer",
+          textAlign: "inherit",
+        }}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  // 2) Внутренний переход (SPA)
+  if (href && href.startsWith("/")) {
+    return (
+      <Link
+        to={href}
+        onMouseEnter={hoverIn}
+        onMouseLeave={hoverOut}
+        style={wrapperStyle}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  // 3) Внешняя ссылка (новая вкладка)
+  return (
+    <a
+      href={href || "#"}
+      target={href ? "_blank" : undefined}
+      rel={href ? "noopener noreferrer" : undefined}
+      onMouseEnter={hoverIn}
+      onMouseLeave={hoverOut}
+      style={wrapperStyle}
+    >
+      {content}
     </a>
   );
 }

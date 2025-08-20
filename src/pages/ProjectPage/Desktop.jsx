@@ -136,7 +136,7 @@ const ProjectPageDesktop = () => {
         boxSizing: "border-box",
       }}
     >
-      <div
+      {/* <div
         onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
         onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
         onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
@@ -159,7 +159,7 @@ const ProjectPageDesktop = () => {
         onClick={handleClick}
       >
         НА ГЛАВНУЮ
-      </div>
+      </div> */}
       {/* <QuestionModal
         isOpen={questioModalOpen}
         onClose={() => setQuestioModalOpen(false)}

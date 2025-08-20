@@ -12,7 +12,6 @@ export default function PortfolioProject(props) {
     images = [], // [hero, ...gallery]
   } = props;
 
-  // Простейший флаг мобилки без внешних зависимостей
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 768);
@@ -20,8 +19,7 @@ export default function PortfolioProject(props) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Картинки
-  const hero = images?.[0] || "/images/photolibrary/placeholder.jpg";
+  const hero = images?.[0];
   const gallery = useMemo(() => images.slice(1), [images]);
 
   useEffect(() => {
@@ -30,7 +28,6 @@ export default function PortfolioProject(props) {
 
   return (
     <div style={{ background: "#0a1a26", minHeight: "100vh", color: "#fff" }}>
-      {/* Контейнер */}
       <div
         style={{
           maxWidth: 1100,
@@ -38,26 +35,6 @@ export default function PortfolioProject(props) {
           padding: isMobile ? "16px" : "24px",
         }}
       >
-        {/* Навигация */}
-        <div style={{ marginBottom: isMobile ? 12 : 16 }}>
-          <Link to="/portfolio" style={{ textDecoration: "none" }}>
-            <button
-              style={{
-                background: "transparent",
-                border: "1px solid rgba(255,255,255,.35)",
-                color: "#fff",
-                borderRadius: 999,
-                padding: "8px 14px",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              ← Назад к работам
-            </button>
-          </Link>
-        </div>
-
-        {/* Заголовок + подзаголовок */}
         <h1
           style={{
             margin: 0,
@@ -68,6 +45,7 @@ export default function PortfolioProject(props) {
         >
           {title}
         </h1>
+
         {subtitle ? (
           <div
             style={{
@@ -167,7 +145,7 @@ export default function PortfolioProject(props) {
           </section>
         ) : null}
 
-        {/* Галерея */}
+        {/* Галерея — ИСПРАВЛЕНО: 1 колонка на мобиле, 2 — на десктопе */}
         {gallery?.length ? (
           <section style={{ marginTop: isMobile ? 18 : 28, marginBottom: 32 }}>
             <SectionTitle isMobile={isMobile} title="Фотографии проекта" />
@@ -175,7 +153,7 @@ export default function PortfolioProject(props) {
               style={{
                 display: "grid",
                 gap: 12,
-                gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
               }}
             >
               {gallery.map((src, i) => (
@@ -193,7 +171,7 @@ export default function PortfolioProject(props) {
                     style={{
                       display: "block",
                       width: "100%",
-                      height: isMobile ? 120 : 200,
+                      height: isMobile ? 220 : 260,
                       objectFit: "cover",
                     }}
                   />
@@ -226,8 +204,6 @@ export default function PortfolioProject(props) {
     </div>
   );
 }
-
-/* --------- Вспомогательные мелочи (inline) --------- */
 
 function SectionTitle({ title, isMobile }) {
   return (

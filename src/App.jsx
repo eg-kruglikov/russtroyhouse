@@ -11,16 +11,15 @@ import { useEffect } from "react";
 
 import Home from "./pages/Home";
 import ProjectPage from "./pages/ProjectPage";
-import ScrollToTop from "./components/ScrollToTop";
 
 import CapitalRepairPage from "./pages/Repair/CapitalRepairPage";
 import CosmeticRepairPage from "./pages/Repair/CosmeticRepairPage";
 import DesignerRepairPage from "./pages/Repair/DesignerRepairPage";
 
-import PortfolioList from "./pages/Portfolio/List";
 import PortfolioProjectPage from "./pages/Portfolio/Project";
 
-// Компонент для обработки редиректа
+import { useScrollRestoration } from "./hooks/useScrollRestoration";
+
 const RedirectHandler = () => {
   useEffect(() => {
     const search = window.location.search;
@@ -57,10 +56,13 @@ const AppContent = () => {
     }
   }, [action, location]);
 
+  useScrollRestoration();
+
   return (
     <>
       <RedirectHandler />
-      <ScrollToTop />
+      {/* <ScrollToTop /> */}
+      {/* <ScrollMemory /> */}
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -71,7 +73,6 @@ const AppContent = () => {
 
         <Route path="/project/:id" element={<ProjectPage />} />
 
-        <Route path="/portfolio" element={<PortfolioList />} />
         <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
 
         <Route path="*" element={<Navigate to="/" />} />

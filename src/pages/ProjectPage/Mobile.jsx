@@ -6,7 +6,7 @@ const ProjectPage = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/images/photolibrary/project${id}/data.json`)
+    fetch(`/images/photolibrary/designProjects/project${id}/data.json`)
       .then((res) => {
         if (!res.ok) throw new Error("Нет data.json");
         return res.json();
@@ -49,7 +49,7 @@ const ProjectPage = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = `/images/photolibrary/project${id}/11.jpg`;
+    img.src = `/images/photolibrary/designProjects/project${id}/11.jpg`;
     img.onload = () => setHasImage11(true);
     img.onerror = () => setHasImage11(false);
   }, [id]);
@@ -113,7 +113,7 @@ const ProjectPage = () => {
         boxSizing: "border-box",
       }}
     >
-      <div
+      {/* <div
         onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
         onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
         onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
@@ -136,7 +136,7 @@ const ProjectPage = () => {
         onClick={handleClick}
       >
         НА ГЛАВНУЮ
-      </div>
+      </div> */}
       {/* <QuestionModal
         isOpen={questioModalOpen}
         onClose={() => setQuestioModalOpen(false)}
@@ -201,7 +201,7 @@ const ProjectPage = () => {
 
         <img
           loading="lazy"
-          src={`/images/photolibrary/project${id}/1.jpg`}
+          src={`/images/photolibrary/designProjects/project${id}/1.jpg`}
           alt="проект"
           style={{
             height: "100%", // растягивается по высоте окна
@@ -266,7 +266,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/2.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/2.jpg`}
             alt="Интерьер"
             style={{
               width: "100%",
@@ -293,7 +293,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/3.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/3.jpg`}
             alt="Деталь 1"
             style={{
               height: "auto",
@@ -315,7 +315,7 @@ const ProjectPage = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/4.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/4.jpg`}
               alt="Интерьер"
               style={{
                 width: "100%",
@@ -337,7 +337,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/5.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/5.jpg`}
             alt="Интерьер"
             style={{
               width: "100%",
@@ -408,7 +408,7 @@ const ProjectPage = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/6.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/6.jpg`}
               alt="Интерьер"
               style={{
                 width: "90%",
@@ -433,7 +433,7 @@ const ProjectPage = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/7.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/7.jpg`}
               alt="Интерьер"
               style={{
                 width: "90%",
@@ -458,7 +458,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/8.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/8.jpg`}
             alt="Интерьер"
             style={{
               width: "100%",
@@ -514,7 +514,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/9.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/9.jpg`}
             alt="Интерьер"
             style={{
               width: "100%",
@@ -538,7 +538,7 @@ const ProjectPage = () => {
         >
           <img
             loading="lazy"
-            src={`/images/photolibrary/project${id}/10.jpg`}
+            src={`/images/photolibrary/designProjects/project${id}/10.jpg`}
             alt="Интерьер"
             style={{
               width: "100%",
@@ -564,7 +564,7 @@ const ProjectPage = () => {
           >
             <img
               loading="lazy"
-              src={`/images/photolibrary/project${id}/11.jpg`}
+              src={`/images/photolibrary/designProjects/project${id}/11.jpg`}
               alt="Интерьер"
               style={{
                 width: "96%",
