@@ -48,11 +48,18 @@ const AppContent = () => {
   const location = useLocation();
   const action = useNavigationType();
 
+  // 🔹 Хук, который чинит refresh с GitHub Pages
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+    if (redirect) {
+      window.history.replaceState(null, "", redirect);
+    }
+  }, []);
+
   useEffect(() => {
     if (action === "POP") {
-      console.log("← Пользователь нажал Назад!", location.pathname);
-      // Здесь можно добавить вызов Метрики, если нужно
-      // if (window.ym) window.ym(101296472, "hit", location.pathname);
+      console.log("⬅ Пользователь нажал Назад!", location.pathname);
     }
   }, [action, location]);
 
@@ -61,18 +68,14 @@ const AppContent = () => {
   return (
     <>
       <RedirectHandler />
-      {/* <ScrollToTop /> */}
-      {/* <ScrollMemory /> */}
       <Routes>
         <Route path="/" element={<Home />} />
-
         {/* Страницы ремонтов */}
         <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
         <Route path="/repair/capital" element={<CapitalRepairPage />} />
         <Route path="/repair/designer" element={<DesignerRepairPage />} />
 
         <Route path="/project/:id" element={<ProjectPage />} />
-
         <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
 
         <Route path="*" element={<Navigate to="/" />} />

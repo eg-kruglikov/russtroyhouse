@@ -39,15 +39,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (location.state?.scrollTo === "portfolio") {
-      scrollToportfolio(); // вызов твоей рабочей функции
-    }
-
-    // сбросим state, чтобы не мешал при следующих переходах
-    window.history.replaceState({}, document.title);
-  }, [location]);
-
-  useEffect(() => {
     const updateWidth = () => {
       if (firstBlock.current) {
         setWidthFirstBlock(firstBlock.current.offsetWidth);
@@ -197,53 +188,6 @@ const Home = () => {
                 : "translate(-50%, -65%)",
             }}
           />
-          {/* <button
-            onTouchStart={(e) =>
-              (e.currentTarget.style.transform =
-                "translate(-50%, -52.6%) scale(0.9)")
-            }
-            onTouchEnd={(e) =>
-              (e.currentTarget.style.transform =
-                "translate(-50%, -52.6%) scale(1)")
-            }
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform =
-                "translate(-50%, -52.6%) scale(0.9)")
-            }
-            onMouseUp={(e) =>
-              (e.currentTarget.style.transform =
-                "translate(-50%, -52.6%) scale(1)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform =
-                "translate(-50%, -52.6%) scale(1)")
-            }
-            disabled={phoneWidgetIsOpen}
-            style={{
-              position: "absolute",
-              zIndex: 1,
-              top: isMobile ? "72svh" : "80svh",
-
-              left: "50.5%",
-              transform: "translate(-50%, -52.6%)",
-              backgroundColor: "#FFD700",
-              color: "#ffff",
-              fontWeight: "790",
-              fontSize: "24px",
-              padding: isMobile ? "16px 26px" : "26px 40px",
-              border: "none",
-              borderRadius: "40px",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(0,0,0,0.35)",
-              transition: "transform 0.2s ease",
-              outline: "none",
-              WebkitTapHighlightColor: "transparent",
-              opacity: phoneWidgetIsOpen ? "0.5" : "1",
-            }}
-            onClick={() => setQuestioModalOpen(true)}
-          >
-            ЗАКАЗАТЬ
-          </button> */}
         </section>
         {/* Кто мы */}
         <section
@@ -372,7 +316,7 @@ const Home = () => {
               width: "100%",
               maxWidth: 1200,
               margin: "0 auto",
-              padding: isMobile ? "0 16px" : "0 24px",
+
               boxSizing: "border-box",
             }}
           >

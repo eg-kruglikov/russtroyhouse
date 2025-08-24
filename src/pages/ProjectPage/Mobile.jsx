@@ -113,35 +113,6 @@ const ProjectPage = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* <div
-        onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
-        onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
-        onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        style={{
-          position: "fixed",
-          top: "1%",
-          left: "1%",
-          fontFamily: "sans-serif",
-          color: "#fff",
-          padding: "10px 16px",
-          borderRadius: "5px",
-          fontWeight: "bold",
-          fontSize: "20px",
-          cursor: "pointer",
-          zIndex: 1000,
-          WebkitTapHighlightColor: "transparent",
-        }}
-        onClick={handleClick}
-      >
-        НА ГЛАВНУЮ
-      </div> */}
-      {/* <QuestionModal
-        isOpen={questioModalOpen}
-        onClose={() => setQuestioModalOpen(false)}
-        isMobile={isMobile}
-      /> */}
       {/* 1 блок */}
       <div
         style={{

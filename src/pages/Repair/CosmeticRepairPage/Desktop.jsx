@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { projects } from "../../../data/portfolio"; // 🔹 добавили импорт
 
 const Desktop = () => {
   const btn = {
@@ -23,10 +24,15 @@ const Desktop = () => {
     fontSize: 13,
     fontWeight: 600,
   };
+
+  // 🔹 берём первые два проекта косметического ремонта
+  const cosmeticItems = projects
+    .filter((p) => p.meta?.type === "Косметический")
+    .slice(0, 2);
+
   return (
     <div
       style={{
-        backgroundColor: "#0a1a26", // твой тёмно-синий фон
         color: "#fff",
         fontFamily: "'Arial', sans-serif",
         paddingBottom: "80px",
@@ -41,15 +47,10 @@ const Desktop = () => {
           overflow: "hidden",
         }}
       >
-        {/* ФОТО - добавь свою картинку */}
         <img
           src="/images/repair/cosmetic/hero.jpg"
           alt="Косметический ремонт"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <div
           style={{
@@ -96,7 +97,6 @@ const Desktop = () => {
           maxWidth: "1200px",
           margin: "0 auto",
           flexWrap: "wrap",
-          backgroundColor: "#0B1C26",
           borderRadius: "12px",
         }}
       >
@@ -110,11 +110,7 @@ const Desktop = () => {
           }}
         >
           <h2
-            style={{
-              color: "#FFD700",
-              fontSize: "32px",
-              marginBottom: "20px",
-            }}
+            style={{ color: "#FFD700", fontSize: "32px", marginBottom: "20px" }}
           >
             Бесплатная смета с выездом специалиста!
           </h2>
@@ -153,8 +149,7 @@ const Desktop = () => {
         </div>
       </div>
 
-      {/* Галерея работ */}
-      {/* Наши работы */}
+      {/* Наши работы — динамически, 2 карточки (фото + заголовок) */}
       <div style={{ padding: "0 80px", maxWidth: 1200, margin: "0 auto" }}>
         <h2
           style={{
@@ -174,105 +169,46 @@ const Desktop = () => {
             gap: 24,
           }}
         >
-          {/* Карточка 1 */}
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 14,
-              overflow: "hidden",
-              background: "#0f2431",
-              boxShadow: "0 10px 28px rgba(0,0,0,.25)",
-            }}
-          >
-            <img
-              src="/images/photolibrary/portfolio/cosmetic/1/1.jpg"
-              alt="Косметический ремонт 60 м²"
-              loading="lazy"
-              style={{
-                width: "100%",
-                height: 320,
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-            <div style={{ padding: 16 }}>
-              <div style={{ color: "#fff", fontSize: 20, fontWeight: 700 }}>
-                Косметический ремонт — 60 м²
-              </div>
-              <div style={{ color: "rgba(255,255,255,.85)", marginTop: 6 }}>
-                Мытищи, ЖК Лесной Городок • срок 18 дней
-              </div>
-
+          {cosmeticItems.map((p) => (
+            <Link
+              key={p.slug}
+              to={`/portfolio/${p.slug}`}
+              style={{ textDecoration: "none" }}
+            >
               <div
                 style={{
-                  display: "flex",
-                  gap: 12,
-                  marginTop: 12,
-                  flexWrap: "wrap",
+                  position: "relative",
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  background: "#0f2431",
+                  boxShadow: "0 10px 28px rgba(0,0,0,.25)",
+                  cursor: "pointer",
                 }}
               >
-                <span style={chip}>без пыли</span>
-                <span style={chip}>окраска/обои</span>
-                <span style={chip}>замена плинтусов</span>
+                <img
+                  src={p.images?.[0] || "/images/placeholder.jpg"}
+                  alt={p.title}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: 320,
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+                <div style={{ padding: 16 }}>
+                  <div style={{ color: "#fff", fontSize: 20, fontWeight: 700 }}>
+                    {p.title}
+                  </div>
+                  {/* Никаких подзаголовков/чипов — только фото + заголовок */}
+                </div>
               </div>
-
-              <Link to="/works/cosmetic-60" style={{ textDecoration: "none" }}>
-                <button style={btn}>Подробнее</button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Карточка 2 */}
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 14,
-              overflow: "hidden",
-              background: "#0f2431",
-              boxShadow: "0 10px 28px rgba(0,0,0,.25)",
-            }}
-          >
-            <img
-              src="/images/photolibrary/portfolio/cosmetic/2/1.jpg"
-              alt="Капитальный ремонт 75 м²"
-              loading="lazy"
-              style={{
-                width: "100%",
-                height: 320,
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-            <div style={{ padding: 16 }}>
-              <div style={{ color: "#fff", fontSize: 20, fontWeight: 700 }}>
-                Капитальный ремонт — 75 м²
-              </div>
-              <div style={{ color: "rgba(255,255,255,.85)", marginTop: 6 }}>
-                Королёв, монолит-кирпич • перепланировка
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  marginTop: 12,
-                  flexWrap: "wrap",
-                }}
-              >
-                <span style={chip}>новая электрика</span>
-                <span style={chip}>замена труб</span>
-                <span style={chip}>стяжка/штукатурка</span>
-              </div>
-
-              <Link to="/works/capital-75" style={{ textDecoration: "none" }}>
-                <button style={btn}>Подробнее</button>
-              </Link>
-            </div>
-          </div>
+            </Link>
+          ))}
         </div>
       </div>
 
-      {/* CTA - Заказать звонок */}
+      {/* CTA */}
       <div style={{ textAlign: "center", marginTop: "60px" }}>
         <button
           style={{

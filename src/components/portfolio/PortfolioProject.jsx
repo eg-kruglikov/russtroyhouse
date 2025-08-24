@@ -1,6 +1,6 @@
 // src/components/portfolio/PortfolioProject.jsx
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigationType } from "react-router-dom";
 
 export default function PortfolioProject(props) {
   const {
@@ -22,12 +22,22 @@ export default function PortfolioProject(props) {
   const hero = images?.[0];
   const gallery = useMemo(() => images.slice(1), [images]);
 
+  const navType = useNavigationType();
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (navType !== "POP") {
+      window.scrollTo(0, 0);
+    }
+  }, [navType]);
 
   return (
-    <div style={{ background: "#0a1a26", minHeight: "100vh", color: "#fff" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        color: "#fff",
+        fontFamily: "sans-serif",
+      }}
+    >
       <div
         style={{
           maxWidth: 1100,
