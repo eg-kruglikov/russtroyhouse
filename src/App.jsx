@@ -20,6 +20,8 @@ import PortfolioProjectPage from "./pages/Portfolio/Project";
 
 import { useScrollRestoration } from "./hooks/useScrollRestoration";
 
+import ContactsPage from "./pages/Contacts";
+
 const RedirectHandler = () => {
   useEffect(() => {
     const search = window.location.search;
@@ -58,8 +60,14 @@ const AppContent = () => {
   }, []);
 
   useEffect(() => {
-    if (action === "POP") {
-      console.log("⬅ Пользователь нажал Назад!", location.pathname);
+    const isInitialLoad = (window.history?.state?.idx ?? 0) === 0;
+    if (isInitialLoad) return;
+    if (action === "POP" && window.ym) {
+      console.log("-->");
+      const url =
+        location.pathname + (location.search || "") + (location.hash || "");
+      window.ym(101296472, "hit", url);
+      window.ym(101296472, "notBounce");
     }
   }, [action, location]);
 
@@ -77,6 +85,8 @@ const AppContent = () => {
 
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
+
+        <Route path="/contacts" element={<ContactsPage />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

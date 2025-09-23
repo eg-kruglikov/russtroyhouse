@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { projects } from "../../../data/portfolio";
+import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 
 const Mobile = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithMetrika();
 
   useEffect(() => {
     const handleBack = () => console.log("⬅ Пользователь нажал Назад!");
@@ -17,51 +18,6 @@ const Mobile = () => {
     .slice(0, 2);
 
   // прайс-лист (ориентиры "от")
-  const priceItems = [
-    {
-      name: "Демонтаж старой отделки (обои/краска/плитка)",
-      unit: "за м²",
-      price: "от 590 ₽",
-    },
-    {
-      name: "Шпатлевка и выравнивание стен под окраску",
-      unit: "за м²",
-      price: "от 650 ₽",
-    },
-    { name: "Покраска стен", unit: "за м²", price: "от 750 ₽" },
-    {
-      name: "Оклейка обоями (флизелин/винил)",
-      unit: "за м²",
-      price: "от 550 ₽",
-    },
-    { name: "Выравнивание потолка", unit: "за м²", price: "от 650 ₽" },
-    { name: "Покраска потолка", unit: "за м²", price: "от 480 ₽" },
-    { name: "Монтаж натяжного потолка", unit: "за м²", price: "от 700 ₽" },
-    {
-      name: "Укладка ламината/инженерной доски",
-      unit: "за м²",
-      price: "от 650 ₽",
-    },
-    { name: "Монтаж плинтуса (ПВХ/МДФ)", unit: "за п.м.", price: "от 190 ₽" },
-    { name: "Замена розетки/выключателя", unit: "за точку", price: "от 350 ₽" },
-    { name: "Монтаж светильника/спота", unit: "за шт.", price: "от 450 ₽" },
-    {
-      name: "Установка межкомнатной двери",
-      unit: "за шт.",
-      price: "от 3 500 ₽",
-    },
-    {
-      name: "Силикон/герметизация примыканий",
-      unit: "за п.м.",
-      price: "от 120 ₽",
-    },
-    { name: "Сборка/установка мебели", unit: "за изделие", price: "от 900 ₽" },
-    {
-      name: "Клининговая уборка после ремонта",
-      unit: "за м²",
-      price: "от 80 ₽",
-    },
-  ];
 
   // стили (минимум, без внешних CSS)
   const cardWrap = {
@@ -97,39 +53,6 @@ const Mobile = () => {
     fontSize: 16,
     boxShadow: "0 6px 16px rgba(255,215,0,.25)",
     cursor: "pointer",
-  };
-  const contactBtn = {
-    backgroundColor: "#FFD700",
-    color: "#0a1a26",
-    border: "none",
-    borderRadius: 999,
-    padding: "12px 22px",
-    fontWeight: 800,
-    fontSize: 16,
-    cursor: "pointer",
-    boxShadow: "0 6px 16px rgba(255,215,0,.25)",
-  };
-  const priceCard = {
-    background: "#fff",
-    color: "#0a1a26",
-    borderRadius: 14,
-    padding: "12px 14px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    border: "1px solid #e9eef2",
-  };
-  const priceName = { fontSize: 15, fontWeight: 700, lineHeight: 1.3 };
-  const priceUnit = { fontSize: 12, color: "#66737f", marginTop: 2 };
-  const priceTag = {
-    background: "#0a1a26",
-    color: "#fff",
-    borderRadius: 999,
-    padding: "8px 10px",
-    fontWeight: 800,
-    fontSize: 14,
-    whiteSpace: "nowrap",
   };
 
   return (
@@ -383,6 +306,7 @@ const Mobile = () => {
           </ul>
 
           <button
+            onClick={() => navigate("/contacts")}
             style={{
               backgroundColor: "#FFD700",
               color: "#0a1a26",
@@ -424,23 +348,123 @@ const Mobile = () => {
         </h2>
 
         <div style={{ display: "grid", gap: 16 }}>
-          {cosmeticItems.map((p) => (
-            <div key={p.slug} style={cardWrap}>
-              <img
-                src={p.images?.[0] || "/images/placeholder.jpg"}
-                alt={p.title}
-                loading="lazy"
-                style={imgStyle}
-              />
-              <div style={titleBar}>{p.title}</div>
-              <button
-                style={ctaBtn}
-                onClick={() => navigate(`/portfolio/${p.slug}`)}
+          {cosmeticItems.map((p) => {
+            const area = p.meta?.area || ""; // напр. "68 м²"
+
+            return (
+              <div
+                key={p.slug}
+                style={{
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  background: "#0f2431",
+                  boxShadow: "0 10px 28px rgba(0,0,0,.25)",
+                }}
               >
-                Подробнее
-              </button>
-            </div>
-          ))}
+                <img
+                  src={p.images?.[0] || "/images/placeholder.jpg"}
+                  alt={p.title}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+
+                {/* Инфо-строка: название + площадь */}
+                <div
+                  style={{
+                    padding: "14px 16px",
+                    borderTop: "1px solid rgba(255,255,255,.08)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: "#fff",
+                        fontSize: 18,
+                        fontWeight: 800,
+                        lineHeight: 1.25,
+                      }}
+                    >
+                      {
+                        p.title.replace(
+                          / — \d+\s*м²/i,
+                          ""
+                        ) /* на случай, если метраж уже в title */
+                      }
+                    </div>
+
+                    {area && (
+                      <span
+                        style={{
+                          flexShrink: 0,
+                          background: "rgba(255,215,0,.12)",
+                          color: "#FFD700",
+                          border: "1px solid rgba(255,215,0,.35)",
+                          borderRadius: 999,
+                          padding: "6px 10px",
+                          fontSize: 13,
+                          fontWeight: 800,
+                        }}
+                      >
+                        {area}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Локация/подзаголовок */}
+                  {p.subtitle && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        color: "rgba(255,255,255,.75)",
+                        fontSize: 14,
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {p.subtitle}
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA — подняли выше и добавили нижний отступ */}
+                <div style={{ padding: "0 16px 16px" }}>
+                  <button
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      padding: "12px 20px",
+                      border: "none",
+                      borderRadius: 999,
+                      background: "#FFD700",
+                      color: "#0a1a26",
+                      fontWeight: 800,
+                      fontSize: 16,
+                      boxShadow: "0 6px 16px rgba(255,215,0,.25)",
+                      cursor: "pointer",
+                      width: "100%",
+                      margin: "8px 0 10px", // ↑ меньше сверху, есть отступ снизу
+                    }}
+                    onClick={() => navigate(`/portfolio/${p.slug}`)}
+                  >
+                    Подробнее
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

@@ -1,18 +1,17 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import phoneIcon from "../../assets/phone-icon.png";
 
-const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
-  const confirmCall = () => {
-    ym(101296472, "reachGoal", "call_confirmed");
-    window.location.href = "tel:+79264081811";
-  };
+import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
+
+const PhoneMobilePanel = ({ isMobile }) => {
+  const navigate = useNavigateWithMetrika();
   return (
     <>
       {/* Кнопка трубки (всегда видна) */}
       <button
         onClick={() => {
-          setIsOpen((prev) => !prev);
+          navigate("/contacts");
           navigator.vibrate?.(30);
         }}
         type="button"
@@ -24,10 +23,10 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
         style={{
           all: "unset",
           position: "fixed",
-          bottom: "6svh",
-          right: "20px",
-          width: "70px",
-          height: "70px",
+          bottom: isMobile ? "6svh" : "10%",
+          right: isMobile ? "20px" : "10%",
+          width: isMobile ? "70px" : "100px",
+          height: isMobile ? "70px" : "100px",
           background: "#f2cb05",
           borderRadius: "50%",
           display: "flex",
@@ -45,74 +44,12 @@ const PhoneMobilePanel = ({ isOpen, setIsOpen, setQuestioModalOpen }) => {
           src={phoneIcon}
           alt="phone"
           style={{
-            width: 62,
-            height: 62,
+            width: isMobile ? 62 : 100,
+            height: isMobile ? 62 : 100,
             pointerEvents: "none",
           }}
         />
       </button>
-
-      {/* Панель — появляется только при isOpen */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.25 }}
-            style={{
-              position: "fixed",
-              bottom: "11svh",
-              right: "65px", // отступ от трубки
-              left: "58px",
-              height: "160px",
-              backgroundColor: "rgba(17, 17, 17, 0.85)",
-              borderRadius: "24px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-
-              gap: "12px",
-              zIndex: 1000,
-            }}
-          >
-            <button
-              style={{
-                background: "#f2cb05",
-                border: "none",
-
-                borderRadius: "28px",
-                fontWeight: "bold",
-                fontSize: "17px",
-                height: "60px",
-                width: "80%",
-                whiteSpace: "nowrap",
-              }}
-              onClick={() => setQuestioModalOpen(true)}
-            >
-              ЗАКАЗАТЬ ЗВОНОК
-            </button>
-            <button
-              onClick={confirmCall}
-              style={{
-                background: "#f2cb05",
-                border: "none",
-
-                borderRadius: "28px",
-                fontWeight: "bold",
-                fontSize: "17px",
-                width: "80%",
-                height: "60px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              ПОЗВОНИТЬ
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };

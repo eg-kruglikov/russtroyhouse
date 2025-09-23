@@ -1,6 +1,7 @@
 // src/components/portfolio/PortfolioProject.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigationType } from "react-router-dom";
+import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
 
 export default function PortfolioProject(props) {
   const {
@@ -21,6 +22,8 @@ export default function PortfolioProject(props) {
 
   const hero = images?.[0];
   const gallery = useMemo(() => images.slice(1), [images]);
+
+  const navigate = useNavigateWithMetrika();
 
   const navType = useNavigationType();
 
@@ -193,22 +196,21 @@ export default function PortfolioProject(props) {
 
         {/* CTA */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <a href="tel:+7XXXXXXXXXX" style={{ textDecoration: "none" }}>
-            <button
-              style={{
-                backgroundColor: "#FFD700",
-                color: "#0a1a26",
-                border: "none",
-                borderRadius: 999,
-                padding: isMobile ? "12px 22px" : "14px 26px",
-                fontSize: isMobile ? 16 : 18,
-                fontWeight: 800,
-                cursor: "pointer",
-              }}
-            >
-              Получить консультацию
-            </button>
-          </a>
+          <button
+            onClick={() => navigate("/contacts")}
+            style={{
+              backgroundColor: "#FFD700",
+              color: "#0a1a26",
+              border: "none",
+              borderRadius: 999,
+              padding: isMobile ? "12px 22px" : "14px 26px",
+              fontSize: isMobile ? 16 : 18,
+              fontWeight: 800,
+              cursor: "pointer",
+            }}
+          >
+            Получить консультацию
+          </button>
         </div>
       </div>
     </div>

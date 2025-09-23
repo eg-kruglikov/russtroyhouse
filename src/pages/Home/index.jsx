@@ -3,16 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import hero from "../../assets/hero.png";
 
 import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
-import DesktopPhoneWidget from "../../components/windows/DesktopPhoneWidget";
-import QuestionModal from "../../components/windows/FeedbackModal";
+
 import Header from "../../components/blocks/Header";
 import Footer from "../../components/blocks/Footer";
 import Map from "../../components/blocks/Map";
 import Services from "../../components/blocks/Services";
 import PhotoGrid from "../../components/blocks/PhotoGrid";
 
-import { useLocation } from "react-router-dom";
-import WorkPlan from "../../components/blocks/WorkPlan";
 import HomePortfolioGrid from "../../components/blocks/HomePortfolioGrid";
 import { portfolioItems } from "../../data/portfolio";
 
@@ -28,8 +25,7 @@ const Home = () => {
   const portfolioRef = useRef(null);
   const contactsRef = useRef(null);
   const firstBlock = useRef(null);
-
-  const location = useLocation();
+  const designProjectsRef = useRef(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 720);
@@ -80,6 +76,7 @@ const Home = () => {
   const scrollToServices = () => scrollToWithOffset(servicesRef);
   const scrollToContacts = () => scrollToWithOffset(contactsRef);
   const scrollToportfolio = () => scrollToWithOffset(portfolioRef);
+  const scrollToDesignProjects = () => scrollToWithOffset(designProjectsRef);
 
   const light = "#ffffff";
 
@@ -92,33 +89,9 @@ const Home = () => {
         userSelect: "none",
       }}
     >
-      {/* изображения "ремонт начинается здась" */}
+      {/* Иконка трубки*/}
 
-      {/* Иконка трубки, панель кнопок "позвонить" "обратный звонок" */}
-
-      {isMobile ? (
-        <MobilePhoneWidget
-          isOpen={phoneWidgetIsOpen}
-          setIsOpen={setPhoneWidgetIsOpen}
-          setQuestioModalOpen={setQuestioModalOpen}
-        />
-      ) : (
-        <DesktopPhoneWidget
-          isOpen={phoneWidgetIsOpen}
-          setIsOpen={setPhoneWidgetIsOpen}
-          setQuestioModalOpen={setQuestioModalOpen}
-        />
-      )}
-
-      {/* кнопка "ЗАКАЗАТЬ" */}
-
-      {/* модалка обратной связи */}
-
-      <QuestionModal
-        isOpen={questioModalOpen}
-        onClose={() => setQuestioModalOpen(false)}
-        isMobile={isMobile}
-      />
+      <MobilePhoneWidget isMobile={isMobile} />
 
       <div
         style={{
@@ -140,6 +113,7 @@ const Home = () => {
           scrollToServices={scrollToServices}
           scrollToportfolio={scrollToportfolio}
           scrollToContacts={scrollToContacts}
+          scrollToDesignProjects={scrollToDesignProjects}
         />
         {/* Hero */}
         <section
@@ -379,7 +353,7 @@ const Home = () => {
 
         <section
           id="designProjects"
-          ref={portfolioRef}
+          ref={designProjectsRef}
           style={{
             // scrollMarginTop: "54px",
             textAlign: "center",
@@ -395,50 +369,6 @@ const Home = () => {
             isMobile={isMobile}
             scrollToportfolio={scrollToportfolio}
           />
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "visible",
-              height: "20%",
-            }}
-          >
-            <button
-              type="button"
-              onTouchStart={(e) =>
-                (e.currentTarget.style.transform = "scale(0.97)")
-              }
-              onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              onMouseDown={(e) =>
-                (e.currentTarget.style.transform = "scale(0.97)")
-              }
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
-              style={{
-                backgroundColor: "#f2cb05",
-                color: isMobile ? "#000" : "#ffff",
-                padding: isMobile ? "17px 24px" : "32px 48px",
-                fontWeight: "bold",
-                border: "none",
-                borderRadius: "45px",
-                cursor: "pointer",
-                fontSize: isMobile ? "18px" : "30px",
-                marginTop: isMobile ? "30px" : "0px",
-                marginBottom: isMobile ? "30px" : "0px",
-                alignSelf: "center",
-                outline: "none",
-                WebkitTapHighlightColor: "transparent",
-                opacity: phoneWidgetIsOpen ? "0.5" : "1",
-              }}
-              onClick={() => setQuestioModalOpen(true)}
-              disabled={phoneWidgetIsOpen}
-            >
-              получить пример проекта
-            </button>
-          </div>
         </section>
         <div
           id="contacts"
