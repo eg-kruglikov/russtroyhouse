@@ -1,9 +1,13 @@
 import React, { useMemo } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import { projects } from "../../../data/portfolio";
+import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
+import { handleImageError } from "../../../utils/imageFallback";
+import { usePressEffect } from "../../../hooks/useSomething";
 
 const DesignerRepairPageMobile = () => {
   const navigate = useNavigateWithMetrika();
+  const press = usePressEffect();
 
   // берём только дизайнерские проекты и показываем первые 2
   const designerItems = useMemo(
@@ -237,8 +241,10 @@ const DesignerRepairPageMobile = () => {
 
           {/* единый призыв к действию — главная кнопка */}
           <button
+            {...press}
             onClick={() => navigate("/contacts")}
             style={{
+              ...press.style,
               width: "100%",
               padding: "14px 18px",
               border: "none",
@@ -455,9 +461,11 @@ const DesignerRepairPageMobile = () => {
                   }}
                 >
                   <img
-                    src={p.images?.[0] || "/images/placeholder.jpg"}
+                    src={p.images?.[0] || FALLBACK_IMAGE}
+                    data-original-src={p.images?.[0] || ""}
                     alt={p.title}
                     loading="lazy"
+                    onError={handleImageError}
                     style={{
                       width: "100%",
                       height: 200,
@@ -533,7 +541,9 @@ const DesignerRepairPageMobile = () => {
                   {/* CTA — подняли выше и добавили нижний отступ */}
                   <div style={{ padding: "0 16px 16px" }}>
                     <button
+                      {...press}
                       style={{
+                        ...press.style,
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -564,9 +574,11 @@ const DesignerRepairPageMobile = () => {
         {/* === Back to home === */}
         <div style={{ padding: 20 }}>
           <button
+            {...press}
             onClick={() => navigate("/")}
             aria-label="На главную"
             style={{
+              ...press.style,
               width: "100%",
               display: "flex",
               alignItems: "center",

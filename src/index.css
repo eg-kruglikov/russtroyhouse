@@ -116,3 +116,14 @@ body {
   margin: 6px auto 0;
   border-radius: 2px;
 }
+
+/* Анимация плавающего листочка */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}

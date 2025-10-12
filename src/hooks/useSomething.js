@@ -16,5 +16,9 @@ export const usePressEffect = () => {
     onMouseDown: onStart,
     onMouseUp: onEnd,
     onMouseLeave: onEnd,
+    style: {
+      WebkitTapHighlightColor: "transparent",
+      transition: "transform .12s ease",
+    },
   };
 };

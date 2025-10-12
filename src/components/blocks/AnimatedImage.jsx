@@ -1,17 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import more from "../../assets/more.png";
+import { usePressEffect } from "../../hooks/useSomething";
+import { ymNavigate } from "../../utils/metrika";
 
 const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
   const navigate = useNavigate();
+  const press = usePressEffect();
 
   const handleClick = (e) => {
-    if (window.ym) {
-      // Сообщаем о просмотре новой страницы (виртуальный хит)
-      window.ym(101296472, "hit", `/project/${projectId}`);
-      // Дополнительно фиксируем, что визит не отказ
-      window.ym(101296472, "notBounce");
-    }
+    // Отправляем виртуальный хит + notBounce
+    ymNavigate(`/project/${projectId}`);
 
     setTimeout(() => {
       navigate(`/project/${projectId}`);
@@ -20,23 +18,16 @@ const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
 
   return (
     <div
+      {...press}
       onClick={handleClick}
       style={{
-        flex: isMobile ? "1 1 100%" : "1 1 calc(50% - 8px)",
-        maxWidth: isMobile ? "100%" : "calc(50% - 16px)",
-        marginBottom: isMobile ? "10px" : "0px",
+        ...press.style,
+        width: "100%",
         overflow: "hidden",
         cursor: "pointer",
         position: "relative",
-        height: "33%",
-        transition: "transform 0.2s ease",
-        WebkitTapHighlightColor: "transparent",
+        height: isMobile ? "auto" : "auto",
       }}
-      onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-      onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-      onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
     >
       <img
         loading="lazy"
@@ -51,33 +42,59 @@ const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
           position: "relative",
         }}
       />
+      {/* текстовая подложка с названием проекта */}
       <div
         style={{
           position: "absolute",
-
-          top: "15px", // Отступ сверху
-          left: "50%", // Центр по горизонтали
-          transform: "translateX(-50%)",
-          fontSize: isMobile ? "4.6vw" : "2.1vw",
-          whiteSpace: "nowrap",
-
-          fontWeight: "500",
-          textShadow: "2px 2px 6px rgba(0, 0, 0, 0.9)",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: isMobile ? "10px 12px 46px" : "12px 14px 52px",
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.75) 100%)",
+          color: "#fff",
+          display: "grid",
+          gap: 6,
         }}
+        aria-hidden
       >
-        {title}
+        <div
+          style={{
+            fontWeight: 800,
+            fontSize: isMobile ? 18 : 20,
+            lineHeight: 1.25,
+            textShadow: "0 2px 8px rgba(0,0,0,.6)",
+          }}
+        >
+          {title}
+        </div>
+        <div
+          style={{
+            opacity: 0.9,
+            fontSize: isMobile ? 12 : 13,
+          }}
+        >
+          Смотреть дизайн‑проект
+        </div>
       </div>
-      <img
-        loading="lazy"
-        src={more}
+
+      {/* компактная кнопка-ярлык */}
+      <div
         style={{
           position: "absolute",
-          bottom: "4%",
-          left: "0%",
-          height: "auto",
-          width: isMobile ? "35%" : "25%",
+          bottom: 10,
+          right: 10,
+          background: "#FFD700",
+          color: "#0a1a26",
+          borderRadius: 999,
+          padding: isMobile ? "8px 12px" : "10px 14px",
+          fontWeight: 900,
+          fontSize: isMobile ? 12 : 14,
+          boxShadow: "0 8px 16px rgba(255,215,0,.3)",
         }}
-      />
+      >
+        Подробнее
+      </div>
       {/* <div
         style={{
           display: isMobile ? "inline-block" : "none",

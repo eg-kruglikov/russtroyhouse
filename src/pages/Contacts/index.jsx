@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QuestionModal from "../../components/windows/FeedbackModal";
-
-/** безопасный триггер метрики (не упадёт, если ym нет) */
-const goal = (name, params = {}) => {
-  try {
-    if (window?.ym) window.ym(101296472, "reachGoal", name, params);
-  } catch {}
-};
+import Map from "../../components/blocks/Map";
+import Footer from "../../components/blocks/Footer";
+import { usePressEffect } from "../../hooks/useSomething";
+import { ymGoal } from "../../utils/metrika";
+import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
 
 const WA_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
   "Здравствуйте! Хочу обсудить ремонт."
@@ -75,17 +73,16 @@ const BtnBase = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: 12,
-  padding: "14px 18px",
-  borderRadius: 14,
+  gap: 10,
+  padding: "12px 20px",
+  borderRadius: 12,
   fontWeight: 800,
-  fontSize: 16,
+  fontSize: 15,
   cursor: "pointer",
   textDecoration: "none",
-  boxShadow: "0 8px 24px rgba(0,0,0,.25)",
-  transition: "transform .06s ease",
-  width: "auto",
-  maxWidth: "560px",
+  boxShadow: "0 6px 18px rgba(0,0,0,.2)",
+  width: "100%",
+  maxWidth: "100%",
   boxSizing: "border-box",
 };
 
@@ -116,6 +113,10 @@ const ContactsPage = () => {
   const [numberDisplayed, setNumberDisplayed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
+  const press = usePressEffect();
+
+  // Отслеживаем активность пользователя (скролл, время на странице)
+  useMetrikaActivity();
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 720);
@@ -126,13 +127,13 @@ const ContactsPage = () => {
 
   const showNumber = () => {
     if (!numberDisplayed) {
-      goal("call_confirmed");
+      ymGoal("call_confirmed");
       setNumberDisplayed(true);
     }
   };
 
   const confirmCall = () => {
-    goal("call_confirmed");
+    ymGoal("call_confirmed");
     window.location.href = "tel:+79264081811";
   };
 
@@ -143,14 +144,11 @@ const ContactsPage = () => {
       return (
         <div style={BtnWrap}>
           <a
+            {...press}
             href={href}
-            style={style}
+            style={{ ...press.style, ...style }}
             rel="noopener noreferrer"
             target={href.startsWith("http") ? "_blank" : undefined}
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform = "scale(.98)")
-            }
-            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onClick={onClick}
           >
             {icon}
@@ -162,9 +160,8 @@ const ContactsPage = () => {
     return (
       <div style={BtnWrap}>
         <button
-          style={style}
-          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(.98)")}
-          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          {...press}
+          style={{ ...press.style, ...style }}
           onClick={onClick}
         >
           {icon}
@@ -179,7 +176,7 @@ const ContactsPage = () => {
     (cb, goalName, extra = {}) =>
     (e) => {
       if (e && e.preventDefault) e.preventDefault();
-      goal(goalName, extra);
+      ymGoal(goalName, extra);
       setTimeout(() => cb?.(), 150); // задержка, чтобы успел отработать reachGoal
     };
 
@@ -205,10 +202,72 @@ const ContactsPage = () => {
 
       {/* Main */}
       <div style={Main}>
-        <h1 style={H1}>Связь</h1>
+        <h1 style={H1}>Контакты</h1>
         <div style={Lead}>Любым удобным способом — отвечаем быстро.</div>
 
         <div style={Cards}>
+          {/* Акция */}
+          <section
+            style={{
+              ...Card,
+              background:
+                "linear-gradient(135deg, rgba(255,215,0,.15) 0%, rgba(255,140,0,.08) 100%)",
+              border: "2px solid rgba(255,215,0,.3)",
+              boxShadow:
+                "0 12px 32px rgba(255,215,0,.15), 0 0 80px rgba(255,215,0,.08)",
+            }}
+          >
+            <div
+              style={{
+                ...CardHead,
+                color: yellow,
+                fontSize: 22,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span style={{ fontSize: 24 }}>🍂</span>
+              Акция осени
+            </div>
+            <div
+              style={{
+                ...CardText,
+                fontSize: 15,
+                fontWeight: 600,
+                opacity: 0.9,
+                marginBottom: 14,
+                paddingLeft: 12,
+                borderLeft: "3px solid rgba(255,215,0,.5)",
+              }}
+            >
+              Пока конкуренты повышают цены на зиму — мы даём скидки!
+              Зафиксируйте выгодную стоимость сейчас.
+            </div>
+            <div style={{ ...CardText, fontSize: 16, fontWeight: 500 }}>
+              Скажите{" "}
+              <span style={{ color: yellow, fontWeight: 800 }}>
+                "Ремонт 2025"
+              </span>{" "}
+              при первом звонке и получите{" "}
+              <span style={{ color: yellow, fontWeight: 800 }}>скидку 5%</span>{" "}
+              на любой вид ремонта!
+            </div>
+            <div
+              style={{
+                padding: "10px 16px",
+                borderRadius: 10,
+                background: "rgba(255,215,0,.1)",
+                border: "1px solid rgba(255,215,0,.2)",
+                fontSize: 13,
+                opacity: 0.85,
+                textAlign: "center",
+              }}
+            >
+              ⏰ Акция действует до конца года
+            </div>
+          </section>
+
           {/* Позвонить */}
           <section style={Card}>
             <div style={CardHead}>Позвонить</div>
@@ -224,18 +283,6 @@ const ContactsPage = () => {
               icon={IconPhone}
             >
               {numberDisplayed ? "+7 (926) 408-18-11" : "Позвонить"}
-            </Btn>
-          </section>
-
-          {/* Обратная связь */}
-          <section style={Card}>
-            <div style={CardHead}>Обратная связь</div>
-            <div style={CardText}>
-              Перезвоним вам сами — в любое удобное время. Оставьте номер и
-              короткий комментарий.
-            </div>
-            <Btn onClick={() => setQuestioModalOpen(true)}>
-              Заказать обратный звонок
             </Btn>
           </section>
 
@@ -320,6 +367,48 @@ const ContactsPage = () => {
           </div>
         </div>
       </div>
+      {/* Карта и контакты (перенесено с главной) */}
+      <div
+        style={{
+          position: "relative",
+          margin: "0 auto",
+          width: "100%",
+          padding: "32px 0",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "2px",
+            background:
+              "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
+            backgroundSize: "40px 8px",
+            animation: "dash-move-left 2s linear infinite",
+          }}
+        />
+
+        <Map />
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            height: "2px",
+            background:
+              "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
+            backgroundSize: "40px 8px",
+            animation: "dash-move-right 2s linear infinite",
+            scrollMarginTop: "54px",
+          }}
+        />
+      </div>
+
+      <Footer />
     </div>
   );
 };

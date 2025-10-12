@@ -1,6 +1,9 @@
 // src/components/blocks/HomePortfolioGrid.jsx
 import { useEffect, useState } from "react";
 import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
+import { FALLBACK_IMAGE } from "../../assets/fallbackImage";
+import { handleImageError } from "../../utils/imageFallback";
+import { usePressEffect } from "../../hooks/useSomething";
 
 export default function HomePortfolioGrid({ items = [] }) {
   const [vw, setVw] = useState(() => window.innerWidth);
@@ -44,8 +47,9 @@ export default function HomePortfolioGrid({ items = [] }) {
 
 function PortfolioCard({ p, isMobile }) {
   const navigate = useNavigateWithMetrika();
+  const press = usePressEffect();
 
-  const cover = p?.images?.[0] || "/images/photolibrary/placeholder.jpg";
+  const cover = p?.images?.[0] || FALLBACK_IMAGE;
   const chip = (p?.meta?.area || "").trim();
 
   // ссылка для кнопки
@@ -83,11 +87,10 @@ function PortfolioCard({ p, isMobile }) {
     >
       <img
         src={cover}
+        data-original-src={cover}
         alt={p?.title || "Проект"}
         loading="lazy"
-        onError={(e) =>
-          (e.currentTarget.src = "/images/photolibrary/placeholder.jpg")
-        }
+        onError={handleImageError}
         style={{
           width: "100%",
           height: isMobile ? 220 : 260,
@@ -151,9 +154,11 @@ function PortfolioCard({ p, isMobile }) {
 
         {/* Кнопка — единственная интерактивщина */}
         <button
+          {...press}
           type="button"
           onClick={go}
           style={{
+            ...press.style,
             cursor: "pointer",
             width: "100%",
             marginTop: 14,

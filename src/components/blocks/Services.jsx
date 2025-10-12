@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ymNavigate } from "../../utils/metrika";
 
 const Services = ({
   isMobile,
@@ -11,12 +12,8 @@ const Services = ({
   const navigate = useNavigate();
   const handleClick = (url) => {
     const page = `/repair/${url}`;
-    if (window.ym) {
-      // Сообщаем о просмотре новой страницы (виртуальный хит)
-      window.ym(101296472, "hit", page);
-      // Дополнительно фиксируем, что визит не отказ
-      window.ym(101296472, "notBounce");
-    }
+    // Отправляем виртуальный хит + notBounce
+    ymNavigate(page);
 
     setTimeout(() => {
       navigate(page);
@@ -46,20 +43,6 @@ const Services = ({
           height: "auto",
         }}
       >
-        <div
-          style={{
-            fontSize: isMobile ? "12vw" : "42px",
-            color: "#f2cb05",
-            fontWeight: 700,
-            marginBottom: isMobile ? "15px" : "0px",
-            whiteSpace: "nowrap",
-            marginTop: "0px",
-            height: isMobile ? "8vh" : "10vh",
-          }}
-        >
-          НАШИ УСЛУГИ
-        </div>
-
         {/* косметический ремонт */}
         <div
           style={{

@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { projects } from "../../../data/portfolio";
+import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
+import { usePressEffect } from "../../../hooks/useSomething";
 
 // Конфиг под типы ремонта
 const REPAIR_CONFIG = {
@@ -78,6 +80,7 @@ export default function RepairPage() {
   const { type } = useParams();
   const cfg = REPAIR_CONFIG[type] ?? REPAIR_CONFIG.cosmetic;
   const navigate = useNavigate();
+  const press = usePressEffect();
 
   const items = useMemo(
     () => projects.filter((p) => p.meta?.type === cfg.typeLabel),
@@ -94,7 +97,12 @@ export default function RepairPage() {
         <img src={cfg.hero} alt={cfg.title} />
         <div className="repair-hero__inner">
           <h1 className="repair-title">{cfg.title}</h1>
-          <button className="repair-btn" onClick={() => navigate("/#contact")}>
+          <button
+            {...press}
+            className="repair-btn"
+            onClick={() => navigate("/#contact")}
+            style={press.style}
+          >
             Получить консультацию
           </button>
         </div>
@@ -118,7 +126,7 @@ export default function RepairPage() {
           {items.map((p) => (
             <div key={p.slug} className="card">
               <img
-                src={p.images?.[0] || "/images/placeholder.jpg"}
+                src={p.images?.[0] || FALLBACK_IMAGE}
                 alt={p.title}
                 loading="lazy"
               />
@@ -130,8 +138,10 @@ export default function RepairPage() {
                 </div>
                 */}
                 <button
+                  {...press}
                   className="card__btn"
                   onClick={() => navigate(`/portfolio/${p.slug}`)}
+                  style={press.style}
                 >
                   Подробнее
                 </button>

@@ -2,8 +2,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigationType } from "react-router-dom";
 import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
+import { handleImageError } from "../../utils/imageFallback";
+import { FALLBACK_IMAGE } from "../../assets/fallbackImage";
+import { usePressEffect } from "../../hooks/useSomething";
 
 export default function PortfolioProject(props) {
+  const press = usePressEffect();
   const {
     title = "Проект",
     subtitle = "",
@@ -20,7 +24,7 @@ export default function PortfolioProject(props) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const hero = images?.[0];
+  const hero = images?.[0] || FALLBACK_IMAGE;
   const gallery = useMemo(() => images.slice(1), [images]);
 
   const navigate = useNavigateWithMetrika();
@@ -83,7 +87,9 @@ export default function PortfolioProject(props) {
         >
           <img
             src={hero}
+            data-original-src={hero}
             alt={title}
+            onError={handleImageError}
             style={{
               display: "block",
               width: "100%",
@@ -180,7 +186,9 @@ export default function PortfolioProject(props) {
                 >
                   <img
                     src={src}
+                    data-original-src={src}
                     alt={`${title} — фото ${i + 2}`}
+                    onError={handleImageError}
                     style={{
                       display: "block",
                       width: "100%",
@@ -197,8 +205,10 @@ export default function PortfolioProject(props) {
         {/* CTA */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <button
+            {...press}
             onClick={() => navigate("/contacts")}
             style={{
+              ...press.style,
               backgroundColor: "#FFD700",
               color: "#0a1a26",
               border: "none",

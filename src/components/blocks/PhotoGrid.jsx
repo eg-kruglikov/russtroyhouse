@@ -26,18 +26,19 @@ const images = [
 ];
 
 const PhotoGrid = ({ isMobile }) => {
+  const gridStyle = {
+    width: "100%",
+    maxWidth: 1200,
+    margin: "0 auto",
+    padding: isMobile ? "0 16px" : "0 24px",
+    boxSizing: "border-box",
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+    gap: isMobile ? 12 : 16,
+  };
+
   return (
-    <div
-      style={{
-        height: isMobile ? "auto" : "80%",
-        boxSizing: "border-box",
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        alignItems: "stretch",
-        gap: "1%",
-      }}
-    >
+    <div style={gridStyle}>
       {images.map((el, i) => (
         <AnimatedImage
           key={i}

@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
+import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
 
 import { projects } from "../../../data/portfolio";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
+import { usePressEffect } from "../../../hooks/useSomething";
 
 const Mobile = () => {
   const navigate = useNavigateWithMetrika();
+  const press = usePressEffect();
 
   useEffect(() => {
     const handleBack = () => console.log("⬅ Пользователь нажал Назад!");
@@ -306,8 +309,10 @@ const Mobile = () => {
           </ul>
 
           <button
+            {...press}
             onClick={() => navigate("/contacts")}
             style={{
+              ...press.style,
               backgroundColor: "#FFD700",
               color: "#0a1a26",
               border: "none",
@@ -317,7 +322,6 @@ const Mobile = () => {
               fontSize: 18,
               cursor: "pointer",
               boxShadow: "0 6px 16px rgba(255,215,0,.35)",
-              transition: "all 0.3s ease",
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.boxShadow =
@@ -362,7 +366,7 @@ const Mobile = () => {
                 }}
               >
                 <img
-                  src={p.images?.[0] || "/images/placeholder.jpg"}
+                  src={p.images?.[0] || FALLBACK_IMAGE}
                   alt={p.title}
                   loading="lazy"
                   style={{
@@ -440,7 +444,9 @@ const Mobile = () => {
                 {/* CTA — подняли выше и добавили нижний отступ */}
                 <div style={{ padding: "0 16px 16px" }}>
                   <button
+                    {...press}
                     style={{
+                      ...press.style,
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -471,9 +477,11 @@ const Mobile = () => {
       {/* === Back to home === */}
       <div style={{ padding: 20 }}>
         <button
+          {...press}
           onClick={() => navigate("/")}
           aria-label="На главную"
           style={{
+            ...press.style,
             width: "100%",
             display: "flex",
             alignItems: "center",

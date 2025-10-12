@@ -3,8 +3,7 @@ import { useEffect } from "react";
 
 import PortfolioProject from "../../components/portfolio/PortfolioProject";
 import { projects } from "../../data/portfolio";
-
-const METRIKA_ID = 101296472;
+import { ymHit } from "../../utils/metrika";
 
 export default function PortfolioProjectPage() {
   const { slug } = useParams();
@@ -13,16 +12,8 @@ export default function PortfolioProjectPage() {
   useEffect(() => {
     if (!project) return;
 
-    try {
-      if (window?.ym) {
-        const url = `/portfolio/${slug}`;
-        // фиксируем просмотр страницы
-        window.ym(METRIKA_ID, "hit", url);
-        // отдельная цель для аналитики
-      }
-    } catch (e) {
-      console.warn("Metrika error:", e);
-    }
+    // Фиксируем просмотр страницы портфолио
+    ymHit(`/portfolio/${slug}`);
   }, [slug, project]);
 
   if (!project) return <div>Проект не найден</div>;

@@ -1,5 +1,6 @@
 // src/hooks/useNavigateWithMetrika.js
 import { useNavigate } from "react-router-dom";
+import { ymNavigate } from "../utils/metrika";
 
 /**
  * Универсальный navigate с отправкой событий в Метрику.
@@ -16,11 +17,9 @@ export function useNavigateWithMetrika() {
     // Подготовим путь для хита Метрики
     const page =
       typeof to === "string" ? (to.startsWith("/") ? to : `/${to}`) : "/";
-    console.log(page);
-    if (window.ym) {
-      window.ym(101296472, "hit", page);
-      window.ym(101296472, "notBounce");
-    }
+
+    // Используем централизованную функцию метрики
+    ymNavigate(page);
 
     // Если хотим передать state (например, scrollTo), пробрасываем его
     const navOpts =

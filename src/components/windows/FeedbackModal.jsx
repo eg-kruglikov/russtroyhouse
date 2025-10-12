@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { usePressEffect } from "../../hooks/useSomething";
+import { ymGoal } from "../../utils/metrika";
 
 const QuestionModal = ({ isOpen, onClose, isMobile }) => {
-  if (!isOpen) return null;
-
+  const press = usePressEffect();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+7");
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
 
   const handlePhoneChange = (e) => {
     let value = e.target.value;
@@ -74,7 +77,7 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           }),
         });
       }
-      ym(101296472, "reachGoal", "form_sent");
+      ymGoal("form_sent");
       setSubmitted(true);
       setName("");
       setPhone("+7");
@@ -117,8 +120,10 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          {...press}
           onClick={onClose}
           style={{
+            ...press.style,
             position: "absolute",
             top: isMobile ? "10px" : "20px",
             right: isMobile ? "14px" : "24px",
@@ -251,18 +256,11 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
           </p>
 
           <button
-            onTouchStart={(e) =>
-              (e.currentTarget.style.transform = "scale(0.9)")
-            }
-            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform = "scale(0.9)")
-            }
-            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            {...press}
             type="submit"
             disabled={loading}
             style={{
+              ...press.style,
               marginTop: "12px",
               backgroundColor: loading ? "grey" : "#f2cb05",
               border: "none",
@@ -275,7 +273,6 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
               color: "#000",
               marginLeft: isMobile ? "53px" : "190px",
               outline: "none",
-              WebkitTapHighlightColor: "transparent",
             }}
           >
             {loading ? "Отправка..." : "ОТПРАВИТЬ"}

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { usePressEffect } from "../hooks/useSomething";
+import { ymGoal } from "../utils/metrika";
 
 const ModalCallback = ({ showModal, setShowModal }) => {
+  const press = usePressEffect();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -48,7 +51,7 @@ const ModalCallback = ({ showModal, setShowModal }) => {
           }),
         });
       }
-      ym(101296472, "reachGoal", "form_sent");
+      ymGoal("form_sent");
       setSubmitted(true);
       setName("");
       setPhone("");
@@ -164,9 +167,11 @@ const ModalCallback = ({ showModal, setShowModal }) => {
               )}
 
               <button
+                {...press}
                 type="submit"
                 disabled={loading}
                 style={{
+                  ...press.style,
                   padding: "14px",
                   fontSize: "16px",
                   backgroundColor: loading ? "#aaa" : "#f97316",
@@ -184,11 +189,13 @@ const ModalCallback = ({ showModal, setShowModal }) => {
           )}
 
           <button
+            {...press}
             onClick={() => {
               setShowModal(false);
               setSubmitted(false);
             }}
             style={{
+              ...press.style,
               backgroundColor: "#eee",
               color: "#333",
               padding: "12px",

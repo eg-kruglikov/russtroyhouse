@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { usePressEffect } from "../hooks/useSomething";
+import { ymGoal } from "../utils/metrika";
 
 const ModalConfirmCall = ({
   showModal,
@@ -6,10 +8,12 @@ const ModalConfirmCall = ({
   setShowModal,
   setHidenTel,
 }) => {
+  const press = usePressEffect();
+
   if (!showModal) return null;
   const isMobile = window.innerWidth <= 768;
   const confirmCall = () => {
-    ym(101296472, "reachGoal", "call_confirmed");
+    ymGoal("call_confirmed");
     if (isMobile) {
       window.location.href = "tel:+79264081811";
       setShowModal(false);
@@ -60,8 +64,10 @@ const ModalConfirmCall = ({
 
         <div style={{ display: "flex", justifyContent: "center", gap: "16px" }}>
           <button
+            {...press}
             onClick={confirmCall}
             style={{
+              ...press.style,
               backgroundColor: "#ff6a00",
               color: "#fff",
               border: "none",
@@ -75,10 +81,12 @@ const ModalConfirmCall = ({
             Да
           </button>
           <button
+            {...press}
             onClick={() => {
               setShowModal(false);
             }}
             style={{
+              ...press.style,
               backgroundColor: "#f0f0f0",
               color: "#1d2d3c",
               border: "1px solid #ccc",

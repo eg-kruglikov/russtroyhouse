@@ -1,24 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import logo from "../../assets/logo_white.png";
 import { usePressEffect } from "../../hooks/useSomething";
 import "../styles/header.css";
 import { motion, AnimatePresence } from "framer-motion";
-
-const METRIKA_ID = 101296472;
-
-// безопасный вызов ym
-function ymSafe(fn) {
-  try {
-    if (window && typeof window.ym === "function") fn(window.ym);
-  } catch (_) {}
-}
+import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
+import { ymGoal, ymNotBounce } from "../../utils/metrika";
 
 // отправляем notBounce один раз при первом реальном действии
 const useNotBounceOnce = () => {
   const sentRef = useRef(false);
   return () => {
     if (sentRef.current) return;
-    ymSafe((ym) => ym(METRIKA_ID, "notBounce"));
+    ymNotBounce();
     sentRef.current = true;
   };
 };
@@ -31,13 +23,24 @@ const Header = ({
   scrollToportfolio,
   scrollToContacts,
   scrollToDesignProjects,
+  scrollToReviews,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isWideScreen, setIsWideScreen] = useState(false);
   const menuRef = useRef(null);
   const burgerRef = useRef(null);
 
   const press = usePressEffect();
   const ensureNotBounce = useNotBounceOnce();
+  const navigateWithMetrika = useNavigateWithMetrika();
+
+  // Определяем широкий экран (>1100px)
+  useEffect(() => {
+    const checkWideScreen = () => setIsWideScreen(window.innerWidth > 1100);
+    checkWideScreen();
+    window.addEventListener("resize", checkWideScreen);
+    return () => window.removeEventListener("resize", checkWideScreen);
+  }, []);
 
   // соответствие названий кнопок целям Метрики
   const goalsMap = {
@@ -52,14 +55,14 @@ const Header = ({
   // универсальный обработчик кликов по пунктам навигации
   const handleNavClick = (name, actionFn) => {
     ensureNotBounce();
-    ymSafe((ym) => ym(METRIKA_ID, "reachGoal", goalsMap[name] || "nav_click"));
+    ymGoal(goalsMap[name] || "nav_click");
     actionFn?.();
   };
 
   // логотип → наверх (если нужно) + цель
   const handleLogoClick = () => {
     ensureNotBounce();
-    ymSafe((ym) => ym(METRIKA_ID, "reachGoal", "nav_logo_click"));
+    ymGoal("nav_logo_click");
     scrollToHero?.();
   };
 
@@ -69,13 +72,7 @@ const Header = ({
     setMenuOpen((prev) => {
       const next = !prev;
       ensureNotBounce();
-      ymSafe((ym) =>
-        ym(
-          METRIKA_ID,
-          "reachGoal",
-          next ? "nav_burger_open" : "nav_burger_close"
-        )
-      );
+      ymGoal(next ? "nav_burger_open" : "nav_burger_close");
       return next;
     });
   };
@@ -92,7 +89,7 @@ const Header = ({
       ) {
         setMenuOpen(false);
         // фиксируем закрытие по «вне клику»
-        ymSafe((ym) => ym(METRIKA_ID, "reachGoal", "nav_burger_close_outside"));
+        ymGoal("nav_burger_close_outside");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -105,7 +102,8 @@ const Header = ({
     { name: "Услуги", href: scrollToServices },
     { name: "Портфолио", href: scrollToportfolio },
     { name: "Дизайн-проекты", href: scrollToDesignProjects },
-    { name: "Контакты", href: scrollToContacts },
+    { name: "Отзывы", href: scrollToReviews },
+    { name: "Контакты", href: () => navigateWithMetrika("/contacts") },
   ];
 
   const colorTextHeader = "#cdcdcd";
@@ -142,19 +140,38 @@ const Header = ({
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
+            gap: isMobile ? "12px" : "8px",
           }}
           aria-label="На главную"
         >
           <img
-            src={logo}
-            alt="Логотип"
-            style={{ height: isMobile ? "24px" : "37px" }}
+            src="/logo.png"
+            alt="Логотип РуссУютСтрой"
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "8px",
+              display: "block",
+              flexShrink: 0,
+            }}
           />
+          {(isMobile || isWideScreen) && (
+            <div
+              style={{
+                fontWeight: "900",
+                fontSize: isMobile ? "16px" : "17px",
+                color: "rgba(255,255,255,.9)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              РуссУютСтрой
+            </div>
+          )}
         </button>
 
         {/* Навигация — десктоп */}
         {!isMobile && (
-          <nav style={{ display: "flex", gap: "2vw" }}>
+          <nav style={{ display: "flex", gap: "1.2vw", flexWrap: "wrap" }}>
             {navLinks.map((item, i) => (
               <button
                 {...press}
@@ -164,11 +181,12 @@ const Header = ({
                   all: "unset",
                   cursor: "pointer",
                   color: colorTextHeader,
-                  fontSize: "18px",
+                  fontSize: "15px",
                   fontWeight: "600",
                   textTransform: "uppercase",
-                  letterSpacing: "1px",
+                  letterSpacing: "0.5px",
                   textDecoration: "none",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.name}
@@ -227,13 +245,7 @@ const Header = ({
                 key={i}
                 onClick={() => {
                   ensureNotBounce();
-                  ymSafe((ym) =>
-                    ym(
-                      METRIKA_ID,
-                      "reachGoal",
-                      goalsMap[item.name] || "nav_click"
-                    )
-                  );
+                  ymGoal(goalsMap[item.name] || "nav_click");
                   item.href?.();
                   setMenuOpen(false);
                   navigator.vibrate?.(30);

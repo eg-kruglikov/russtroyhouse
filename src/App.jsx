@@ -19,6 +19,7 @@ import DesignerRepairPage from "./pages/Repair/DesignerRepairPage";
 import PortfolioProjectPage from "./pages/Portfolio/Project";
 
 import { useScrollRestoration } from "./hooks/useScrollRestoration";
+import { ymNavigate, ymError, ymPageViewsCount } from "./utils/metrika";
 
 import ContactsPage from "./pages/Contacts";
 
@@ -50,6 +51,35 @@ const AppContent = () => {
   const location = useLocation();
   const action = useNavigationType();
 
+  // 🔹 Глобальный обработчик ошибок
+  useEffect(() => {
+    const handleError = (event) => {
+      ymError(event.error || event.message, {
+        type: "uncaught_error",
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      });
+    };
+
+    const handleUnhandledRejection = (event) => {
+      ymError(event.reason, {
+        type: "unhandled_rejection",
+      });
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection
+      );
+    };
+  }, []);
+
   // 🔹 Хук, который чинит refresh с GitHub Pages
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -59,15 +89,29 @@ const AppContent = () => {
     }
   }, []);
 
+  // Отслеживание количества просмотренных страниц
+  useEffect(() => {
+    const viewedPages = new Set(
+      JSON.parse(sessionStorage.getItem("viewedPages") || "[]")
+    );
+
+    const currentPage = location.pathname;
+    if (!viewedPages.has(currentPage)) {
+      viewedPages.add(currentPage);
+      sessionStorage.setItem("viewedPages", JSON.stringify([...viewedPages]));
+
+      const pageCount = viewedPages.size;
+      ymPageViewsCount(pageCount);
+    }
+  }, [location]);
+
   useEffect(() => {
     const isInitialLoad = (window.history?.state?.idx ?? 0) === 0;
     if (isInitialLoad) return;
-    if (action === "POP" && window.ym) {
-      console.log("-->");
+    if (action === "POP") {
       const url =
         location.pathname + (location.search || "") + (location.hash || "");
-      window.ym(101296472, "hit", url);
-      window.ym(101296472, "notBounce");
+      ymNavigate(url);
     }
   }, [action, location]);
 

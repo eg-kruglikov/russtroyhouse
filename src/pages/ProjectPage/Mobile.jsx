@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ymNavigate } from "../../utils/metrika";
 
 const ProjectPage = () => {
   const [data, setData] = useState(null);
@@ -91,10 +92,7 @@ const ProjectPage = () => {
 
   const handleClick = () => {
     // Сообщаем Метрике о виртуальном переходе
-    if (window.ym) {
-      window.ym(101296472, "hit", "/?fromProject=1");
-      window.ym(101296472, "notBounce");
-    }
+    ymNavigate("/?fromProject=1");
 
     // Делаем реальный navigate
     setTimeout(() => {

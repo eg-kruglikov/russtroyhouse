@@ -3,9 +3,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import { projects } from "../../../data/portfolio";
+import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
+import { handleImageError } from "../../../utils/imageFallback";
+import { usePressEffect } from "../../../hooks/useSomething";
 
 const Desktop = () => {
   const navigate = useNavigateWithMetrika();
+  const press = usePressEffect();
 
   // ——— helpers ———
   const Section = ({ children, style = {} }) => (
@@ -353,8 +357,10 @@ const Desktop = () => {
             </div>
 
             <button
+              {...press}
               onClick={() => navigate("/contacts")}
               style={{
+                ...press.style,
                 backgroundColor: "#FFD700",
                 color: "#0a1a26",
                 border: "none",
@@ -543,9 +549,11 @@ const Desktop = () => {
               >
                 {/* Картинка */}
                 <img
-                  src={p.images?.[0] || "/images/placeholder.jpg"}
+                  src={p.images?.[0] || FALLBACK_IMAGE}
+                  data-original-src={p.images?.[0] || ""}
                   alt={p.title}
                   loading="lazy"
+                  onError={handleImageError}
                   style={{
                     width: "100%",
                     height: 340,
@@ -616,7 +624,9 @@ const Desktop = () => {
 
                   {/* Кнопка */}
                   <button
+                    {...press}
                     style={{
+                      ...press.style,
                       marginTop: "auto",
                       padding: "12px 20px",
                       border: "none",
@@ -641,9 +651,11 @@ const Desktop = () => {
       {/* === Back to home (Desktop) === */}
       <div style={{ marginTop: "60px", textAlign: "center" }}>
         <button
+          {...press}
           onClick={() => navigate("/")}
           aria-label="На главную"
           style={{
+            ...press.style,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
@@ -657,7 +669,6 @@ const Desktop = () => {
             fontSize: 18,
             cursor: "pointer",
             boxShadow: "0 6px 18px rgba(0,0,0,.25)",
-            transition: "all 0.25s ease",
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.background = "#fff";
