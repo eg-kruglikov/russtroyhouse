@@ -250,7 +250,9 @@ const ContactsPage = () => {
                 "Ремонт 2025"
               </span>{" "}
               при первом звонке и получите{" "}
-              <span style={{ color: yellow, fontWeight: 800 }}>скидку 5%</span>{" "}
+              <span style={{ color: yellow, fontWeight: 800 }}>
+                скидку до 10%
+              </span>{" "}
               на любой вид ремонта!
             </div>
             <div
@@ -262,10 +264,48 @@ const ContactsPage = () => {
                 fontSize: 13,
                 opacity: 0.85,
                 textAlign: "center",
+                marginBottom: 8,
               }}
             >
               ⏰ Акция действует до конца года
             </div>
+            <div
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                background: "rgba(255,69,0,.15)",
+                border: "1px solid rgba(255,69,0,.3)",
+                fontSize: 13,
+                fontWeight: 600,
+                opacity: 0.9,
+                textAlign: "center",
+                color: "#ff9966",
+              }}
+            >
+              🔥 Количество мест в акции ограничено
+            </div>
+          </section>
+
+          {/* Оставить заявку */}
+          <section style={Card}>
+            <div style={CardHead}>Оставить заявку</div>
+            <div style={CardText}>
+              Оставьте номер телефона — мы перезвоним в течение 15 минут и
+              ответим на все вопросы.
+            </div>
+            <Btn
+              onClick={() => setQuestioModalOpen(true)}
+              icon={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                    fill={deep}
+                  />
+                </svg>
+              }
+            >
+              Заказать звонок
+            </Btn>
           </section>
 
           {/* Позвонить */}

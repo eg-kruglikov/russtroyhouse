@@ -14,7 +14,7 @@ export default function HomePortfolioGrid({ items = [] }) {
   }, []);
 
   const isMobile = vw < 768;
-  const columns = isMobile ? 1 : vw < 1200 ? 2 : 3;
+  const columns = isMobile ? 2 : vw < 1200 ? 2 : 3;
 
   return (
     <div
@@ -22,7 +22,7 @@ export default function HomePortfolioGrid({ items = [] }) {
         width: "100%",
         maxWidth: 1200,
         margin: "0 auto",
-        padding: isMobile ? "0 16px" : "0 24px",
+        padding: isMobile ? "0 8px" : "0 24px",
         boxSizing: "border-box",
       }}
     >
@@ -30,7 +30,7 @@ export default function HomePortfolioGrid({ items = [] }) {
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          gap: isMobile ? 14 : 20,
+          gap: isMobile ? 8 : 20,
         }}
       >
         {items.slice(0, 6).map((p, i) => (
@@ -93,37 +93,37 @@ function PortfolioCard({ p, isMobile }) {
         onError={handleImageError}
         style={{
           width: "100%",
-          height: isMobile ? 220 : 260,
+          height: isMobile ? 120 : 260,
           objectFit: "cover",
           display: "block",
         }}
       />
 
-      <div style={{ padding: isMobile ? 14 : 18 }}>
+      <div style={{ padding: isMobile ? 8 : 18 }}>
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr auto",
-            gap: 12,
+            gap: isMobile ? 6 : 12,
             alignItems: "center",
           }}
         >
           <div>
             <div
               style={{
-                fontSize: isMobile ? 20 : 22,
-                lineHeight: 1.25,
+                fontSize: isMobile ? 14 : 22,
+                lineHeight: 1.2,
                 fontWeight: 800,
-                marginBottom: 6,
+                marginBottom: isMobile ? 2 : 6,
               }}
             >
               {(p?.title || "").replace(/—\s*\d+\s*м²/gi, "").trim() ||
                 "Проект"}
             </div>
-            {p?.subtitle && (
+            {p?.subtitle && !isMobile && (
               <div
                 style={{
-                  fontSize: isMobile ? 14 : 15,
+                  fontSize: 15,
                   color: "rgba(255,255,255,.85)",
                 }}
               >
@@ -141,9 +141,9 @@ function PortfolioCard({ p, isMobile }) {
                 border: "1px solid rgba(255,215,0,.35)",
                 color: "#FFD700",
                 borderRadius: 999,
-                padding: "8px 12px",
+                padding: isMobile ? "4px 8px" : "8px 12px",
                 fontWeight: 800,
-                fontSize: 13,
+                fontSize: isMobile ? 11 : 13,
                 whiteSpace: "nowrap",
               }}
             >
@@ -161,15 +161,15 @@ function PortfolioCard({ p, isMobile }) {
             ...press.style,
             cursor: "pointer",
             width: "100%",
-            marginTop: 14,
+            marginTop: isMobile ? 8 : 14,
             textAlign: "center",
             background: "#FFD700",
             color: "#0a1a26",
             border: "none",
             borderRadius: 999,
-            padding: isMobile ? "14px 18px" : "16px 22px",
+            padding: isMobile ? "8px 12px" : "16px 22px",
             fontWeight: 900,
-            fontSize: isMobile ? 16 : 18,
+            fontSize: isMobile ? 13 : 18,
             boxShadow: "0 12px 28px rgba(255,215,0,.28)",
           }}
         >

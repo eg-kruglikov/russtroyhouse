@@ -408,7 +408,10 @@ const Home = () => {
           ref={portfolioRef}
           style={{
             scrollMarginTop: "54px",
-            marginTop: isMobile ? "6vh" : "10vh",
+            marginTop: isMobile ? "3vh" : "10vh",
+            minHeight: isMobile ? "calc(100vh - 60px)" : "auto",
+            display: isMobile ? "flex" : "block",
+            flexDirection: isMobile ? "column" : "initial",
           }}
         >
           {/* общий контейнер для заголовка и сетки с одинаковыми полями */}
@@ -417,19 +420,21 @@ const Home = () => {
               width: "100%",
               maxWidth: 1200,
               margin: "0 auto",
-
               boxSizing: "border-box",
+              flex: isMobile ? 1 : "initial",
+              display: isMobile ? "flex" : "block",
+              flexDirection: isMobile ? "column" : "initial",
             }}
           >
             <div
               style={{
                 textAlign: "center",
-                marginBottom: isMobile ? 10 : 16,
+                marginBottom: isMobile ? 8 : 16,
               }}
             >
               <h2
                 style={{
-                  fontSize: isMobile ? "9vw" : 40,
+                  fontSize: isMobile ? "7vw" : 40,
                   fontWeight: 800,
                   margin: 0,
                 }}
@@ -439,8 +444,8 @@ const Home = () => {
               <div
                 style={{
                   opacity: 0.8,
-                  fontSize: isMobile ? "4vw" : 16,
-                  marginTop: isMobile ? 6 : 8,
+                  fontSize: isMobile ? "3.5vw" : 16,
+                  marginTop: isMobile ? 4 : 8,
                 }}
               >
                 Живые примеры наших работ
