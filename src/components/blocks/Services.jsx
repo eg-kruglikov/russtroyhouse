@@ -39,7 +39,7 @@ const Services = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: isMobile ? "80%" : widthFirstBlock,
+          width: isMobile ? "92%" : widthFirstBlock,
           height: "auto",
         }}
       >
@@ -67,52 +67,69 @@ const Services = ({
               style={{
                 position: "relative",
                 width: isMobile ? "100%" : "auto",
-                height: isMobile ? "auto" : "100%",
+                height: isMobile ? "250px" : "100%",
               }}
             >
               <img
                 loading="lazy"
                 src="/images/homePage/services1.webp"
                 style={{
-                  height: isMobile ? "auto" : "100%",
+                  height: isMobile ? "250px" : "100%",
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
                   borderRadius: "10px",
+                  boxShadow: isMobile
+                    ? "0 8px 24px rgba(0, 0, 0, 0.4)"
+                    : "none",
+                  objectFit: "cover",
                 }}
                 alt="о нас"
               />
               <div
                 style={{
                   width: "100%",
-                  height: "20%",
-                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  height: isMobile ? "22%" : "20%",
+                  backgroundColor: isMobile
+                    ? "rgba(20, 20, 20, 0.85)"
+                    : "rgba(98, 98, 98, 0.65)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
                   borderRadius: "10px",
+                  borderTop: isMobile
+                    ? "2px solid rgba(255, 215, 0, 0.5)"
+                    : "none",
                 }}
               >
                 <div
                   style={{
                     marginLeft: "20px",
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   Цена от
                 </div>
-                <div style={{ color: "yellow", fontSize: "20px" }}>
+                <div
+                  style={{
+                    color: "#FFD700",
+                    fontSize: isMobile ? "5.5vw" : "20px",
+                    fontWeight: isMobile ? 700 : 400,
+                  }}
+                >
                   {" "}
-                  &nbsp;3400
+                  &nbsp;3900
                 </div>
 
                 <div
                   style={{
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   &nbsp;руб/м²
@@ -145,10 +162,10 @@ const Services = ({
 
               <div
                 style={{
-                  fontSize: isMobile ? "4.2vw" : "clamp(16px, 1.8vw, 18px)",
+                  fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
                   fontWeight: "500",
-
                   width: "80%",
+                  lineHeight: isMobile ? "1.5" : "1.6",
                 }}
               >
                 <span style={{ color: "#FFD700" }}>Короткие сроки</span> и{" "}
@@ -162,19 +179,32 @@ const Services = ({
                 onClick={() => {
                   handleClick("cosmetic");
                 }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = "scale(0.95)";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 20px rgba(255, 215, 0, 0.8)";
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 15px rgba(255, 215, 0, 0.5)";
+                }}
                 style={{
-                  backgroundColor: "transparent",
-                  color: "white",
-                  border: "2px solid #FFD700", // жёлтая рамка
-                  borderRadius: "20px",
-                  padding: "4px 0px",
-                  fontSize: isMobile ? "3.5vw" : "20px",
-                  fontWeight: 600,
+                  backgroundColor: isMobile ? "#FFD700" : "transparent",
+                  color: isMobile ? "#000" : "white",
+                  border: "2px solid #FFD700",
+                  borderRadius: "25px",
+                  padding: isMobile ? "10px 0px" : "4px 0px",
+                  fontSize: isMobile ? "4vw" : "20px",
+                  fontWeight: 700,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  width: isMobile ? "25vw" : "150px",
-                  height: "35px",
+                  transition: "all 0.2s ease",
+                  width: isMobile ? "35vw" : "150px",
+                  height: isMobile ? "45px" : "35px",
                   marginTop: "3vh",
+                  boxShadow: isMobile
+                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
+                    : "none",
                 }}
               >
                 подробнее
@@ -233,10 +263,10 @@ const Services = ({
 
               <div
                 style={{
-                  fontSize: isMobile ? "4.2vw" : "clamp(16px, 1.8vw, 18px)",
+                  fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
                   fontWeight: "500",
-
                   width: "80%",
+                  lineHeight: isMobile ? "1.5" : "1.6",
                 }}
               >
                 <span style={{ color: "#FFD700" }}>
@@ -253,19 +283,32 @@ const Services = ({
                 onClick={() => {
                   handleClick("capital");
                 }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = "scale(0.95)";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 20px rgba(255, 215, 0, 0.8)";
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = isMobile
+                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
+                    : "0 0 10px rgba(255, 215, 0, 0.4)";
+                }}
                 style={{
-                  backgroundColor: "transparent",
-                  color: "white",
-                  border: "2px solid #FFD700", // жёлтая рамка
-                  borderRadius: "20px",
-                  padding: "4px 0px",
-                  fontSize: isMobile ? "3.5vw" : "20px",
-                  fontWeight: 600,
+                  backgroundColor: isMobile ? "#FFD700" : "transparent",
+                  color: isMobile ? "#000" : "white",
+                  border: "2px solid #FFD700",
+                  borderRadius: "25px",
+                  padding: isMobile ? "10px 0px" : "4px 0px",
+                  fontSize: isMobile ? "4vw" : "20px",
+                  fontWeight: 700,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  width: isMobile ? "25vw" : "150px",
-                  height: "35px",
-                  boxShadow: "0 0 10px rgba(255, 215, 0, 0.4)",
+                  transition: "all 0.2s ease",
+                  width: isMobile ? "35vw" : "150px",
+                  height: isMobile ? "45px" : "35px",
+                  boxShadow: isMobile
+                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
+                    : "0 0 10px rgba(255, 215, 0, 0.4)",
                   marginTop: "3vh",
                 }}
               >
@@ -277,52 +320,69 @@ const Services = ({
               style={{
                 position: "relative",
                 width: isMobile ? "100%" : "auto",
-                height: isMobile ? "auto" : "100%",
+                height: isMobile ? "250px" : "100%",
               }}
             >
               <img
                 loading="lazy"
                 src="/images/homePage/services2.webp"
                 style={{
-                  height: isMobile ? "auto" : "100%",
+                  height: isMobile ? "250px" : "100%",
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
                   borderRadius: "10px",
+                  boxShadow: isMobile
+                    ? "0 8px 24px rgba(0, 0, 0, 0.4)"
+                    : "none",
+                  objectFit: "cover",
                 }}
                 alt="о нас"
               />
               <div
                 style={{
                   width: "100%",
-                  height: "15%",
-                  backgroundColor: "rgba(98, 98, 98, 0.65)",
+                  height: isMobile ? "22%" : "15%",
+                  backgroundColor: isMobile
+                    ? "rgba(20, 20, 20, 0.85)"
+                    : "rgba(98, 98, 98, 0.65)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
                   borderRadius: "10px",
+                  borderTop: isMobile
+                    ? "2px solid rgba(255, 215, 0, 0.5)"
+                    : "none",
                 }}
               >
                 <div
                   style={{
                     marginLeft: "20px",
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   Цена от
                 </div>
-                <div style={{ color: "yellow", fontSize: "20px" }}>
+                <div
+                  style={{
+                    color: "#FFD700",
+                    fontSize: isMobile ? "5.5vw" : "20px",
+                    fontWeight: isMobile ? 700 : 400,
+                  }}
+                >
                   {" "}
-                  &nbsp;11600
+                  &nbsp;9500
                 </div>
 
                 <div
                   style={{
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   &nbsp;руб/м²
@@ -356,52 +416,69 @@ const Services = ({
               style={{
                 position: "relative",
                 width: isMobile ? "100%" : "auto",
-                height: isMobile ? "auto" : "100%",
+                height: isMobile ? "250px" : "100%",
               }}
             >
               <img
                 loading="lazy"
                 src="/images/homePage/services3.webp"
                 style={{
-                  height: isMobile ? "auto" : "100%",
+                  height: isMobile ? "250px" : "100%",
                   width: isMobile ? "100%" : "auto",
                   alignSelf: "center",
                   display: "block",
                   borderRadius: "10px",
+                  boxShadow: isMobile
+                    ? "0 8px 24px rgba(0, 0, 0, 0.4)"
+                    : "none",
+                  objectFit: "cover",
                 }}
                 alt="о нас"
               />
               <div
                 style={{
                   width: "100%",
-                  height: "20%",
-                  backgroundColor: "rgba(98, 98, 98, 0.8)",
+                  height: isMobile ? "22%" : "20%",
+                  backgroundColor: isMobile
+                    ? "rgba(20, 20, 20, 0.85)"
+                    : "rgba(98, 98, 98, 0.8)",
                   bottom: 0,
                   left: 0,
                   position: "absolute",
                   display: "flex",
                   alignItems: "center",
                   borderRadius: "10px",
+                  borderTop: isMobile
+                    ? "2px solid rgba(255, 215, 0, 0.5)"
+                    : "none",
                 }}
               >
                 <div
                   style={{
                     marginLeft: "20px",
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   Цена от
                 </div>
-                <div style={{ color: "yellow", fontSize: "20px" }}>
+                <div
+                  style={{
+                    color: "#FFD700",
+                    fontSize: isMobile ? "5.5vw" : "20px",
+                    fontWeight: isMobile ? 700 : 400,
+                  }}
+                >
                   {" "}
-                  &nbsp;17 200
+                  &nbsp;16 500
                 </div>
 
                 <div
                   style={{
-                    fontSize: "20px",
+                    fontSize: isMobile ? "4.5vw" : "20px",
                     color: "#ffff",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
                   &nbsp;руб/м²
@@ -450,8 +527,9 @@ const Services = ({
                 <div
                   style={{
                     color: "#fff",
-                    fontSize: isMobile ? "4.1vw" : "clamp(16px, 1.8vw, 18px)",
+                    fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
                     fontWeight: 400,
+                    lineHeight: isMobile ? "1.5" : "1.6",
                   }}
                 >
                   Ищете{" "}
@@ -471,19 +549,32 @@ const Services = ({
                 onClick={() => {
                   handleClick("designer");
                 }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = "scale(0.95)";
+                  e.currentTarget.style.boxShadow =
+                    "0 0 20px rgba(255, 215, 0, 0.8)";
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = isMobile
+                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
+                    : "0 0 10px rgba(255, 215, 0, 0.4)";
+                }}
                 style={{
-                  backgroundColor: "transparent",
-                  color: "white",
-                  border: "2px solid #FFD700", // жёлтая рамка
-                  borderRadius: "20px",
-                  padding: "4px 0px",
-                  fontSize: isMobile ? "3.5vw" : "20px",
-                  fontWeight: 600,
+                  backgroundColor: isMobile ? "#FFD700" : "transparent",
+                  color: isMobile ? "#000" : "white",
+                  border: "2px solid #FFD700",
+                  borderRadius: "25px",
+                  padding: isMobile ? "10px 0px" : "4px 0px",
+                  fontSize: isMobile ? "4vw" : "20px",
+                  fontWeight: 700,
                   cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  width: isMobile ? "25vw" : "150px",
-                  height: "35px",
-                  boxShadow: "0 0 10px rgba(255, 215, 0, 0.4)",
+                  transition: "all 0.2s ease",
+                  width: isMobile ? "35vw" : "150px",
+                  height: isMobile ? "45px" : "35px",
+                  boxShadow: isMobile
+                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
+                    : "0 0 10px rgba(255, 215, 0, 0.4)",
                   marginTop: "3vh",
                 }}
               >

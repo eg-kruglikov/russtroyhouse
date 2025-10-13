@@ -187,31 +187,43 @@ export const projects = [
 export const portfolioItems = [
   {
     title: "Косметический ремонт",
+    area: "60 м²",
+    location: "Мытищи",
     images: ["/images/photolibrary/portfolio/cosmetic/1/1.jpg"],
     href: "/portfolio/cosmetic-1",
   },
   {
     title: "Косметический ремонт",
+    area: "42 м²",
+    location: "Москва",
     images: ["/images/photolibrary/portfolio/cosmetic/2/1.jpg"],
     href: "/portfolio/cosmetic-2",
   },
   {
     title: "Капитальный ремонт",
+    area: "85 м²",
+    location: "Москва",
     images: ["/images/photolibrary/portfolio/capital/1/1.jpg"],
     href: "/portfolio/capital-1",
   },
   {
     title: "Капитальный ремонт",
+    area: "72 м²",
+    location: "Химки",
     images: ["/images/photolibrary/portfolio/capital/2/1.jpg"],
     href: "/portfolio/capital-2",
   },
   {
     title: "Дизайнерский ремонт",
+    area: "95 м²",
+    location: "Москва",
     images: ["/images/photolibrary/portfolio/designer/1/1.jpg"],
     href: "/portfolio/designer-1",
   },
   {
     title: "Дизайнерский ремонт",
+    area: "110 м²",
+    location: "Москва",
     images: ["/images/photolibrary/portfolio/designer/2/1.jpg"],
     href: "/portfolio/designer-2",
   },

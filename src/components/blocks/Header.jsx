@@ -45,8 +45,7 @@ const Header = ({
   // соответствие названий кнопок целям Метрики
   const goalsMap = {
     Главная: "nav_hero_click",
-    "О нас": "nav_about_click",
-    Услуги: "nav_services_click",
+    "Цены и услуги": "nav_services_click",
     Портфолио: "nav_portfolio_click",
     "Дизайн-проекты": "nav_design_click",
     Контакты: "nav_contacts_click",
@@ -98,8 +97,7 @@ const Header = ({
 
   const navLinks = [
     { name: "Главная", href: scrollToHero },
-    { name: "О нас", href: scrollToAbout },
-    { name: "Услуги", href: scrollToServices },
+    { name: "Цены и услуги", href: scrollToServices },
     { name: "Портфолио", href: scrollToportfolio },
     { name: "Дизайн-проекты", href: scrollToDesignProjects },
     { name: "Отзывы", href: scrollToReviews },
@@ -180,9 +178,10 @@ const Header = ({
                 style={{
                   all: "unset",
                   cursor: "pointer",
-                  color: colorTextHeader,
-                  fontSize: "15px",
-                  fontWeight: "600",
+                  color:
+                    item.name === "Цены и услуги" ? "#FFB84D" : colorTextHeader,
+                  fontSize: item.name === "Цены и услуги" ? "16px" : "15px",
+                  fontWeight: item.name === "Цены и услуги" ? "700" : "600",
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   textDecoration: "none",
@@ -255,10 +254,10 @@ const Header = ({
                   cursor: "pointer",
                   display: "block",
                   marginBottom: "12px",
-                  color: "#fff",
+                  color: item.name === "Цены и услуги" ? "#FFB84D" : "#fff",
                   textDecoration: "none",
-                  fontWeight: "600",
-                  fontSize: "20px",
+                  fontWeight: item.name === "Цены и услуги" ? "700" : "600",
+                  fontSize: item.name === "Цены и услуги" ? "22px" : "20px",
                   WebkitTapHighlightColor: "transparent",
                   margin: "10px",
                   whiteSpace: "nowrap",

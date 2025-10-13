@@ -100,54 +100,29 @@ function PortfolioCard({ p, isMobile }) {
       />
 
       <div style={{ padding: isMobile ? 8 : 18 }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
-            gap: isMobile ? 6 : 12,
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: isMobile ? 14 : 22,
-                lineHeight: 1.2,
-                fontWeight: 800,
-                marginBottom: isMobile ? 2 : 6,
-              }}
-            >
-              {(p?.title || "").replace(/—\s*\d+\s*м²/gi, "").trim() ||
-                "Проект"}
-            </div>
-            {p?.subtitle && !isMobile && (
-              <div
-                style={{
-                  fontSize: 15,
-                  color: "rgba(255,255,255,.85)",
-                }}
-              >
-                {p.subtitle}
-              </div>
-            )}
+        <div>
+          <div
+            style={{
+              fontSize: isMobile ? 14 : 22,
+              lineHeight: 1.2,
+              fontWeight: 800,
+              marginBottom: isMobile ? 4 : 6,
+              color: "#FFD700",
+            }}
+          >
+            {(p?.title || "").replace(/—\s*\d+\s*м²/gi, "").trim() || "Проект"}
           </div>
-
-          {chip && (
+          {(p?.area || p?.location) && (
             <div
-              title="Площадь"
               style={{
-                alignSelf: "start",
-                background: "#0F1B24",
-                border: "1px solid rgba(255,215,0,.35)",
+                fontSize: isMobile ? 12 : 15,
                 color: "#FFD700",
-                borderRadius: 999,
-                padding: isMobile ? "4px 8px" : "8px 12px",
-                fontWeight: 800,
-                fontSize: isMobile ? 11 : 13,
-                whiteSpace: "nowrap",
+                fontWeight: 400,
+                marginBottom: isMobile ? 2 : 4,
+                opacity: 0.8,
               }}
             >
-              {chip}
+              {[p?.area, p?.location].filter(Boolean).join(" • ")}
             </div>
           )}
         </div>
@@ -162,18 +137,24 @@ function PortfolioCard({ p, isMobile }) {
             cursor: "pointer",
             width: "100%",
             marginTop: isMobile ? 8 : 14,
-            textAlign: "center",
-            background: "#FFD700",
-            color: "#0a1a26",
-            border: "none",
-            borderRadius: 999,
-            padding: isMobile ? "8px 12px" : "16px 22px",
-            fontWeight: 900,
-            fontSize: isMobile ? 13 : 18,
-            boxShadow: "0 12px 28px rgba(255,215,0,.28)",
+            borderTop: "1px solid rgba(255,255,255,0.15)",
+            borderLeft: "none",
+            borderRight: "none",
+            borderBottom: "none",
+            textAlign: "left",
+            background: "transparent",
+            color: "#fff",
+            borderRadius: 0,
+            padding: isMobile ? "8px 0 0 0" : "12px 0 0 0",
+            fontWeight: 700,
+            fontSize: isMobile ? 14 : 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          Подробнее
+          <span>Подробнее</span>
+          <span style={{ fontSize: isMobile ? 16 : 20 }}>→</span>
         </button>
       </div>
     </div>

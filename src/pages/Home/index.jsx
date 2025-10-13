@@ -353,7 +353,7 @@ const Home = () => {
                 position: "relative",
                 width: "100%",
                 maxWidth: isMobile ? "100%" : "950px",
-                maxHeight: isMobile ? "auto" : "400px",
+                height: isMobile ? "250px" : "400px",
                 overflow: "hidden",
                 borderRadius: "16px",
               }}
@@ -364,9 +364,9 @@ const Home = () => {
                 alt="о нас"
                 style={{
                   width: "100%",
-                  height: isMobile ? "auto" : "400px",
+                  height: isMobile ? "100%" : "400px",
                   objectFit: "cover",
-                  objectPosition: "center 65%",
+                  objectPosition: isMobile ? "center 60%" : "center 65%",
                   borderRadius: "16px",
                   boxShadow: "0 10px 40px rgba(0,0,0,.3)",
                   display: "block",
@@ -408,7 +408,9 @@ const Home = () => {
           ref={portfolioRef}
           style={{
             scrollMarginTop: "54px",
-            marginTop: isMobile ? "3vh" : "10vh",
+            marginTop: isMobile ? "6vh" : "12vh",
+            paddingTop: isMobile ? "4vh" : "6vh",
+            borderTop: "2px solid rgba(255, 215, 0, 0.3)",
             minHeight: isMobile ? "calc(100vh - 60px)" : "auto",
             display: isMobile ? "flex" : "block",
             flexDirection: isMobile ? "column" : "initial",
