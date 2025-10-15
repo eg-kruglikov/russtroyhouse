@@ -54,13 +54,29 @@ const DesignerRepairPageMobile = () => {
         display: "grid",
         gridTemplateColumns: "1fr auto",
         alignItems: "center",
-        gap: 12,
-        padding: "14px 10px",
+        gap: "clamp(8px, 2vw, 12px)",
+        padding: "clamp(10px, 2.5vw, 14px) clamp(8px, 2vw, 10px)",
         borderBottom: "1px solid rgba(255,255,255,.12)",
       }}
     >
-      <div style={{ fontSize: 16, lineHeight: 1.5 }}>{left}</div>
-      <div style={{ color: "#FFD700", fontWeight: 900, fontSize: 16 }}>
+      <div
+        style={{
+          fontSize: "clamp(13px, 3.5vw, 16px)",
+          lineHeight: 1.5,
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+        }}
+      >
+        {left}
+      </div>
+      <div
+        style={{
+          color: "#FFD700",
+          fontWeight: 900,
+          fontSize: "clamp(13px, 3.5vw, 16px)",
+          whiteSpace: "nowrap",
+        }}
+      >
         {right}
       </div>
     </div>
@@ -108,11 +124,13 @@ const DesignerRepairPageMobile = () => {
           >
             <h1
               style={{
-                fontSize: 26,
+                fontSize: "clamp(18px, 5.5vw, 26px)",
                 fontWeight: 900,
                 marginBottom: 6,
                 letterSpacing: 0.8,
                 textShadow: "0 0 10px rgba(0,0,0,.85)",
+                wordWrap: "break-word",
+                overflowWrap: "break-word",
               }}
             >
               ДИЗАЙНЕРСКИЙ РЕМОНТ
@@ -172,69 +190,76 @@ const DesignerRepairPageMobile = () => {
           {/* краткий лид */}
           <p
             style={{
-              color: "rgba(255,255,255,.9)",
-              lineHeight: 1.6,
-              marginBottom: 14,
+              color: "rgba(255,255,255,.95)",
+              lineHeight: 1.7,
+              marginBottom: 20,
+              fontSize: 15,
             }}
           >
-            Индивидуальная концепция, премиальные материалы и полный контроль
-            качества — вы видите результат в 3D ещё до начала работ.
+            🎨 Создадим интерьер вашей мечты с 3D-визуализацией. Увидите
+            результат ещё до начала работ!
           </p>
 
-          {/* список преимуществ */}
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 14px 0" }}>
-            {[
-              "Концепция, мудборды, 3D-визуализации и рабочая документация",
-              "Авторский надзор и комплектация: плитка, свет, мебель, текстиль",
-              "Премиальные поставщики и шоурумы, персональные скидки",
-              "Смарт-дом, акцентное освещение, нестандартные решения",
-              "Прозрачная смета и график работ, ежедневные фотоотчёты",
-            ].map((t, i) => (
-              <li
-                key={i}
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-start",
-                  color: "#EAF4FF",
-                  padding: "8px 0",
-                }}
-              >
-                <span style={{ color: "#FFD700", fontWeight: 700 }}>✓</span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* ряд «чипов» */}
+          {/* Ключевые преимущества - крупными блоками */}
           <div
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 10,
-              margin: "6px 0 14px",
+              display: "grid",
+              gap: 12,
+              marginBottom: 20,
             }}
           >
             {[
-              "Выезд дизайнера",
-              "3D-визуализация",
-              "Авторский надзор",
-              "Гарантия до 3 лет",
-            ].map((t) => (
+              {
+                icon: "📐",
+                title: "3D-визуализация",
+                desc: "Покажем будущий интерьер",
+              },
+              {
+                icon: "🎯",
+                title: "Авторский надзор",
+                desc: "Контролируем каждый этап",
+              },
+              {
+                icon: "💎",
+                title: "Премиум-материалы",
+                desc: "Скидки у поставщиков",
+              },
+              {
+                icon: "⚡",
+                title: "Смарт-решения",
+                desc: "Умный дом и освещение",
+              },
+            ].map((item, i) => (
               <div
-                key={t}
-                aria-hidden="true"
+                key={i}
                 style={{
-                  padding: "10px 14px",
-                  borderRadius: 999,
-                  background: "#0F1B24",
-                  color: "#FFD700",
-                  fontWeight: 700,
-                  fontSize: 13,
-                  border: "1px solid rgba(255,215,0,.35)",
+                  background:
+                    "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02))",
+                  border: "1px solid rgba(255,215,0,.2)",
+                  borderRadius: 12,
+                  padding: "14px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
                 }}
               >
-                {t}
+                <span style={{ fontSize: 24 }}>{item.icon}</span>
+                <div>
+                  <div
+                    style={{ color: "#FFD700", fontWeight: 700, fontSize: 14 }}
+                  >
+                    {item.title}
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(255,255,255,.7)",
+                      fontSize: 12,
+                      marginTop: 2,
+                    }}
+                  >
+                    {item.desc}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -246,42 +271,63 @@ const DesignerRepairPageMobile = () => {
             style={{
               ...press.style,
               width: "100%",
-              padding: "14px 18px",
+              padding: "18px 24px",
               border: "none",
-              borderRadius: 999,
-              background: "#FFD700",
+              borderRadius: 16,
+              background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
               color: "#0a1a26",
               fontWeight: 900,
-              fontSize: 16,
-              letterSpacing: ".2px",
-              boxShadow: "0 10px 26px rgba(255,215,0,.35)",
+              fontSize: 17,
+              letterSpacing: ".3px",
+              boxShadow: "0 12px 32px rgba(255,215,0,.4)",
               cursor: "pointer",
             }}
           >
-            Связаться
+            🎁 Узнать стоимость своего проекта
           </button>
 
           {/* подстрока-бонус */}
           <div
             style={{
               textAlign: "center",
-              color: "rgba(255,255,255,.7)",
-              fontSize: 12,
-              marginTop: 8,
+              color: "#FFD700",
+              fontSize: 13,
+              marginTop: 12,
+              fontWeight: 700,
+              background: "rgba(255,215,0,.1)",
+              padding: "8px 12px",
+              borderRadius: 8,
             }}
           >
-            Бесплатный выезд + 3D-визуализация одной комнаты
+            ✨ Выезд дизайнера бесплатно • Смета в подарок
           </div>
         </div>
 
         {/* Блок: Этапы дизайн-проекта (цены за м²) */}
         <div style={{ padding: 20 }}>
+          {/* Блок о регионе работы */}
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p
+              style={{
+                color: "#ffffff",
+                fontSize: 16,
+                fontWeight: 500,
+                margin: 0,
+                opacity: 0.9,
+              }}
+            >
+              Мы работаем в Москве и Московской области
+            </p>
+          </div>
+
           <h3
             style={{
               color: "#FFD700",
-              fontSize: 20,
+              fontSize: "clamp(16px, 4.5vw, 20px)",
               marginBottom: 10,
               fontWeight: 800,
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
             }}
           >
             Этапы дизайн-проекта и ориентировочная стоимость
@@ -540,30 +586,36 @@ const DesignerRepairPageMobile = () => {
 
                   {/* CTA — подняли выше и добавили нижний отступ */}
                   <div style={{ padding: "0 16px 16px" }}>
-                    <button
-                      {...press}
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/portfolio/${p.slug}`);
+                      }}
+                      href={`/portfolio/${p.slug}`}
                       style={{
-                        ...press.style,
+                        color: "#FFD700",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        textDecoration: "none",
                         display: "inline-flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        padding: "12px 20px",
-                        border: "none",
-                        borderRadius: 999,
-                        background: "#FFD700",
-                        color: "#0a1a26",
-                        fontWeight: 800,
-                        fontSize: 16,
-                        boxShadow: "0 6px 16px rgba(255,215,0,.25)",
+                        gap: "8px",
                         cursor: "pointer",
-                        width: "100%",
-                        margin: "8px 0 10px", // ↑ меньше сверху, есть отступ снизу
+                        transition: "all 0.2s ease",
+                        marginTop: "12px",
                       }}
-                      onClick={() => navigate(`/portfolio/${p.slug}`)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.gap = "12px";
+                        e.currentTarget.style.opacity = "0.8";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.gap = "8px";
+                        e.currentTarget.style.opacity = "1";
+                      }}
                     >
                       Подробнее
-                    </button>
+                      <span style={{ fontSize: "20px" }}>→</span>
+                    </a>
                   </div>
                 </div>
               );

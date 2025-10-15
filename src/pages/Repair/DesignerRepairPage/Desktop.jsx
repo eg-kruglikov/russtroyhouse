@@ -245,49 +245,83 @@ const Desktop = () => {
 
             <p
               style={{
-                margin: "0 0 18px",
-                fontSize: 18,
+                margin: "0 0 24px",
+                fontSize: 19,
                 lineHeight: 1.7,
-                color: "rgba(255,255,255,.92)",
+                color: "rgba(255,255,255,.95)",
                 maxWidth: 720,
               }}
             >
-              Команда проектирует и строит «в одних руках»: вы видите
-              3D-результат ещё до старта, а потом получаете именно его, без
-              компромиссов.
+              🎨 Создадим интерьер вашей мечты с 3D-визуализацией. Увидите
+              результат ещё до начала работ — никаких сюрпризов!
             </p>
 
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: "12px 0 0",
-                display: "grid",
-                rowGap: 10,
-                fontSize: 18,
-                color: "#fff",
-              }}
-            >
-              <li>✓ Концепция, 3D, рабочие чертежи</li>
-              <li>✓ Авторский надзор и комплектация</li>
-              <li>✓ Прозрачная смета и график</li>
-            </ul>
-
+            {/* Ключевые преимущества - компактными карточками */}
             <div
               style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap",
-                marginTop: 18,
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: 16,
+                marginTop: 24,
               }}
             >
               {[
-                "Выезд дизайнера",
-                "3D-визуализация",
-                "Авторский надзор",
-                "Гарантия до 3 лет",
-              ].map((t) => (
-                <Chip key={t}>{t}</Chip>
+                {
+                  icon: "📐",
+                  title: "3D-визуализация",
+                  desc: "Покажем будущий интерьер",
+                },
+                {
+                  icon: "🎯",
+                  title: "Авторский надзор",
+                  desc: "Контролируем каждый этап",
+                },
+                {
+                  icon: "💎",
+                  title: "Премиум-материалы",
+                  desc: "Скидки у поставщиков",
+                },
+                {
+                  icon: "⚡",
+                  title: "Смарт-решения",
+                  desc: "Умный дом и освещение",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02))",
+                    border: "1px solid rgba(255,215,0,.2)",
+                    borderRadius: 12,
+                    padding: "16px 18px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 14,
+                  }}
+                >
+                  <span style={{ fontSize: 28 }}>{item.icon}</span>
+                  <div>
+                    <div
+                      style={{
+                        color: "#FFD700",
+                        fontWeight: 700,
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.title}
+                    </div>
+                    <div
+                      style={{
+                        color: "rgba(255,255,255,.7)",
+                        fontSize: 14,
+                        marginTop: 4,
+                      }}
+                    >
+                      {item.desc}
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -304,33 +338,42 @@ const Desktop = () => {
           >
             <div
               style={{
-                display: "inline-block",
-                background:
-                  "linear-gradient(90deg, rgba(255,215,0,1) 0%, rgba(255,215,0,.85) 100%)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
                 color: "#0a1a26",
                 fontWeight: 900,
-                fontSize: 13,
-                padding: "6px 12px",
-                borderRadius: 10,
-                boxShadow: "0 10px 22px rgba(255,215,0,.35)",
-                marginBottom: 14,
-              }}
-            >
-              Подарок: 3D одной комнаты
-            </div>
-
-            <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>
-              Встретимся в шоуруме и всё подберём
-            </div>
-            <div
-              style={{
-                color: "rgba(255,255,255,.85)",
-                lineHeight: 1.7,
+                fontSize: 14,
+                padding: "10px 16px",
+                borderRadius: 12,
+                boxShadow: "0 8px 20px rgba(255,215,0,.4)",
                 marginBottom: 18,
               }}
             >
-              Плитка, свет, сантехника, мебель — персональные скидки от
-              партнёров и полный список спецификаций.
+              ✨ Бесплатный бонус
+            </div>
+
+            <div
+              style={{
+                fontSize: 26,
+                fontWeight: 900,
+                marginBottom: 12,
+                lineHeight: 1.2,
+              }}
+            >
+              Узнайте стоимость вашего проекта
+            </div>
+            <div
+              style={{
+                color: "rgba(255,255,255,.9)",
+                lineHeight: 1.8,
+                marginBottom: 20,
+                fontSize: 16,
+              }}
+            >
+              Выезд дизайнера и расчёт сметы — бесплатно! Покажем портфолио,
+              обсудим ваши идеи и составим план.
             </div>
 
             <div style={{ display: "grid", rowGap: 10, marginBottom: 18 }}>
@@ -361,19 +404,19 @@ const Desktop = () => {
               onClick={() => navigate("/contacts")}
               style={{
                 ...press.style,
-                backgroundColor: "#FFD700",
+                background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
                 color: "#0a1a26",
                 border: "none",
-                borderRadius: 30,
-                padding: "14px 28px",
+                borderRadius: 16,
+                padding: "18px 32px",
                 fontWeight: 900,
                 fontSize: 18,
                 cursor: "pointer",
                 width: "100%",
-                boxShadow: "0 14px 30px rgba(255,215,0,.35)",
+                boxShadow: "0 16px 40px rgba(255,215,0,.4)",
               }}
             >
-              Связаться
+              🎁 Получить бесплатную консультацию
             </button>
 
             <div
@@ -464,6 +507,21 @@ const Desktop = () => {
 
           {/* Правая колонка — блок цен (дизайн-проект) */}
           <div>
+            {/* Блок о регионе работы */}
+            <div style={{ textAlign: "center", marginBottom: 24 }}>
+              <p
+                style={{
+                  color: "#ffffff",
+                  fontSize: 18,
+                  fontWeight: 500,
+                  margin: 0,
+                  opacity: 0.9,
+                }}
+              >
+                Мы работаем в Москве и Московской области
+              </p>
+            </div>
+
             <div
               style={{
                 background: "#0a1a26",
@@ -623,24 +681,37 @@ const Desktop = () => {
                   )}
 
                   {/* Кнопка */}
-                  <button
-                    {...press}
+                  <div
                     style={{
-                      ...press.style,
                       marginTop: "auto",
-                      padding: "12px 20px",
-                      border: "none",
-                      borderRadius: 999,
-                      background: "#FFD700",
-                      color: "#0a1a26",
-                      fontWeight: 800,
-                      fontSize: 16,
-                      cursor: "pointer",
-                      boxShadow: "0 6px 18px rgba(255,215,0,.25)",
+                      paddingTop: "12px",
                     }}
                   >
-                    Подробнее
-                  </button>
+                    <span
+                      style={{
+                        color: "#FFD700",
+                        fontSize: 17,
+                        fontWeight: 700,
+                        textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.gap = "12px";
+                        e.currentTarget.style.opacity = "0.8";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.gap = "8px";
+                        e.currentTarget.style.opacity = "1";
+                      }}
+                    >
+                      Подробнее
+                      <span style={{ fontSize: "20px" }}>→</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>

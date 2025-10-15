@@ -293,6 +293,21 @@ const Desktop = () => {
 
       {/* ——— Состав работ и цены ——— */}
       <Section style={{ paddingTop: 20 }}>
+        {/* Блок о регионе работы */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <p
+            style={{
+              color: "#ffffff",
+              fontSize: 18,
+              fontWeight: 500,
+              margin: 0,
+              opacity: 0.9,
+            }}
+          >
+            Мы работаем в Москве и Московской области
+          </p>
+        </div>
+
         <H2>Состав работ и ориентировочные цены</H2>
         <div>
           {prices.map((p) => (
@@ -332,17 +347,17 @@ const Desktop = () => {
                 gap: 10,
                 padding: "8px 14px",
                 borderRadius: 999,
-                background: "rgba(255,215,0,.12)",
-                border: "1px solid rgba(255,215,0,.35)",
-                color: "#FFD700",
+                background: "rgba(255,255,255,.15)",
+                border: "1px solid rgba(255,255,255,.3)",
+                color: "#FFFFFF",
                 fontWeight: 800,
                 fontSize: 14,
                 letterSpacing: 0.3,
                 marginBottom: 14,
-                boxShadow: "0 6px 16px rgba(255,215,0,.18)",
+                boxShadow: "0 6px 16px rgba(0,0,0,.2)",
               }}
             >
-              Бесплатный выезд • Смета за 24 часа
+              Бесплатный выезд • Бесплатная смета
             </div>
 
             <h3
@@ -355,7 +370,7 @@ const Desktop = () => {
                 textShadow: "0 2px 14px rgba(0,0,0,.35)",
               }}
             >
-              Зафиксируем смету и сроки до начала работ
+              Честная смета и фиксированные сроки
             </h3>
 
             <p
@@ -367,8 +382,9 @@ const Desktop = () => {
                 maxWidth: 720,
               }}
             >
-              Приезжаем в удобный день, снимаем замеры, помогаем с подбором
-              материалов. В течение суток — детальная смета и календарный план.
+              Выезд и расчёт сметы — действительно бесплатно! Приедем, замерим,
+              подберём материалы и составим детальную смету. Без скрытых
+              платежей и «сюрпризов» по ходу работ.
             </p>
 
             <ul
@@ -608,24 +624,37 @@ const Desktop = () => {
                   )}
 
                   {/* Кнопка */}
-                  <button
-                    {...press}
+                  <div
                     style={{
-                      ...press.style,
                       marginTop: "auto",
-                      padding: "12px 20px",
-                      border: "none",
-                      borderRadius: 999,
-                      background: "#FFD700",
-                      color: "#0a1a26",
-                      fontWeight: 800,
-                      fontSize: 16,
-                      cursor: "pointer",
-                      boxShadow: "0 6px 18px rgba(255,215,0,.25)",
+                      paddingTop: "12px",
                     }}
                   >
-                    Подробнее
-                  </button>
+                    <span
+                      style={{
+                        color: "#FFD700",
+                        fontSize: 17,
+                        fontWeight: 700,
+                        textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.gap = "12px";
+                        e.currentTarget.style.opacity = "0.8";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.gap = "8px";
+                        e.currentTarget.style.opacity = "1";
+                      }}
+                    >
+                      Подробнее
+                      <span style={{ fontSize: "20px" }}>→</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>

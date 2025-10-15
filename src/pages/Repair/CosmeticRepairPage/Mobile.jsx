@@ -90,15 +90,172 @@ const Mobile = () => {
         >
           <h1
             style={{
-              fontSize: 28,
+              fontSize: "clamp(20px, 6vw, 28px)",
               fontWeight: "bold",
               color: "#fff",
               marginBottom: 12,
               textShadow: "0 0 8px rgba(0,0,0,0.7)",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
             }}
           >
             КОСМЕТИЧЕСКИЙ РЕМОНТ
           </h1>
+        </div>
+      </div>
+
+      {/* H1 + УТП + кнопка «Связаться» */}
+      <div style={{ padding: "clamp(12px, 4vw, 20px)" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "clamp(16px, 5vw, 24px) clamp(12px, 3vw, 16px)",
+            backgroundColor: "#0a1a26",
+            borderRadius: "16px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2
+            style={{
+              color: "#FFD700",
+              fontSize: "clamp(18px, 5vw, 22px)",
+              marginBottom: 16,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}
+          >
+            Бесплатная смета с выездом специалиста!
+          </h2>
+
+          {/* Преимущества */}
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: "0 0 20px 0",
+              color: "#fff",
+              fontSize: 16,
+              lineHeight: "1.6",
+              textAlign: "left",
+              display: "inline-block",
+            }}
+          >
+            <li>✔ Гарантия до 3 лет</li>
+            <li>✔ Работаем строго по договору</li>
+            <li>✔ Фотоотчёты каждый день</li>
+          </ul>
+
+          <button
+            {...press}
+            onClick={() => navigate("/contacts")}
+            style={{
+              ...press.style,
+              backgroundColor: "#FFD700",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "30px",
+              padding: "12px 32px",
+              fontWeight: 900,
+              fontSize: 18,
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(0,0,0,.3)",
+              whiteSpace: "nowrap",
+              textShadow: "0 2px 4px rgba(0,0,0,.3)",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,.4)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.3)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            Узнать стоимость
+          </button>
+        </div>
+      </div>
+
+      {/* Большое описание + состав косметического ремонта + цены */}
+      <div style={{ padding: 20 }}>
+        {/* Блок о регионе работы */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <p
+            style={{
+              color: "#ffffff",
+              fontSize: 16,
+              fontWeight: 500,
+              margin: 0,
+              opacity: 0.9,
+            }}
+          >
+            Мы работаем в Москве и Московской области
+          </p>
+        </div>
+
+        <h3 style={{ color: "#FFD700", fontSize: 22, margin: "18px 0 12px" }}>
+          Что входит в состав работ
+        </h3>
+
+        <div style={{ display: "grid", gap: 10 }}>
+          {[
+            {
+              name: "Демонтаж старой отделки (обои/краска/плитка)",
+              price: "от 590 ₽/м²",
+            },
+            {
+              name: "Подготовка поверхностей: шпатлевка, выравнивание",
+              price: "от 650 ₽/м²",
+            },
+            {
+              name: "Оклейка обоями или покраска стен и потолков",
+              price: "от 550 ₽/м²",
+            },
+            {
+              name: "Замена плинтусов, фурнитуры, розеток, выключателей",
+              price: "от 350 ₽/точка",
+            },
+            {
+              name: "Укладка ламината/инженерной доски, установка порогов",
+              price: "от 650 ₽/м²",
+            },
+            {
+              name: "Монтаж светильников/спотов, мелкие доработки",
+              price: "от 450 ₽/шт.",
+            },
+            {
+              name: "Уборка и вывоз строительного мусора",
+              price: "от 80 ₽/м²",
+            },
+          ].map((row, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px 4px",
+                borderBottom: "1px solid rgba(255,255,255,.15)",
+              }}
+            >
+              <div style={{ fontSize: 16, lineHeight: 1.5, fontWeight: 500 }}>
+                {row.name}
+              </div>
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#FFD700",
+                  whiteSpace: "nowrap",
+                  marginLeft: 12,
+                }}
+              >
+                {row.price}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -201,140 +358,130 @@ const Mobile = () => {
         })()}
       </div>
 
-      {/* Большое описание + состав косметического ремонта + цены */}
-      <div style={{ padding: 20 }}>
-        <h3 style={{ color: "#FFD700", fontSize: 22, margin: "18px 0 12px" }}>
-          Что входит в состав работ
-        </h3>
+      {/* Работаем со всеми типами квартир */}
+      <div style={{ padding: "28px 20px", background: "#0a1a26" }}>
+        <h2
+          style={{
+            color: "#FFD700",
+            fontSize: 22,
+            fontWeight: 800,
+            marginBottom: 8,
+            textAlign: "center",
+          }}
+        >
+          Работаем со всеми типами квартир
+        </h2>
+        <p
+          style={{
+            color: "rgba(255,255,255,.85)",
+            fontSize: 15,
+            textAlign: "center",
+            marginBottom: 24,
+            lineHeight: 1.6,
+          }}
+        >
+          Косметический ремонт любой сложности
+        </p>
 
-        <div style={{ display: "grid", gap: 10 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 12,
+            marginBottom: 16,
+          }}
+        >
           {[
-            {
-              name: "Демонтаж старой отделки (обои/краска/плитка)",
-              price: "от 590 ₽/м²",
-            },
-            {
-              name: "Подготовка поверхностей: шпатлевка, выравнивание",
-              price: "от 650 ₽/м²",
-            },
-            {
-              name: "Оклейка обоями или покраска стен и потолков",
-              price: "от 550 ₽/м²",
-            },
-            {
-              name: "Замена плинтусов, фурнитуры, розеток, выключателей",
-              price: "от 350 ₽/точка",
-            },
-            {
-              name: "Укладка ламината/инженерной доски, установка порогов",
-              price: "от 650 ₽/м²",
-            },
-            {
-              name: "Монтаж светильников/спотов, мелкие доработки",
-              price: "от 450 ₽/шт.",
-            },
-            {
-              name: "Уборка и вывоз строительного мусора",
-              price: "от 80 ₽/м²",
-            },
-          ].map((row, i) => (
+            { icon: "🏢", title: "Новостройки", desc: "С нуля под ключ" },
+            { icon: "🏠", title: "Вторичка", desc: "Обновим квартиру" },
+            { icon: "🛋️", title: "1-комнатные", desc: "От 3900 ₽/м²" },
+            { icon: "🏡", title: "2-комнатные", desc: "Любая планировка" },
+            { icon: "🏘️", title: "3-комнатные", desc: "Полный цикл работ" },
+            { icon: "🏰", title: "Студии", desc: "Компактно и стильно" },
+          ].map((item, i) => (
             <div
               key={i}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "10px 4px",
-                borderBottom: "1px solid rgba(255,255,255,.15)",
+                background:
+                  "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02))",
+                border: "1px solid rgba(255,215,0,.2)",
+                borderRadius: 12,
+                padding: "16px 12px",
+                textAlign: "center",
               }}
             >
-              <div style={{ fontSize: 16, lineHeight: 1.5, fontWeight: 500 }}>
-                {row.name}
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{item.icon}</div>
+              <div
+                style={{
+                  color: "#FFD700",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  marginBottom: 4,
+                }}
+              >
+                {item.title}
               </div>
               <div
                 style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#FFD700",
-                  whiteSpace: "nowrap",
-                  marginLeft: 12,
+                  color: "rgba(255,255,255,.7)",
+                  fontSize: 13,
                 }}
               >
-                {row.price}
+                {item.desc}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* H1 + УТП + кнопка «Связаться» */}
-      <div style={{ padding: 20 }}>
-        <div
+      {/* Остались вопросы? */}
+      <div
+        style={{
+          padding: "40px 20px",
+          background:
+            "linear-gradient(145deg, rgba(255,215,0,0.12), rgba(10,26,38,0.95))",
+          textAlign: "center",
+        }}
+      >
+        <h2
           style={{
-            textAlign: "center",
-            padding: "24px 16px",
-            backgroundColor: "#0a1a26",
-            borderRadius: "16px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            color: "#FFFFFF",
+            fontSize: 26,
+            fontWeight: 800,
+            marginBottom: 12,
+            lineHeight: 1.3,
           }}
         >
-          <h2
-            style={{
-              color: "#FFD700",
-              fontSize: 22,
-              marginBottom: 16,
-              fontWeight: 700,
-              lineHeight: 1.3,
-            }}
-          >
-            Бесплатная смета с выездом специалиста!
-          </h2>
-
-          {/* Преимущества */}
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              margin: "0 0 20px 0",
-              color: "#fff",
-              fontSize: 16,
-              lineHeight: "1.6",
-              textAlign: "left",
-              display: "inline-block",
-            }}
-          >
-            <li>✔ Гарантия до 3 лет</li>
-            <li>✔ Работаем строго по договору</li>
-            <li>✔ Фотоотчёты каждый день</li>
-          </ul>
-
-          <button
-            {...press}
-            onClick={() => navigate("/contacts")}
-            style={{
-              ...press.style,
-              backgroundColor: "#FFD700",
-              color: "#0a1a26",
-              border: "none",
-              borderRadius: "30px",
-              padding: "12px 32px",
-              fontWeight: "bold",
-              fontSize: 18,
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(255,215,0,.35)",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.boxShadow =
-                "0 8px 20px rgba(255,215,0,.55)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.boxShadow =
-                "0 6px 16px rgba(255,215,0,.35)")
-            }
-          >
-            Связаться
-          </button>
-        </div>
+          Остались вопросы?
+        </h2>
+        <p
+          style={{
+            color: "rgba(255,255,255,.9)",
+            fontSize: 16,
+            marginBottom: 24,
+            lineHeight: 1.6,
+          }}
+        >
+          Задайте любой вопрос нашему специалисту
+        </p>
+        <button
+          {...press}
+          onClick={() => navigate("/contacts")}
+          style={{
+            ...press.style,
+            backgroundColor: "#FFD700",
+            color: "#0a1a26",
+            border: "none",
+            borderRadius: 30,
+            padding: "14px 40px",
+            fontWeight: 900,
+            fontSize: 18,
+            cursor: "pointer",
+            boxShadow: "0 8px 24px rgba(255,215,0,.4)",
+          }}
+        >
+          Связаться с нами
+        </button>
       </div>
 
       {/* Портфолио (2 карточки как договаривались) */}
@@ -443,30 +590,36 @@ const Mobile = () => {
 
                 {/* CTA — подняли выше и добавили нижний отступ */}
                 <div style={{ padding: "0 16px 16px" }}>
-                  <button
-                    {...press}
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/portfolio/${p.slug}`);
+                    }}
+                    href={`/portfolio/${p.slug}`}
                     style={{
-                      ...press.style,
+                      color: "#FFD700",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      textDecoration: "none",
                       display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      padding: "12px 20px",
-                      border: "none",
-                      borderRadius: 999,
-                      background: "#FFD700",
-                      color: "#0a1a26",
-                      fontWeight: 800,
-                      fontSize: 16,
-                      boxShadow: "0 6px 16px rgba(255,215,0,.25)",
+                      gap: "8px",
                       cursor: "pointer",
-                      width: "100%",
-                      margin: "8px 0 10px", // ↑ меньше сверху, есть отступ снизу
+                      transition: "all 0.2s ease",
+                      marginTop: "12px",
                     }}
-                    onClick={() => navigate(`/portfolio/${p.slug}`)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.gap = "12px";
+                      e.currentTarget.style.opacity = "0.8";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.gap = "8px";
+                      e.currentTarget.style.opacity = "1";
+                    }}
                   >
                     Подробнее
-                  </button>
+                    <span style={{ fontSize: "20px" }}>→</span>
+                  </a>
                 </div>
               </div>
             );

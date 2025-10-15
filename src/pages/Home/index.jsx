@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import hero from "../../assets/hero.png";
 
-import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
+// import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
 
 import Header from "../../components/blocks/Header";
 import Services from "../../components/blocks/Services";
@@ -98,7 +98,7 @@ const Home = () => {
     >
       {/* Иконка трубки*/}
 
-      <MobilePhoneWidget isMobile={isMobile} />
+      {/* <MobilePhoneWidget isMobile={isMobile} /> */}
 
       <div
         style={{
@@ -172,235 +172,171 @@ const Home = () => {
           />
         </section>
 
-        {/* АКЦИЯ ОСЕНИ */}
+        {/* Блок со скидкой */}
         <section
           style={{
             width: "100%",
-            background:
-              "linear-gradient(180deg, #243542 0%, #1d2d3c 50%, #16232c 100%)",
-            padding: isMobile ? "40px 0" : "70px 40px",
+            background: "linear-gradient(135deg, #0a1a26 0%, #16232c 100%)",
+            padding: isMobile ? "40px 0" : "80px 0",
             marginTop: "0",
             position: "relative",
-            overflow: "hidden",
-            borderTop: "3px solid #FFD700",
-            borderBottom: "3px solid #FFD700",
+            borderTop: isMobile ? "4px solid #FF6B35" : "6px solid #FF6B35",
+            boxSizing: "border-box",
           }}
         >
-          {/* Декоративные элементы */}
           <div
             style={{
-              position: "absolute",
-              top: "-50px",
-              right: "-50px",
-              width: "200px",
-              height: "200px",
-              background: "rgba(255, 215, 0, 0.05)",
-              borderRadius: "50%",
-              filter: "blur(60px)",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-80px",
-              left: "-80px",
-              width: "250px",
-              height: "250px",
-              background: "rgba(255, 215, 0, 0.03)",
-              borderRadius: "50%",
-              filter: "blur(80px)",
-            }}
-          />
-
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "900px",
+              width: isMobile ? "92%" : "90%",
+              maxWidth: "1000px",
               margin: "0 auto",
               textAlign: "center",
-              position: "relative",
-              zIndex: 1,
-              padding: isMobile ? "0 20px" : "0",
-              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              gap: isMobile ? "20px" : "32px",
+              alignItems: "center",
             }}
           >
-            {/* Эмодзи */}
-            <div
-              style={{
-                fontSize: isMobile ? "36px" : "56px",
-                marginBottom: isMobile ? "10px" : "16px",
-                animation: "float 3s ease-in-out infinite",
-              }}
-            >
-              🍂
-            </div>
-
             {/* Заголовок */}
             <h2
               style={{
-                fontSize: isMobile ? "26px" : "44px",
-                fontWeight: "900",
-                color: "#FFD700",
-                margin: "0 0 10px 0",
-                textTransform: "uppercase",
-                letterSpacing: isMobile ? "0.5px" : "1px",
-                textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                fontSize: isMobile ? "22px" : "48px",
+                fontWeight: "800",
+                color: "#ffffff",
+                margin: "0",
+                lineHeight: isMobile ? 1.3 : 1.2,
+                letterSpacing: "-0.5px",
               }}
             >
-              АКЦИЯ ОСЕНИ
+              Ремонт с комфортом <br />
+              начинается с приятной скидки
             </h2>
 
             {/* Подзаголовок */}
             <p
               style={{
-                fontSize: isMobile ? "17px" : "24px",
-                fontWeight: "700",
-                color: "#ffffff",
-                margin: "0 0 16px 0",
-                opacity: 0.95,
-                lineHeight: "1.4",
-              }}
-            >
-              Получите скидку на ремонт
-            </p>
-
-            {/* Описание */}
-            <p
-              style={{
-                fontSize: isMobile ? "14px" : "17px",
+                fontSize: isMobile ? "13px" : "20px",
                 fontWeight: "400",
-                color: "#ffffff",
-                margin: "0 0 24px 0",
-                opacity: 0.85,
-                lineHeight: "1.5",
+                color: "rgba(255,255,255,0.85)",
+                margin: "0",
+                lineHeight: 1.5,
+                maxWidth: isMobile ? "100%" : "800px",
               }}
             >
-              Специальное предложение действует до конца года
+              Бесплатный расчёт сметы, скидка на материалы и фиксированная цена
+              по договору
             </p>
 
             {/* Кнопка */}
-            <Link
-              to="/contacts"
-              style={{
-                textDecoration: "none",
-                display: "inline-block",
-                margin: isMobile ? "8px 0 0 0" : "0",
-              }}
-            >
-              <div
+            <div>
+              <Link
+                to="/contacts"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
-                  color: "#1a2a35",
-                  padding: isMobile ? "18px 50px" : "20px 60px",
-                  borderRadius: "50px",
-                  fontSize: isMobile ? "16px" : "20px",
-                  fontWeight: "800",
-                  cursor: "pointer",
-                  boxShadow:
-                    "0 8px 24px rgba(255, 215, 0, 0.25), 0 0 20px rgba(242, 203, 5, 0.3)",
-                  transition: "all 0.3s ease",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-3px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 12px 32px rgba(255, 215, 0, 0.4), 0 0 30px rgba(242, 203, 5, 0.5)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(255, 215, 0, 0.25), 0 0 20px rgba(242, 203, 5, 0.3)";
+                  textDecoration: "none",
+                  display: "inline-block",
                 }}
               >
-                Узнать подробности
-              </div>
-            </Link>
+                <div
+                  {...press}
+                  style={{
+                    ...press.style,
+                    background: "#FF6B35",
+                    color: "#ffffff",
+                    padding: isMobile ? "16px 40px" : "18px 48px",
+                    borderRadius: "12px",
+                    fontSize: isMobile ? "16px" : "18px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    boxShadow: "0 8px 24px rgba(255, 107, 53, 0.3)",
+                    transition: "all 0.2s ease",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 12px 32px rgba(255, 107, 53, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 24px rgba(255, 107, 53, 0.3)";
+                  }}
+                >
+                  Получить скидку
+                </div>
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* Кто мы */}
+        {/* Блок о регионе работы */}
         <section
-          ref={aboutRef}
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            scrollMarginTop: "54px",
-            padding: isMobile ? "20px 20px" : "30px 40px",
             width: "100%",
-            maxWidth: "1200px",
-            margin: "0 auto",
-            marginTop: "0vh",
+            background: "linear-gradient(135deg, #1a2a3a 0%, #2a3a4a 100%)",
+            padding: isMobile ? "50px 0" : "80px 0",
+            marginTop: "0",
+            position: "relative",
+            borderTop: isMobile ? "3px solid #FFD700" : "4px solid #FFD700",
             boxSizing: "border-box",
           }}
         >
           <div
-            ref={firstBlock}
             style={{
-              width: "100%",
+              width: isMobile ? "92%" : "90%",
+              maxWidth: "1000px",
+              margin: "0 auto",
+              textAlign: "center",
               display: "flex",
               flexDirection: "column",
+              gap: isMobile ? "16px" : "24px",
               alignItems: "center",
-              gap: isMobile ? "24px" : "40px",
             }}
           >
-            {/* Картинка */}
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                maxWidth: isMobile ? "100%" : "950px",
-                height: isMobile ? "250px" : "400px",
-                overflow: "hidden",
-                borderRadius: "16px",
-              }}
-            >
-              <img
-                loading="lazy"
-                src="/images/homePage/about.webp"
-                alt="о нас"
-                style={{
-                  width: "100%",
-                  height: isMobile ? "100%" : "400px",
-                  objectFit: "cover",
-                  objectPosition: isMobile ? "center 60%" : "center 65%",
-                  borderRadius: "16px",
-                  boxShadow: "0 10px 40px rgba(0,0,0,.3)",
-                  display: "block",
-                }}
-              />
-            </div>
-
             {/* Заголовок */}
             <h2
               style={{
-                fontSize: isMobile ? "8.5vw" : "52px",
+                fontSize: isMobile ? "20px" : "42px",
                 fontWeight: "800",
-                margin: 0,
-                color: "#FFE5B4",
-                textAlign: "center",
-                whiteSpace: "nowrap",
-                textShadow: "0 4px 12px rgba(255, 215, 0, 0.3)",
-                letterSpacing: "0.5px",
+                color: "#ffffff",
+                margin: "0",
+                lineHeight: isMobile ? 1.3 : 1.2,
+                letterSpacing: "-0.5px",
               }}
             >
-              Мы создаем уют
+              Мы работаем в Москве <br />и Московской области
             </h2>
+
+            {/* Подзаголовок */}
+            <p
+              style={{
+                fontSize: isMobile ? "14px" : "18px",
+                fontWeight: "400",
+                color: "rgba(255,255,255,0.9)",
+                margin: "0",
+                lineHeight: 1.5,
+                maxWidth: isMobile ? "100%" : "700px",
+              }}
+            >
+              Опытная команда мастеров готова выполнить ремонт любой сложности в
+              удобное для вас время
+            </p>
+
+            {/* Декоративная линия */}
+            <div
+              style={{
+                width: isMobile ? "60px" : "80px",
+                height: "3px",
+                background: "linear-gradient(90deg, #FFD700, #FF6B35)",
+                borderRadius: "2px",
+                marginTop: isMobile ? "8px" : "12px",
+              }}
+            />
           </div>
         </section>
+
         {/* Наши услуги */}
-        <Services
-          // id="services"
-          isMobile={isMobile}
-          servicesRef={servicesRef}
-          setQuestioModalOpen={setQuestioModalOpen}
-          phoneWidgetIsOpen={phoneWidgetIsOpen}
-          widthFirstBlock={widthFirstBlock}
-          scrollToServices={scrollToServices}
-        />
+        <Services isMobile={isMobile} servicesRef={servicesRef} />
         {/* портфолио  */}
 
         <section

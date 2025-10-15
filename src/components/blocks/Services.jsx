@@ -1,629 +1,231 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ymNavigate } from "../../utils/metrika";
 
-const Services = ({
-  isMobile,
-  servicesRef,
-  setQuestioModalOpen,
-  phoneWidgetIsOpen,
-  widthFirstBlock,
-}) => {
+const Services = ({ isMobile, servicesRef }) => {
   const navigate = useNavigate();
   const handleClick = (url) => {
     const page = `/repair/${url}`;
-    // Отправляем виртуальный хит + notBounce
     ymNavigate(page);
-
     setTimeout(() => {
       navigate(page);
     }, 100);
   };
 
+  const services = [
+    {
+      title: "Косметический ремонт",
+      description:
+        "Легкое обновление помещений без полного цикла ремонтно-отделочных работ и внесения существенных изменений.",
+      price: "3900",
+      image: "/images/homePage/services1.webp",
+      route: "cosmetic",
+    },
+    {
+      title: "Капитальный ремонт",
+      description:
+        "Полная перепланировка, демонтаж старых отделочных материалов, замена коммуникаций, окон и дверей, черновая и чистовая отделка.",
+      price: "9500",
+      image: "/images/homePage/services2.webp",
+      route: "capital",
+    },
+    {
+      title: "Дизайнерский ремонт",
+      description:
+        "Комплексный пакет чертежей, спецификация отделочных материалов, освещения, мебели и визуализация интерьера.",
+      price: "16 500",
+      image: "/images/homePage/services3.webp",
+      route: "designer",
+    },
+  ];
+
   return (
     <section
       ref={servicesRef}
       style={{
-        textAlign: "center",
         scrollMarginTop: "60px",
-        height: "auto",
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: isMobile ? "100vw" : "100vw",
+        padding: isMobile ? "30px 0" : "60px 0",
+        width: "100%",
       }}
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: isMobile ? "92%" : widthFirstBlock,
-          height: "auto",
+          display: isMobile ? "flex" : "grid",
+          flexDirection: isMobile ? "column" : undefined,
+          gridTemplateColumns: isMobile ? undefined : "repeat(3, 1fr)",
+          gap: isMobile ? "40px" : "32px",
+          width: isMobile ? "92%" : "90%",
+          maxWidth: "1200px",
+          margin: "0 auto",
         }}
       >
-        {/* косметический ремонт */}
-        <div
-          style={{
-            height: isMobile ? "auto" : "29vh",
-            width: "100%",
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "center",
-          }}
-        >
+        {services.map((service, index) => (
           <div
+            key={index}
             style={{
-              height: isMobile ? "auto" : "100%",
-              width: "100%",
               display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-
-              alignItems: "flex-start",
+              flexDirection: "column",
+              backgroundColor: isMobile ? "transparent" : "#0f2431",
+              borderRadius: isMobile ? "0" : "20px",
+              overflow: "hidden",
+              boxShadow: isMobile ? "none" : "0 10px 40px rgba(0,0,0,0.3)",
+              border: isMobile ? "none" : "1px solid rgba(255,255,255,0.05)",
             }}
           >
+            {/* Заголовок над фото */}
+            <div
+              style={{
+                padding: isMobile ? "0 0 16px 0" : "24px 24px 20px",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: isMobile ? "7.5vw" : "36px",
+                  fontWeight: 800,
+                  margin: "0",
+                  color: "#fff",
+                  lineHeight: 1.1,
+                }}
+              >
+                {service.title}
+              </h2>
+            </div>
+
+            {/* Изображение */}
             <div
               style={{
                 position: "relative",
-                width: isMobile ? "100%" : "auto",
-                height: isMobile ? "250px" : "100%",
+                width: "100%",
+                height: isMobile ? "250px" : "280px",
               }}
             >
               <img
                 loading="lazy"
-                src="/images/homePage/services1.webp"
+                src={service.image}
+                alt={service.title}
                 style={{
-                  height: isMobile ? "250px" : "100%",
-                  width: isMobile ? "100%" : "auto",
-                  alignSelf: "center",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                   display: "block",
-                  borderRadius: "10px",
+                  borderRadius: isMobile ? "10px" : "0",
                   boxShadow: isMobile
                     ? "0 8px 24px rgba(0, 0, 0, 0.4)"
                     : "none",
-                  objectFit: "cover",
                 }}
-                alt="о нас"
               />
+
+              {/* Цена поверх картинки */}
               <div
                 style={{
-                  width: "100%",
-                  height: isMobile ? "22%" : "20%",
-                  backgroundColor: isMobile
-                    ? "rgba(20, 20, 20, 0.85)"
-                    : "rgba(98, 98, 98, 0.65)",
+                  position: "absolute",
                   bottom: 0,
                   left: 0,
-                  position: "absolute",
-                  display: "flex",
-                  alignItems: "center",
-                  borderRadius: "10px",
-                  borderTop: isMobile
-                    ? "2px solid rgba(255, 215, 0, 0.5)"
-                    : "none",
-                }}
-              >
-                <div
-                  style={{
-                    marginLeft: "20px",
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  Цена от
-                </div>
-                <div
-                  style={{
-                    color: "#FFD700",
-                    fontSize: isMobile ? "5.5vw" : "20px",
-                    fontWeight: isMobile ? 700 : 400,
-                  }}
-                >
-                  {" "}
-                  &nbsp;3900
-                </div>
-
-                <div
-                  style={{
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  &nbsp;руб/м²
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                height: isMobile ? "100%" : "auto",
-                width: isMobile ? "100%" : "50vw",
-                padding: "1%",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: isMobile ? "start" : "center",
-                justifyContent: isMobile ? "space-between" : "center",
-                alignItems: isMobile ? "flex-start" : "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
-                  marginBottom: isMobile ? "3vh" : "20px",
-                  marginTop: isMobile ? "3vh" : "20px",
-                }}
-              >
-                Косметический ремонт
-              </div>
-
-              <div
-                style={{
-                  fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
-                  fontWeight: "500",
-                  width: "80%",
-                  lineHeight: isMobile ? "1.5" : "1.6",
-                }}
-              >
-                <span style={{ color: "#FFD700" }}>Короткие сроки</span> и{" "}
-                <span style={{ color: "#FFD700" }}>минимальные вложения</span> —
-                и вы будто переехали в новую квартиру. Мы обновим стены, заменим
-                покрытия и сделаем интерьер заметно свежее без пыли, шума и
-                затянувшихся ремонтов.
-              </div>
-
-              <button
-                onClick={() => {
-                  handleClick("cosmetic");
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.style.transform = "scale(0.95)";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 20px rgba(255, 215, 0, 0.8)";
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 15px rgba(255, 215, 0, 0.5)";
-                }}
-                style={{
-                  backgroundColor: isMobile ? "#FFD700" : "transparent",
-                  color: isMobile ? "#000" : "white",
-                  border: "2px solid #FFD700",
-                  borderRadius: "25px",
-                  padding: isMobile ? "10px 0px" : "4px 0px",
-                  fontSize: isMobile ? "4vw" : "20px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  width: isMobile ? "35vw" : "150px",
-                  height: isMobile ? "45px" : "35px",
-                  marginTop: "3vh",
-                  boxShadow: isMobile
-                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
-                    : "none",
-                }}
-              >
-                подробнее
-              </button>
-            </div>
-          </div>
-        </div>
-        {/* капитальный ремонт */}
-        <div
-          style={{
-            height: isMobile ? "auto" : "35vh",
-            width: "100%",
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "center",
-
-            marginTop: isMobile ? "8vh" : "8vh",
-            marginBottom: isMobile ? "8vh" : "8vh",
-          }}
-        >
-          <div
-            style={{
-              height: isMobile ? "auto" : "100%",
-              width: "100%",
-              display: "flex",
-              flexDirection: isMobile ? "column-reverse" : "row",
-
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
-            }}
-          >
-            <div
-              style={{
-                height: isMobile ? "100%" : "auto",
-                width: isMobile ? "100%" : "50vw",
-                padding: "1%",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: isMobile ? "start" : "center",
-                justifyContent: isMobile ? "space-between" : "center",
-                alignItems: isMobile ? "start" : "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
-                  marginBottom: isMobile ? "3vh" : "20px",
-                  marginTop: isMobile ? "3vh" : "20px",
-                  fontWeight: 700,
-                }}
-              >
-                {" "}
-                Капитальный ремонт
-              </div>
-
-              <div
-                style={{
-                  fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
-                  fontWeight: "500",
-                  width: "80%",
-                  lineHeight: isMobile ? "1.5" : "1.6",
-                }}
-              >
-                <span style={{ color: "#FFD700" }}>
-                  Полное обновление квартиры
-                </span>{" "}
-                с заменой всех коммуникаций и перепланировкой под ваши нужды —{" "}
-                <span style={{ color: "#FFD700" }}>РЕМОНТ ЛЮБОЙ СЛОЖНОСТИ</span>
-                . Крепкие инженерные системы, качественные отделочные материалы,
-                идеально ровные стены и интерьер, который будет радовать каждый
-                день.
-              </div>
-
-              <button
-                onClick={() => {
-                  handleClick("capital");
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.style.transform = "scale(0.95)";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 20px rgba(255, 215, 0, 0.8)";
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                  e.currentTarget.style.boxShadow = isMobile
-                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
-                    : "0 0 10px rgba(255, 215, 0, 0.4)";
-                }}
-                style={{
-                  backgroundColor: isMobile ? "#FFD700" : "transparent",
-                  color: isMobile ? "#000" : "white",
-                  border: "2px solid #FFD700",
-                  borderRadius: "25px",
-                  padding: isMobile ? "10px 0px" : "4px 0px",
-                  fontSize: isMobile ? "4vw" : "20px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  width: isMobile ? "35vw" : "150px",
-                  height: isMobile ? "45px" : "35px",
-                  boxShadow: isMobile
-                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
-                    : "0 0 10px rgba(255, 215, 0, 0.4)",
-                  marginTop: "3vh",
-                }}
-              >
-                подробнее
-              </button>
-            </div>
-
-            <div
-              style={{
-                position: "relative",
-                width: isMobile ? "100%" : "auto",
-                height: isMobile ? "250px" : "100%",
-              }}
-            >
-              <img
-                loading="lazy"
-                src="/images/homePage/services2.webp"
-                style={{
-                  height: isMobile ? "250px" : "100%",
-                  width: isMobile ? "100%" : "auto",
-                  alignSelf: "center",
-                  display: "block",
-                  borderRadius: "10px",
-                  boxShadow: isMobile
-                    ? "0 8px 24px rgba(0, 0, 0, 0.4)"
-                    : "none",
-                  objectFit: "cover",
-                }}
-                alt="о нас"
-              />
-              <div
-                style={{
                   width: "100%",
-                  height: isMobile ? "22%" : "15%",
+                  height: isMobile ? "22%" : "25%",
                   backgroundColor: isMobile
                     ? "rgba(20, 20, 20, 0.85)"
-                    : "rgba(98, 98, 98, 0.65)",
-                  bottom: 0,
-                  left: 0,
-                  position: "absolute",
+                    : "rgba(10, 26, 38, 0.92)",
                   display: "flex",
                   alignItems: "center",
-                  borderRadius: "10px",
+                  paddingLeft: "20px",
                   borderTop: isMobile
                     ? "2px solid rgba(255, 215, 0, 0.5)"
-                    : "none",
+                    : "1px solid rgba(255, 215, 0, 0.3)",
+                  borderRadius: isMobile ? "0 0 10px 10px" : "0",
                 }}
               >
-                <div
+                <span
                   style={{
-                    marginLeft: "20px",
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  Цена от
-                </div>
-                <div
-                  style={{
-                    color: "#FFD700",
-                    fontSize: isMobile ? "5.5vw" : "20px",
-                    fontWeight: isMobile ? 700 : 400,
-                  }}
-                >
-                  {" "}
-                  &nbsp;9500
-                </div>
-
-                <div
-                  style={{
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  &nbsp;руб/м²
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* дизайнерский ремонт */}
-        <div
-          style={{
-            height: isMobile ? "auto" : "35vh",
-            width: "100%",
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              height: isMobile ? "auto" : "100%",
-              width: "100%",
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-
-              alignItems: "flex-start",
-            }}
-          >
-            <div
-              style={{
-                position: "relative",
-                width: isMobile ? "100%" : "auto",
-                height: isMobile ? "250px" : "100%",
-              }}
-            >
-              <img
-                loading="lazy"
-                src="/images/homePage/services3.webp"
-                style={{
-                  height: isMobile ? "250px" : "100%",
-                  width: isMobile ? "100%" : "auto",
-                  alignSelf: "center",
-                  display: "block",
-                  borderRadius: "10px",
-                  boxShadow: isMobile
-                    ? "0 8px 24px rgba(0, 0, 0, 0.4)"
-                    : "none",
-                  objectFit: "cover",
-                }}
-                alt="о нас"
-              />
-              <div
-                style={{
-                  width: "100%",
-                  height: isMobile ? "22%" : "20%",
-                  backgroundColor: isMobile
-                    ? "rgba(20, 20, 20, 0.85)"
-                    : "rgba(98, 98, 98, 0.8)",
-                  bottom: 0,
-                  left: 0,
-                  position: "absolute",
-                  display: "flex",
-                  alignItems: "center",
-                  borderRadius: "10px",
-                  borderTop: isMobile
-                    ? "2px solid rgba(255, 215, 0, 0.5)"
-                    : "none",
-                }}
-              >
-                <div
-                  style={{
-                    marginLeft: "20px",
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  Цена от
-                </div>
-                <div
-                  style={{
-                    color: "#FFD700",
-                    fontSize: isMobile ? "5.5vw" : "20px",
-                    fontWeight: isMobile ? 700 : 400,
-                  }}
-                >
-                  {" "}
-                  &nbsp;16 500
-                </div>
-
-                <div
-                  style={{
-                    fontSize: isMobile ? "4.5vw" : "20px",
-                    color: "#ffff",
-                    fontWeight: isMobile ? 500 : 400,
-                  }}
-                >
-                  &nbsp;руб/м²
-                </div>
-              </div>
-            </div>
-            <div
-              style={{
-                height: isMobile ? "100%" : "auto",
-                width: isMobile ? "100%" : "50vw",
-                padding: "1%",
-                alignSelf: "center",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: isMobile ? "start" : "center",
-
-                justifyContent: isMobile ? "center" : "center",
-                alignItems: isMobile ? "flex-start" : "center",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isMobile ? "7vw" : "clamp(4px, 3.5vw, 56px)",
-                  marginBottom: isMobile ? "3vh" : "20px",
-                  marginTop: isMobile ? "3vh" : "20px",
-                  fontWeight: 700,
-                  display: "inline-block",
-                  background:
-                    "linear-gradient(90deg, #FFD700 0%, #ffffff 50%, #FFD700 100%)",
-                  backgroundSize: "200% auto",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  animation: "shine 2.5s linear infinite",
-                }}
-              >
-                Дизайнерский ремонт
-              </div>
-
-              <div
-                style={{
-                  fontWeight: "500",
-                  width: "80%",
-                }}
-              >
-                <div
-                  style={{
+                    fontSize: isMobile ? "4.5vw" : "18px",
                     color: "#fff",
-                    fontSize: isMobile ? "4.5vw" : "clamp(16px, 1.8vw, 18px)",
-                    fontWeight: 400,
-                    lineHeight: isMobile ? "1.5" : "1.6",
+                    fontWeight: isMobile ? 500 : 400,
                   }}
                 >
-                  Ищете{" "}
-                  <span style={{ color: "#FFD700" }}>УНИКАЛЬНЫЙ ДИЗАЙН</span> ?
-                  <br />
-                  Мы создаём интерьеры под ключ, в которых продумано всё — от
-                  визуальной концепции до зонирования кухни-гостиной. У нас{" "}
-                  <span style={{ color: "#FFD700" }}>
-                    лучшие дизайнеры, опытные строители{" "}
-                  </span>{" "}
-                  и <span style={{ color: "#FFD700" }}> честные цены</span> без
-                  скрытых затрат.
-                </div>
+                  Цена от
+                </span>
+                <span
+                  style={{
+                    color: "#FFD700",
+                    fontSize: isMobile ? "5.5vw" : "22px",
+                    fontWeight: isMobile ? 700 : 600,
+                    marginLeft: "8px",
+                  }}
+                >
+                  {service.price}
+                </span>
+                <span
+                  style={{
+                    fontSize: isMobile ? "4.5vw" : "18px",
+                    color: "#fff",
+                    fontWeight: isMobile ? 500 : 400,
+                    marginLeft: "4px",
+                  }}
+                >
+                  руб/м²
+                </span>
               </div>
+            </div>
 
-              <button
-                onClick={() => {
-                  handleClick("designer");
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.style.transform = "scale(0.95)";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 20px rgba(255, 215, 0, 0.8)";
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                  e.currentTarget.style.boxShadow = isMobile
-                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
-                    : "0 0 10px rgba(255, 215, 0, 0.4)";
-                }}
+            {/* Контент */}
+            <div
+              style={{
+                padding: isMobile ? "20px 0" : "28px 24px 32px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: isMobile ? "flex-start" : "flex-start",
+                textAlign: "left",
+                flex: 1,
+              }}
+            >
+              {/* Описание */}
+              <p
                 style={{
-                  backgroundColor: isMobile ? "#FFD700" : "transparent",
-                  color: isMobile ? "#000" : "white",
-                  border: "2px solid #FFD700",
-                  borderRadius: "25px",
-                  padding: isMobile ? "10px 0px" : "4px 0px",
-                  fontSize: isMobile ? "4vw" : "20px",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  width: isMobile ? "35vw" : "150px",
-                  height: isMobile ? "45px" : "35px",
-                  boxShadow: isMobile
-                    ? "0 0 15px rgba(255, 215, 0, 0.5)"
-                    : "0 0 10px rgba(255, 215, 0, 0.4)",
-                  marginTop: "3vh",
+                  fontSize: isMobile ? "4.2vw" : "16px",
+                  fontWeight: 400,
+                  color: "rgba(255,255,255,0.85)",
+                  lineHeight: 1.6,
+                  margin: "0 0 20px 0",
+                  flex: 1,
                 }}
               >
-                подробнее
-              </button>
+                {service.description}
+              </p>
+
+              {/* Ссылка вместо кнопки */}
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleClick(service.route);
+                }}
+                href={`/repair/${service.route}`}
+                style={{
+                  color: "#FFD700",
+                  fontSize: isMobile ? "4.5vw" : "19px",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  marginTop: "auto",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.gap = "12px";
+                  e.currentTarget.style.opacity = "0.8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.gap = "8px";
+                  e.currentTarget.style.opacity = "1";
+                }}
+              >
+                Цены и примеры работ
+                <span style={{ fontSize: "22px" }}>→</span>
+              </a>
             </div>
           </div>
-        </div>
-
-        {/* <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: isMobile ? "13vh" : "20vh",
-          }}
-        >
-          <button
-            type="button"
-            onTouchStart={(e) =>
-              (e.currentTarget.style.transform = "scale(0.97)")
-            }
-            onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform = "scale(0.97)")
-            }
-            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            style={{
-              backgroundColor: "#f2cb05",
-              color: isMobile ? "#000" : "#ffff",
-              padding: isMobile ? "17px 24px" : "25px 48px",
-              fontWeight: "bold",
-              border: "none",
-              borderRadius: "45px",
-              cursor: "pointer",
-              fontSize: isMobile ? "14px" : "24px",
-
-              alignSelf: "center",
-              outline: "none",
-              WebkitTapHighlightColor: "transparent",
-              opacity: phoneWidgetIsOpen ? "0.5" : "1",
-            }}
-            onClick={() => setQuestioModalOpen(true)}
-            disabled={phoneWidgetIsOpen}
-          >
-            УЗНАТЬ СТОИМОСТЬ
-          </button>
-        </div> */}
+        ))}
       </div>
     </section>
   );

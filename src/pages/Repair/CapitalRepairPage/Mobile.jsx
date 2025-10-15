@@ -62,13 +62,29 @@ const Mobile = () => {
         display: "grid",
         gridTemplateColumns: "1fr auto",
         alignItems: "center",
-        gap: 12,
-        padding: "14px 10px",
+        gap: "clamp(8px, 2vw, 12px)",
+        padding: "clamp(10px, 2.5vw, 14px) clamp(8px, 2vw, 10px)",
         borderBottom: "1px solid rgba(255,255,255,.12)",
       }}
     >
-      <div style={{ fontSize: 16, lineHeight: 1.5 }}>{left}</div>
-      <div style={{ color: "#FFD700", fontWeight: 800, fontSize: 16 }}>
+      <div
+        style={{
+          fontSize: "clamp(13px, 3.5vw, 16px)",
+          lineHeight: 1.5,
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+        }}
+      >
+        {left}
+      </div>
+      <div
+        style={{
+          color: "#FFD700",
+          fontWeight: 800,
+          fontSize: "clamp(13px, 3.5vw, 16px)",
+          whiteSpace: "nowrap",
+        }}
+      >
         {right}
       </div>
     </div>
@@ -107,16 +123,95 @@ const Mobile = () => {
         >
           <h1
             style={{
-              fontSize: 28,
+              fontSize: "clamp(20px, 6vw, 28px)",
               fontWeight: 900,
               color: "#fff",
               marginBottom: 10,
               textShadow: "0 0 8px rgba(0,0,0,.7)",
               letterSpacing: 0.2,
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
             }}
           >
             КАПИТАЛЬНЫЙ РЕМОНТ
           </h1>
+        </div>
+      </div>
+
+      <div style={{ padding: "clamp(12px, 4vw, 20px)" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "clamp(16px, 5vw, 24px) clamp(12px, 3vw, 16px)",
+            backgroundColor: "#0a1a26",
+            borderRadius: "16px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2
+            style={{
+              color: "#FFD700",
+              fontSize: "clamp(18px, 5vw, 22px)",
+              marginBottom: 16,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}
+          >
+            Бесплатная смета с выездом специалиста!
+          </h2>
+
+          {/* Преимущества */}
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: "0 0 20px 0",
+              color: "#fff",
+              fontSize: "clamp(14px, 4vw, 16px)",
+              lineHeight: "1.6",
+              textAlign: "left",
+              display: "inline-block",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}
+          >
+            <li>✔ Гарантия до 3 лет</li>
+            <li>✔ Работаем строго по договору</li>
+            <li>✔ Фотоотчёты каждый день</li>
+          </ul>
+
+          <button
+            {...press}
+            onClick={() => navigate("/contacts")}
+            style={{
+              ...press.style,
+              backgroundColor: "#FFD700",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "30px",
+              padding: "clamp(10px, 2.5vw, 12px) clamp(20px, 6vw, 32px)",
+              fontWeight: 900,
+              fontSize: "clamp(14px, 4vw, 18px)",
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(0,0,0,.3)",
+              whiteSpace: "nowrap",
+              textShadow: "0 2px 4px rgba(0,0,0,.3)",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,.4)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.3)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            Рассчитать стоимость
+          </button>
         </div>
       </div>
 
@@ -199,66 +294,31 @@ const Mobile = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          textAlign: "center",
-          padding: "32px 16px",
-          background:
-            "linear-gradient(145deg, rgba(255,215,0,0.15), rgba(10,26,38,0.95))",
-          borderBottom: "1px solid rgba(255,215,0,.25)",
-        }}
-      >
-        <h2
-          style={{
-            color: "#FFD700",
-            fontSize: 22,
-            marginBottom: 16,
-            fontWeight: 800,
-            lineHeight: 1.4,
-          }}
-        >
-          Бесплатный выезд лучшего специалиста!
-        </h2>
-        <p
-          style={{
-            fontSize: 15,
-            color: "rgba(255,255,255,.85)",
-            marginBottom: 20,
-            maxWidth: 500,
-            margin: "0 auto 20px",
-          }}
-        >
-          Начните ремонт с чёткой концепции и визуализации. Мы покажем, как
-          будет выглядеть ваш интерьер ещё до начала работ.
-        </p>
-        <button
-          {...press}
-          onClick={() => navigate("/contacts")}
-          style={{
-            ...press.style,
-            backgroundColor: "#FFD700",
-            color: "#0a1a26",
-            border: "none",
-            borderRadius: 30,
-            padding: "12px 36px",
-            fontWeight: 900,
-            fontSize: 18,
-            cursor: "pointer",
-            boxShadow: "0 8px 22px rgba(255,215,0,.35)",
-          }}
-        >
-          Связаться
-        </button>
-      </div>
-
       {/* Прайс-блок — под капитальный */}
       <div style={{ padding: 20 }}>
+        {/* Блок о регионе работы */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <p
+            style={{
+              color: "#ffffff",
+              fontSize: 16,
+              fontWeight: 500,
+              margin: 0,
+              opacity: 0.9,
+            }}
+          >
+            Мы работаем в Москве и Московской области
+          </p>
+        </div>
+
         <h2
           style={{
             color: "#FFD700",
-            fontSize: 20,
+            fontSize: "clamp(16px, 4.5vw, 20px)",
             marginBottom: 10,
             fontWeight: 800,
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
           }}
         >
           Что входит в состав работ и ориентировочные цены
@@ -372,6 +432,132 @@ const Mobile = () => {
         </div>
       </div>
 
+      {/* Работаем со всеми типами квартир */}
+      <div style={{ padding: "28px 20px", background: "#0a1a26" }}>
+        <h2
+          style={{
+            color: "#FFD700",
+            fontSize: 22,
+            fontWeight: 800,
+            marginBottom: 8,
+            textAlign: "center",
+          }}
+        >
+          Работаем со всеми типами квартир
+        </h2>
+        <p
+          style={{
+            color: "rgba(255,255,255,.85)",
+            fontSize: 15,
+            textAlign: "center",
+            marginBottom: 24,
+            lineHeight: 1.6,
+          }}
+        >
+          Капитальный ремонт любой сложности
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 12,
+            marginBottom: 16,
+          }}
+        >
+          {[
+            { icon: "🏢", title: "Новостройки", desc: "С нуля под ключ" },
+            { icon: "🏠", title: "Вторичка", desc: "Полная перепланировка" },
+            { icon: "🛋️", title: "1-комнатные", desc: "От 9500 ₽/м²" },
+            { icon: "🏡", title: "2-комнатные", desc: "Любая планировка" },
+            { icon: "🏘️", title: "3-комнатные", desc: "Полный цикл работ" },
+            { icon: "🏰", title: "4+ комнаты", desc: "Сложные проекты" },
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02))",
+                border: "1px solid rgba(255,215,0,.2)",
+                borderRadius: 12,
+                padding: "16px 12px",
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{item.icon}</div>
+              <div
+                style={{
+                  color: "#FFD700",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  marginBottom: 4,
+                }}
+              >
+                {item.title}
+              </div>
+              <div
+                style={{
+                  color: "rgba(255,255,255,.7)",
+                  fontSize: 13,
+                }}
+              >
+                {item.desc}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Остались вопросы? */}
+      <div
+        style={{
+          padding: "40px 20px",
+          background:
+            "linear-gradient(145deg, rgba(255,215,0,0.12), rgba(10,26,38,0.95))",
+          textAlign: "center",
+        }}
+      >
+        <h2
+          style={{
+            color: "#FFFFFF",
+            fontSize: 26,
+            fontWeight: 800,
+            marginBottom: 12,
+            lineHeight: 1.3,
+          }}
+        >
+          Остались вопросы?
+        </h2>
+        <p
+          style={{
+            color: "rgba(255,255,255,.9)",
+            fontSize: 16,
+            marginBottom: 24,
+            lineHeight: 1.6,
+          }}
+        >
+          Задайте любой вопрос нашему специалисту
+        </p>
+        <button
+          {...press}
+          onClick={() => navigate("/contacts")}
+          style={{
+            ...press.style,
+            backgroundColor: "#FFD700",
+            color: "#0a1a26",
+            border: "none",
+            borderRadius: 30,
+            padding: "14px 40px",
+            fontWeight: 900,
+            fontSize: 18,
+            cursor: "pointer",
+            boxShadow: "0 8px 24px rgba(255,215,0,.4)",
+          }}
+        >
+          Связаться с нами
+        </button>
+      </div>
+
       {/* Наши работы — динамически */}
       <div style={{ padding: 20 }}>
         <h2
@@ -477,30 +663,36 @@ const Mobile = () => {
 
                 {/* CTA — подняли выше и добавили нижний отступ */}
                 <div style={{ padding: "0 16px 16px" }}>
-                  <button
-                    {...press}
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/portfolio/${p.slug}`);
+                    }}
+                    href={`/portfolio/${p.slug}`}
                     style={{
-                      ...press.style,
+                      color: "#FFD700",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      textDecoration: "none",
                       display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      padding: "12px 20px",
-                      border: "none",
-                      borderRadius: 999,
-                      background: "#FFD700",
-                      color: "#0a1a26",
-                      fontWeight: 800,
-                      fontSize: 16,
-                      boxShadow: "0 6px 16px rgba(255,215,0,.25)",
+                      gap: "8px",
                       cursor: "pointer",
-                      width: "100%",
-                      margin: "8px 0 10px", // ↑ меньше сверху, есть отступ снизу
+                      transition: "all 0.2s ease",
+                      marginTop: "12px",
                     }}
-                    onClick={() => navigate(`/portfolio/${p.slug}`)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.gap = "12px";
+                      e.currentTarget.style.opacity = "0.8";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.gap = "8px";
+                      e.currentTarget.style.opacity = "1";
+                    }}
                   >
                     Подробнее
-                  </button>
+                    <span style={{ fontSize: "20px" }}>→</span>
+                  </a>
                 </div>
               </div>
             );
