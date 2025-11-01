@@ -2,17 +2,26 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import hero from "../../assets/hero.png";
+import brushYellow from "../../assets/brush-yellow.webp";
+
+import BeforeAfterSlider from "../../components/blocks/BeforeAfterSlider";
 
 // import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
 
 import Header from "../../components/blocks/Header";
 import Services from "../../components/blocks/Services";
 import PhotoGrid from "../../components/blocks/PhotoGrid";
+import RepairCalculator from "../../components/blocks/RepairCalculator";
 
 import HomePortfolioGrid from "../../components/blocks/HomePortfolioGrid";
 import { portfolioItems } from "../../data/portfolio";
 import { usePressEffect } from "../../hooks/useSomething";
 import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
+import {
+  useGlobalVideoSound,
+  isGlobalVideoSoundEnabled,
+  enableGlobalVideoSound,
+} from "../../hooks/useGlobalVideoSound";
 
 const Home = () => {
   const press = usePressEffect();
@@ -32,12 +41,74 @@ const Home = () => {
   const firstBlock = useRef(null);
   const designProjectsRef = useRef(null);
   const reviewsRef = useRef(null);
+  const videoRef = useRef(null);
+  const userUnmutedRef = useRef(false);
+  const videoContainerRef = useRef(null);
+  const sliderContainerRef = useRef(null);
+  const [soundEnabled] = useGlobalVideoSound();
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 720);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Инстаграм-подобное автопроигрывание: проигрываем в видимости, ставим на паузу вне её
+  useEffect(() => {
+    if (!videoContainerRef.current || !videoRef.current) return;
+    const videoEl = videoRef.current;
+
+    // Всегда начинаем без звука (как в Instagram)
+    videoEl.muted = !isGlobalVideoSoundEnabled();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(async (entry) => {
+          if (entry.isIntersecting) {
+            try {
+              // Если пользователь уже включал звук или глобально включён звук — не мьютим
+              const shouldBeMuted = !(
+                userUnmutedRef.current || isGlobalVideoSoundEnabled()
+              );
+              videoEl.muted = shouldBeMuted;
+              await videoEl.play();
+            } catch (_) {}
+          } else {
+            videoEl.pause();
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(videoContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // При смене глобального звука синхронизируем текущий ролик
+  useEffect(() => {
+    if (!videoRef.current) return;
+    if (soundEnabled) {
+      userUnmutedRef.current = true;
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
+    } else {
+      videoRef.current.muted = true;
+    }
+  }, [soundEnabled]);
+
+  // Отслеживаем ручное включение звука пользователем через системные контролы
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+    const onVolumeChange = () => {
+      if (!videoEl.muted && videoEl.volume > 0) {
+        userUnmutedRef.current = true;
+      }
+    };
+    videoEl.addEventListener("volumechange", onVolumeChange);
+    return () => videoEl.removeEventListener("volumechange", onVolumeChange);
   }, []);
 
   useEffect(() => {
@@ -170,7 +241,71 @@ const Home = () => {
                 : "translate(-50%, -65%)",
             }}
           />
+          {/* Декоративный мазок с текстом региона */}
+          <div
+            style={{
+              position: "absolute",
+              zIndex: 2,
+              top: isMobile ? "66svh" : "79svh",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: isMobile ? "84vw" : 600,
+              height: isMobile ? "auto" : "auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: isMobile ? "auto" : "auto",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "visible",
+              }}
+            >
+              <img
+                src={brushYellow}
+                alt="Декоративный мазок"
+                loading="lazy"
+                style={{
+                  width: isMobile ? "100%" : "100%",
+                  height: isMobile ? "auto" : "auto",
+                  opacity: 0.95,
+                  filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.25))",
+                  display: "block",
+                  objectFit: isMobile ? "contain" : "contain",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#FFFFFF",
+                  fontWeight: 800,
+                  textAlign: "center",
+                  lineHeight: 1.1,
+                  // средний размер между подзаголовком и основным текстом
+                  fontSize: isMobile ? "4.2vw" : "22px",
+                  letterSpacing: isMobile ? 0 : "0.2px",
+                  padding: isMobile ? "4px 10px" : "6px 16px",
+                }}
+              >
+                Москва и Московская область
+              </div>
+            </div>
+          </div>
         </section>
+
+        {/* Калькулятор стоимости ремонта */}
+        <RepairCalculator isMobile={isMobile} />
 
         {/* Блок со скидкой */}
         <section
@@ -269,68 +404,196 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Блок о регионе работы */}
+        {/* С заботой о вас */}
         <section
           style={{
             width: "100%",
-            background: "linear-gradient(135deg, #1a2a3a 0%, #2a3a4a 100%)",
-            padding: isMobile ? "50px 0" : "80px 0",
+            background: "linear-gradient(135deg, #0a1a26 0%, #1a2a3a 100%)",
+            // На мобиле убираем горизонтальные паддинги, чтобы не влияли на выравнивание
+            padding: isMobile ? "8px 0" : "60px 40px",
             marginTop: "0",
             position: "relative",
-            borderTop: isMobile ? "3px solid #FFD700" : "4px solid #FFD700",
+          }}
+        >
+          <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+            <div
+              ref={videoContainerRef}
+              style={{
+                width: "100%",
+                maxWidth: isMobile ? "100%" : "550px",
+                marginLeft: isMobile ? 0 : "auto",
+                marginRight: isMobile ? "auto" : "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: isMobile ? 12 : 16,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "20px",
+                overflow: "hidden",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+                border: "1px solid rgba(255,215,0,0.15)",
+                background: "#0f2431",
+                boxSizing: "border-box",
+                padding: isMobile ? 12 : 16,
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <h2
+                  style={{
+                    fontSize: isMobile ? "8vw" : "42px",
+                    fontWeight: "800",
+                    color: "#FFD700",
+                    margin: "0 0 8px 0",
+                    lineHeight: isMobile ? 1.3 : 1.2,
+                  }}
+                >
+                  С заботой о вас
+                </h2>
+                <p
+                  style={{
+                    fontSize: isMobile ? "14px" : "18px",
+                    color: "rgba(255,255,255,0.85)",
+                    margin: 0,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Качественный ремонт с гарантией и вниманием к деталям
+                </p>
+              </div>
+
+              <div
+                style={{
+                  width: "100%",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  aspectRatio: "4 / 5",
+                  position: "relative",
+                }}
+              >
+                <video
+                  ref={videoRef}
+                  loop
+                  playsInline
+                  preload="metadata"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    display: "block",
+                    objectFit: "cover",
+                    objectPosition: "center center",
+                  }}
+                  onClick={() => {
+                    enableGlobalVideoSound();
+                    if (videoRef.current) {
+                      userUnmutedRef.current = true;
+                      videoRef.current.muted = false;
+                      videoRef.current.volume = 1;
+                      videoRef.current.play().catch(() => {});
+                    }
+                  }}
+                  controls
+                >
+                  <source
+                    src="/videos/care-about-you.MOV"
+                    type="video/quicktime"
+                  />
+                  <source src="/videos/care-about-you.MOV" type="video/mp4" />
+                  Ваш браузер не поддерживает видео
+                </video>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Блок с вертикальным слайдером До/После */}
+        <section
+          style={{
+            width: "100%",
+            background: "linear-gradient(135deg, #0a1a26 0%, #1a2a3a 100%)",
+            padding: isMobile ? "60px 16px" : "100px 40px",
+            marginTop: "0",
+            position: "relative",
             boxSizing: "border-box",
           }}
         >
           <div
             style={{
-              width: isMobile ? "92%" : "90%",
-              maxWidth: "1000px",
+              width: "100%",
+              maxWidth: "1400px",
               margin: "0 auto",
-              textAlign: "center",
               display: "flex",
               flexDirection: "column",
-              gap: isMobile ? "16px" : "24px",
               alignItems: "center",
+              gap: isMobile ? 32 : 48,
+              padding: "0",
+              boxSizing: "border-box",
             }}
           >
-            {/* Заголовок */}
-            <h2
-              style={{
-                fontSize: isMobile ? "20px" : "42px",
-                fontWeight: "800",
-                color: "#ffffff",
-                margin: "0",
-                lineHeight: isMobile ? 1.3 : 1.2,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              Мы работаем в Москве <br />и Московской области
-            </h2>
+            <div style={{ textAlign: "center", maxWidth: "800px" }}>
+              <h2
+                style={{
+                  fontSize: isMobile ? "8vw" : "48px",
+                  fontWeight: "900",
+                  color: "#FFD700",
+                  margin: "0 0 16px 0",
+                  lineHeight: isMobile ? 1.2 : 1.1,
+                  letterSpacing: "-0.5px",
+                  textShadow: "0 2px 8px rgba(255,215,0,0.2)",
+                }}
+              >
+                До и После
+              </h2>
+              <p
+                style={{
+                  fontSize: isMobile ? "16px" : "20px",
+                  color: "rgba(255,255,255,0.9)",
+                  margin: 0,
+                  lineHeight: 1.6,
+                  fontWeight: 400,
+                }}
+              >
+                Посмотрите результаты нашей работы
+              </p>
+            </div>
+          </div>
 
-            {/* Подзаголовок */}
-            <p
-              style={{
-                fontSize: isMobile ? "14px" : "18px",
-                fontWeight: "400",
-                color: "rgba(255,255,255,0.9)",
-                margin: "0",
-                lineHeight: 1.5,
-                maxWidth: isMobile ? "100%" : "700px",
-              }}
-            >
-              Опытная команда мастеров готова выполнить ремонт любой сложности в
-              удобное для вас время
-            </p>
-
-            {/* Декоративная линия */}
-            <div
-              style={{
-                width: isMobile ? "60px" : "80px",
-                height: "3px",
-                background: "linear-gradient(90deg, #FFD700, #FF6B35)",
-                borderRadius: "2px",
-                marginTop: isMobile ? "8px" : "12px",
-              }}
+          <div
+            ref={sliderContainerRef}
+            style={{
+              width: "100vw",
+              height: isMobile ? "calc(100vw * 0.66)" : "400px",
+              maxHeight: isMobile ? "calc(100vw * 0.66)" : "400px",
+              overflow: "hidden",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+              background: "#0f2431",
+              position: "relative",
+              marginTop: isMobile ? "32px" : "48px",
+              marginLeft: isMobile ? "-16px" : "-40px",
+              marginRight: isMobile ? "-16px" : "-40px",
+              transition: isMobile
+                ? "none"
+                : "transform 0.3s ease, box-shadow 0.3s ease",
+              willChange: "transform",
+            }}
+            onMouseEnter={(e) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 25px 70px rgba(0,0,0,0.6)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 20px 60px rgba(0,0,0,0.5)";
+              }
+            }}
+          >
+            <BeforeAfterSlider
+              firstImage="/images/photolibrary/portfolio/designer/1/3.jpg"
+              secondImage="/images/photolibrary/portfolio/designer/1/2.jpg"
+              isMobile={isMobile}
             />
           </div>
         </section>

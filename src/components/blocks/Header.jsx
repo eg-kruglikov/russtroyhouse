@@ -146,11 +146,12 @@ const Header = ({
             src="/logo.png"
             alt="Логотип РуссУютСтрой"
             style={{
-              width: "36px",
+              width: "auto",
               height: "36px",
               borderRadius: "8px",
               display: "block",
               flexShrink: 0,
+              objectFit: "contain",
             }}
           />
           {(isMobile || isWideScreen) && (
