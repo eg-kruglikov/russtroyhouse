@@ -1,6 +1,6 @@
 .burger {
-  width: 30px;
-  height: 24px;
+  width: 24px;
+  height: 18px;
   position: relative;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -9,33 +9,17 @@
 .burger span {
   position: absolute;
   left: 0;
-  width: 100%;
-  height: 3px;
-  background: white;
-  border-radius: 2px;
-  transition: all 0.3s ease;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1px;
 }
 
-/* Расположение линий */
+/* Расположение линий - только 2 линии */
 .burger span:nth-child(1) {
-  top: 0;
+  top: 4px;
+  width: 100%;
 }
 .burger span:nth-child(2) {
-  top: 10px;
-}
-.burger span:nth-child(3) {
-  top: 20px;
-}
-
-/* Анимация крестика */
-.burger.open span:nth-child(1) {
-  transform: rotate(45deg);
-  top: 10px;
-}
-.burger.open span:nth-child(2) {
-  opacity: 0;
-}
-.burger.open span:nth-child(3) {
-  transform: rotate(-45deg);
-  top: 10px;
+  top: 13px;
+  width: 70%;
 }
