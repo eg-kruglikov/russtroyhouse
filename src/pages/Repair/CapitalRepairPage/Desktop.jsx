@@ -132,11 +132,10 @@ const Desktop = () => {
           width: "100%",
           height: 520,
           overflow: "hidden",
-          borderBottom: "3px solid #FFD700",
         }}
       >
         <img
-          src="/images/repair/capital/hero.jpg"
+          src="/images/photolibrary/portfolio/capital/2/8.jpg"
           alt="Капитальный ремонт"
           style={{
             width: "100%",

@@ -69,7 +69,7 @@ const RepairCalculator = ({ isMobile }) => {
   // Состояние калькулятора
   const [repairType, setRepairType] = useState("cosmetic");
   const [roomCount, setRoomCount] = useState("studio");
-  const [area, setArea] = useState("");
+  const [area, setArea] = useState("50");
   const [materialQuality, setMaterialQuality] = useState("standard");
   const [premisesType, setPremisesType] = useState("newbuilding");
   const [replanning, setReplanning] = useState(false);
@@ -296,7 +296,8 @@ const RepairCalculator = ({ isMobile }) => {
         style={{
           width: "100%",
           backgroundColor: SECTION_BACKGROUND,
-          padding: isMobile ? "20px 0" : "40px 0",
+          paddingTop: isMobile ? "20px" : "40px",
+          paddingBottom: isMobile ? "10px" : "20px",
           marginTop: "0",
           position: "relative",
           borderTop: "none",
@@ -396,6 +397,7 @@ const RepairCalculator = ({ isMobile }) => {
                         display: "flex",
                         flexDirection: "column",
                         gap: "8px",
+                        marginLeft: "-6px",
                       }}
                     >
                       {[
@@ -619,6 +621,7 @@ const RepairCalculator = ({ isMobile }) => {
                         display: "flex",
                         flexDirection: "column",
                         gap: "8px",
+                        marginLeft: "-6px",
                       }}
                     >
                       {[
@@ -707,6 +710,7 @@ const RepairCalculator = ({ isMobile }) => {
                         display: "flex",
                         flexDirection: "column",
                         gap: "8px",
+                        marginLeft: "-6px",
                       }}
                     >
                       {[
@@ -769,35 +773,19 @@ const RepairCalculator = ({ isMobile }) => {
                             checked={premisesType === option.value}
                             onChange={(e) => setPremisesType(e.target.value)}
                           />
-                          <div
+                          <span
                             style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "2px",
+                              fontSize: isMobile ? "14px" : "16px",
+                              color:
+                                premisesType === option.value
+                                  ? "#FFFFFF"
+                                  : "rgba(255,255,255,0.9)",
+                              fontWeight:
+                                premisesType === option.value ? "600" : "400",
                             }}
                           >
-                            <span
-                              style={{
-                                fontSize: isMobile ? "14px" : "16px",
-                                color:
-                                  premisesType === option.value
-                                    ? "#FFFFFF"
-                                    : "rgba(255,255,255,0.9)",
-                                fontWeight:
-                                  premisesType === option.value ? "600" : "400",
-                              }}
-                            >
-                              {option.label}
-                            </span>
-                            <span
-                              style={{
-                                fontSize: isMobile ? "12px" : "14px",
-                                color: "rgba(255,255,255,0.6)",
-                              }}
-                            >
-                              {option.desc}
-                            </span>
-                          </div>
+                            {option.label}
+                          </span>
                         </label>
                       ))}
                     </div>
@@ -866,6 +854,7 @@ const RepairCalculator = ({ isMobile }) => {
                           style={{
                             fontSize: isMobile ? "12px" : "14px",
                             color: "rgba(255,255,255,0.6)",
+                            marginLeft: "-5px",
                           }}
                         >
                           +1500₽/м²
@@ -882,11 +871,13 @@ const RepairCalculator = ({ isMobile }) => {
                 <div
                   style={{
                     backgroundColor: "transparent",
-                    border: "1px solid #FF6B35",
-                    borderRadius: "16px",
-                    padding: isMobile ? "20px" : "24px",
+                    paddingLeft: isMobile ? "20px" : "24px",
+                    paddingRight: isMobile ? "20px" : "24px",
+                    paddingTop: isMobile ? "20px" : "24px",
+                    paddingBottom: isMobile ? "20px" : "24px",
                     marginBottom: "24px",
-                    textAlign: "center",
+                    marginLeft: "25px",
+                    textAlign: "left",
                   }}
                 >
                   <h3
@@ -910,7 +901,8 @@ const RepairCalculator = ({ isMobile }) => {
                           margin: "0 0 8px 0",
                         }}
                       >
-                        {formatNumber(total)} ₽
+                        {formatNumber(total)}{" "}
+                        <span style={{ color: "#FFD700" }}>₽</span>
                       </div>
                       <div
                         style={{

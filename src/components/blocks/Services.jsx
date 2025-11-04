@@ -39,7 +39,7 @@ const Services = ({ isMobile, servicesRef }) => {
       route: "designer",
     },
     {
-      title: "Вайт бокс/Чистовая отделка",
+      title: "Вайт бокс\nЧистовая отделка",
       description:
         "Полный цикл ремонта — от черновых до чистовых работ.\n\nДелаем всё: разводку коммуникаций, штукатурку, гипсокартон, стяжку, поклейку обоев, укладку напольных покрытий, установку сантехники и освещения.\n\nМожно заказать как полный ремонт, так и отдельные этапы — вайт бокс или чистовую отделку.",
       price: "5000",
@@ -120,6 +120,8 @@ const Services = ({ isMobile, servicesRef }) => {
                     margin: "0",
                     color: "#fff",
                     lineHeight: 1.1,
+                    whiteSpace:
+                      service.route === "whitebox" ? "pre-line" : "normal",
                   }}
                 >
                   {service.title}

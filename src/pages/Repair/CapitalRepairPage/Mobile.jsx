@@ -100,120 +100,33 @@ const Mobile = () => {
         background: "#0a1a26",
       }}
     >
+      {/* Заголовок перед фото */}
+      <h1
+        style={{
+          fontSize: "clamp(20px, 6vw, 28px)",
+          fontWeight: 900,
+          color: "#fff",
+          margin: 0,
+          padding: "20px 20px 16px 20px",
+          letterSpacing: 0.2,
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+        }}
+      >
+        КАПИТАЛЬНЫЙ РЕМОНТ
+      </h1>
+
       {/* Hero */}
       <div style={{ position: "relative", width: "100%", height: "35vh" }}>
         <img
-          src="/images/repair/capital/hero.jpg"
+          src="/images/photolibrary/portfolio/capital/2/8.jpg"
           alt="Капитальный ремонт"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            borderBottom: "3px solid #FFD700",
           }}
         />
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            textAlign: "center",
-            width: "90%",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "clamp(20px, 6vw, 28px)",
-              fontWeight: 900,
-              color: "#fff",
-              marginBottom: 10,
-              textShadow: "0 0 8px rgba(0,0,0,.7)",
-              letterSpacing: 0.2,
-              wordWrap: "break-word",
-              overflowWrap: "break-word",
-            }}
-          >
-            КАПИТАЛЬНЫЙ РЕМОНТ
-          </h1>
-        </div>
-      </div>
-
-      <div style={{ padding: "clamp(12px, 4vw, 20px)" }}>
-        <div
-          style={{
-            textAlign: "center",
-            padding: "clamp(16px, 5vw, 24px) clamp(12px, 3vw, 16px)",
-            backgroundColor: "#0a1a26",
-            borderRadius: "16px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-          }}
-        >
-          <h2
-            style={{
-              color: "#FFD700",
-              fontSize: "clamp(18px, 5vw, 22px)",
-              marginBottom: 16,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              wordWrap: "break-word",
-              overflowWrap: "break-word",
-            }}
-          >
-            Бесплатная смета с выездом специалиста!
-          </h2>
-
-          {/* Преимущества */}
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              margin: "0 0 20px 0",
-              color: "#fff",
-              fontSize: "clamp(14px, 4vw, 16px)",
-              lineHeight: "1.6",
-              textAlign: "left",
-              display: "inline-block",
-              wordWrap: "break-word",
-              overflowWrap: "break-word",
-            }}
-          >
-            <li>✔ Гарантия до 3 лет</li>
-            <li>✔ Работаем строго по договору</li>
-            <li>✔ Фотоотчёты каждый день</li>
-          </ul>
-
-          <button
-            {...press}
-            onClick={() => navigate("/contacts")}
-            style={{
-              ...press.style,
-              backgroundColor: "#FFD700",
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: "30px",
-              padding: "clamp(10px, 2.5vw, 12px) clamp(20px, 6vw, 32px)",
-              fontWeight: 900,
-              fontSize: "clamp(14px, 4vw, 18px)",
-              cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(0,0,0,.3)",
-              whiteSpace: "nowrap",
-              textShadow: "0 2px 4px rgba(0,0,0,.3)",
-              wordWrap: "break-word",
-              overflowWrap: "break-word",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,.4)";
-              e.currentTarget.style.transform = "translateY(-2px)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,.3)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Рассчитать стоимость
-          </button>
-        </div>
       </div>
 
       {/* УТП — сильнее, чем в косметическом */}
