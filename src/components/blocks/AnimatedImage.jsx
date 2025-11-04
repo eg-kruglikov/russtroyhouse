@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { usePressEffect } from "../../hooks/useSomething";
 import { ymNavigate } from "../../utils/metrika";
 
 const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
   const navigate = useNavigate();
-  const press = usePressEffect();
 
   const handleClick = (e) => {
     // Отправляем виртуальный хит + notBounce
@@ -18,82 +16,97 @@ const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
 
   return (
     <div
-      {...press}
-      onClick={handleClick}
       style={{
-        ...press.style,
         width: "100%",
-        overflow: "hidden",
-        cursor: "pointer",
-        position: "relative",
-        height: isMobile ? "auto" : "auto",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <img
-        loading="lazy"
-        src={src}
-        alt={alt}
-        style={{
-          aspectRatio: "4 / 3",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          pointerEvents: "none",
-          position: "relative",
-        }}
-      />
-      {/* текстовая подложка с названием проекта */}
+      {/* Заголовок перед фото */}
       <div
         style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          padding: isMobile ? "10px 12px 46px" : "12px 14px 52px",
-          background:
-            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.75) 100%)",
-          color: "#fff",
-          display: "grid",
-          gap: 6,
+          padding: isMobile ? "0 20px 16px 20px" : "24px 24px 20px",
         }}
-        aria-hidden
       >
-        <div
+        <h2
           style={{
-            fontWeight: 800,
-            fontSize: isMobile ? 18 : 20,
-            lineHeight: 1.25,
-            textShadow: "0 2px 8px rgba(0,0,0,.6)",
+            fontSize: isMobile ? "5vw" : "24px",
+            fontWeight: 400,
+            margin: "0",
+            color: "#fff",
+            lineHeight: 1.1,
           }}
         >
           {title}
-        </div>
-        <div
-          style={{
-            opacity: 0.9,
-            fontSize: isMobile ? 12 : 13,
-          }}
-        >
-          Смотреть дизайн‑проект
-        </div>
+        </h2>
       </div>
 
-      {/* компактная кнопка-ярлык */}
+      {/* Изображение */}
       <div
         style={{
-          position: "absolute",
-          bottom: 10,
-          right: 10,
-          background: "#FFD700",
-          color: "#0a1a26",
-          borderRadius: 999,
-          padding: isMobile ? "8px 12px" : "10px 14px",
-          fontWeight: 900,
-          fontSize: isMobile ? 12 : 14,
-          boxShadow: "0 8px 16px rgba(255,215,0,.3)",
+          position: "relative",
+          width: "100vw",
+          height: isMobile ? "250px" : "280px",
+          marginLeft: "calc(-50vw + 50%)",
         }}
       >
-        Подробнее
+        <img
+          loading="lazy"
+          src={src}
+          alt={alt}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+            borderRadius: "0",
+            boxShadow: "none",
+          }}
+        />
+      </div>
+
+      {/* Контент */}
+      <div
+        style={{
+          padding: isMobile ? "20px 20px" : "28px 24px 32px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          textAlign: "left",
+          flex: 1,
+        }}
+      >
+        {/* Ссылка вместо кнопки */}
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            handleClick();
+          }}
+          href={`/project/${projectId}`}
+          style={{
+            color: "#FFD700",
+            fontSize: isMobile ? "4.5vw" : "19px",
+            fontWeight: 700,
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            marginTop: "auto",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.gap = "12px";
+            e.currentTarget.style.opacity = "0.8";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.gap = "8px";
+            e.currentTarget.style.opacity = "1";
+          }}
+        >
+          Подробнее
+          <span style={{ fontSize: "22px" }}>→</span>
+        </a>
       </div>
       {/* <div
         style={{

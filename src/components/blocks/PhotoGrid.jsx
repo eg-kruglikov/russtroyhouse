@@ -27,14 +27,13 @@ const images = [
 
 const PhotoGrid = ({ isMobile }) => {
   const gridStyle = {
-    width: "100%",
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: isMobile ? "0 16px" : "0 24px",
+    width: "100vw",
+    marginLeft: "calc(-50vw + 50%)",
+    padding: 0,
     boxSizing: "border-box",
     display: "grid",
     gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-    gap: isMobile ? 12 : 16,
+    gap: isMobile ? "20px" : "24px",
   };
 
   return (

@@ -8,13 +8,10 @@ import BeforeAfterSlider from "../../components/blocks/BeforeAfterSlider";
 
 // import MobilePhoneWidget from "../../components/windows/MobilePhoneWidget";
 
-import Header from "../../components/blocks/Header";
 import Services from "../../components/blocks/Services";
 import PhotoGrid from "../../components/blocks/PhotoGrid";
 import RepairCalculator from "../../components/blocks/RepairCalculator";
 
-import HomePortfolioGrid from "../../components/blocks/HomePortfolioGrid";
-import { portfolioItems } from "../../data/portfolio";
 import { usePressEffect } from "../../hooks/useSomething";
 import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
 import {
@@ -31,6 +28,7 @@ import {
   SECTION_INTERNAL_GAP,
   SECTION_PADDING,
 } from "../../utils/spacing";
+import { ScrollProvider } from "../../contexts/ScrollContext";
 
 const Home = () => {
   const press = usePressEffect();
@@ -50,7 +48,6 @@ const Home = () => {
   const heroRef = useRef(null);
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
-  const portfolioRef = useRef(null);
   // const contactsRef = useRef(null);
   const firstBlock = useRef(null);
   const designProjectsRef = useRef(null);
@@ -202,27 +199,60 @@ const Home = () => {
     window.scrollTo({ top: y, behavior: "smooth" });
   };
 
+  // Функция прокрутки к элементу по id
+  const scrollToElementById = (elementId) => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const yOffset = -75; // высота шапки + 10px дополнительный отступ
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
+
   // Отдельные функции на каждый блок
   const scrollToHero = () => scrollToWithOffset(heroRef);
   const scrollToAbout = () => scrollToWithOffset(aboutRef);
   const scrollToServices = () => scrollToWithOffset(servicesRef);
   const scrollToContacts = () => scrollToWithOffset(contactsRef);
-  const scrollToportfolio = () => scrollToWithOffset(portfolioRef);
   const scrollToDesignProjects = () => scrollToWithOffset(designProjectsRef);
   const scrollToReviews = () => scrollToWithOffset(reviewsRef);
   const scrollToCalculator = () => scrollToWithOffset(calculatorRef);
 
+  // Функции прокрутки к конкретным блокам услуг
+  const scrollToNashiUslugi = () => scrollToElementById("nashi-uslugi");
+  const scrollToCosmetic = () => scrollToElementById("cosmetic");
+  const scrollToCapital = () => scrollToElementById("capital");
+  const scrollToDesigner = () => scrollToElementById("designer");
+  const scrollToWhitebox = () => scrollToElementById("whitebox");
+
   const light = "#ffffff";
 
-  return (
-    <div
-      style={{
-        width: "100vw",
+  // Функции скролла для передачи в Header через контекст
+  const scrollFunctions = {
+    scrollToHero,
+    scrollToAbout,
+    scrollToServices,
+    scrollToContacts,
+    scrollToDesignProjects,
+    scrollToReviews,
+    scrollToCalculator,
+    scrollToNashiUslugi,
+    scrollToCosmetic,
+    scrollToCapital,
+    scrollToDesigner,
+    scrollToWhitebox,
+  };
 
-        margin: "0 auto",
-        userSelect: "none",
-      }}
-    >
+  return (
+    <ScrollProvider scrollFunctions={scrollFunctions}>
+      <div
+        style={{
+          width: "100vw",
+          margin: "0 auto",
+          userSelect: "none",
+        }}
+      >
       {/* Иконка трубки*/}
 
       {/* <MobilePhoneWidget isMobile={isMobile} /> */}
@@ -239,18 +269,6 @@ const Home = () => {
           width: "100%",
         }}
       >
-        {/* Шапка */}
-        <Header
-          isMobile={isMobile}
-          scrollToHero={scrollToHero}
-          scrollToAbout={scrollToAbout}
-          scrollToServices={scrollToServices}
-          scrollToportfolio={scrollToportfolio}
-          scrollToContacts={scrollToContacts}
-          scrollToDesignProjects={scrollToDesignProjects}
-          scrollToReviews={scrollToReviews}
-          scrollToCalculator={scrollToCalculator}
-        />
         {/* Hero */}
         <section
           ref={heroRef}
@@ -387,7 +405,7 @@ const Home = () => {
               display: "flex",
               flexDirection: "column",
               gap: isMobile ? "20px" : "32px",
-              alignItems: "center",
+              alignItems: "flex-start",
             }}
           >
             {/* Заголовок */}
@@ -433,36 +451,26 @@ const Home = () => {
                 to="/contacts"
                 style={{
                   textDecoration: "none",
-                  display: "inline-block",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  color: "#fff",
+                  fontSize: isMobile ? "4.5vw" : "19px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.gap = "12px";
+                  e.currentTarget.style.opacity = "0.8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.gap = "8px";
+                  e.currentTarget.style.opacity = "1";
                 }}
               >
-                <div
-                  {...press}
-                  style={{
-                    ...press.style,
-                    background: "transparent",
-                    color: "#ffffff",
-                    padding: isMobile ? "16px 40px" : "18px 48px",
-                    borderRadius: "12px",
-                    fontSize: isMobile ? "16px" : "18px",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    border: "2px solid #FF6B35",
-                    transition: "all 0.2s ease",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.borderColor = "#FF8555";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.borderColor = "#FF6B35";
-                  }}
-                >
-                  Получить расчет
-                </div>
+                Получить расчет
+                <span style={{ fontSize: "22px" }}>→</span>
               </Link>
             </div>
           </div>
@@ -714,148 +722,6 @@ const Home = () => {
               потолков с освещением, укладка напольного покрытия, облицовка
               санузла плиткой под мрамор с декоративными элементами
             </p>
-          </div>
-        </section>
-
-        {/* С заботой о вас / О нас */}
-        <section
-          ref={aboutRef}
-          style={{
-            scrollMarginTop: "54px",
-            width: "100%",
-            backgroundColor: SECTION_BACKGROUND,
-            paddingTop: isMobile ? "30px" : "50px",
-            paddingBottom: isMobile ? "30px" : "50px",
-            marginTop: isMobile ? "4px" : "8px",
-            position: "relative",
-            boxSizing: "border-box",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "1400px",
-              margin: "0",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              boxSizing: "border-box",
-            }}
-          >
-            <div
-              style={{
-                textAlign: "left",
-                width: "100%",
-                paddingLeft: isMobile ? "20px" : "24px",
-                paddingRight: isMobile ? "20px" : "24px",
-                boxSizing: "border-box",
-                marginBottom: isMobile
-                  ? TITLE_CONTENT_GAP.mobile
-                  : TITLE_CONTENT_GAP.desktop,
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: isMobile
-                    ? TITLE_SIZES.mobile.main
-                    : TITLE_SIZES.desktop.main,
-                  fontWeight: "900",
-                  color: "#FFD700",
-                  margin: `0 0 ${
-                    isMobile
-                      ? TITLE_SUBTITLE_GAP.mobile
-                      : TITLE_SUBTITLE_GAP.desktop
-                  } 0`,
-                  lineHeight: isMobile ? 1.2 : 1.1,
-                  letterSpacing: "-0.5px",
-                  textShadow: "0 2px 8px rgba(255,215,0,0.2)",
-                }}
-              >
-                С заботой о вас
-              </h2>
-              <p
-                style={{
-                  fontSize: isMobile ? "18px" : "22px",
-                  color: "rgba(255,255,255,0.9)",
-                  margin: 0,
-                  lineHeight: 1.6,
-                  fontWeight: 500,
-                }}
-              >
-                Внимание не только к деталям, но и к вашим соседям и другим
-                жильцам дома
-              </p>
-            </div>
-
-            <div
-              style={{
-                width: "100vw",
-                marginLeft: "calc(-50vw + 50%)",
-                overflow: "hidden",
-                aspectRatio: "4 / 5",
-                position: "relative",
-              }}
-            >
-              <video
-                ref={videoRef}
-                loop
-                playsInline
-                preload="metadata"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  display: "block",
-                  objectFit: "cover",
-                  objectPosition: "center center",
-                }}
-                onClick={() => {
-                  enableGlobalVideoSound();
-                  if (videoRef.current) {
-                    userUnmutedRef.current = true;
-                    videoRef.current.muted = false;
-                    videoRef.current.volume = 1;
-                    videoRef.current.play().catch(() => {});
-                  }
-                }}
-                controls
-              >
-                <source
-                  src="/videos/care-about-you.MOV"
-                  type="video/quicktime"
-                />
-                <source src="/videos/care-about-you.MOV" type="video/mp4" />
-                Ваш браузер не поддерживает видео
-              </video>
-            </div>
-
-            <div
-              style={{
-                width: "100%",
-                maxWidth: "1400px",
-                margin: "0",
-                paddingTop: isMobile
-                  ? TITLE_CONTENT_GAP.mobile
-                  : TITLE_CONTENT_GAP.desktop,
-                paddingLeft: isMobile ? "20px" : "24px",
-                paddingRight: isMobile ? "20px" : "24px",
-                boxSizing: "border-box",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: isMobile ? "16px" : "20px",
-                  color: "rgba(255,255,255,0.9)",
-                  margin: 0,
-                  lineHeight: 1.6,
-                  fontWeight: 400,
-                }}
-              >
-                Во время ремонта квартиры в жилом доме мы полностью упаковываем
-                лифты, а также всю входную группу на этаже
-              </p>
-            </div>
           </div>
         </section>
 
@@ -1196,114 +1062,182 @@ const Home = () => {
           })()}
         </section>
 
-        {/* портфолио  */}
+        {/* С заботой о вас / О нас */}
         <section
-          id="portfolio"
-          ref={portfolioRef}
+          ref={aboutRef}
           style={{
             scrollMarginTop: "54px",
-            marginTop: isMobile ? "6vh" : "12vh",
-            paddingTop: isMobile ? "4vh" : "6vh",
-            borderTop: "2px solid rgba(255, 215, 0, 0.3)",
-            minHeight: isMobile ? "calc(100vh - 60px)" : "auto",
-            display: isMobile ? "flex" : "block",
-            flexDirection: isMobile ? "column" : "initial",
+            width: "100%",
+            backgroundColor: SECTION_BACKGROUND,
+            paddingTop: isMobile ? "30px" : "50px",
+            paddingBottom: isMobile ? "30px" : "50px",
+            marginTop: isMobile ? "4px" : "8px",
+            position: "relative",
+            boxSizing: "border-box",
           }}
         >
-          {/* общий контейнер для заголовка и сетки с одинаковыми полями */}
           <div
             style={{
               width: "100%",
-              maxWidth: 1200,
-              margin: "0 auto",
+              maxWidth: "1400px",
+              margin: "0",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
               boxSizing: "border-box",
-              flex: isMobile ? 1 : "initial",
-              display: isMobile ? "flex" : "block",
-              flexDirection: isMobile ? "column" : "initial",
             }}
           >
             <div
               style={{
-                textAlign: "center",
-                marginBottom: isMobile ? 8 : 16,
+                textAlign: "left",
+                width: "100%",
+                paddingLeft: isMobile ? "20px" : "24px",
+                paddingRight: isMobile ? "20px" : "24px",
+                boxSizing: "border-box",
+                marginBottom: isMobile
+                  ? TITLE_CONTENT_GAP.mobile
+                  : TITLE_CONTENT_GAP.desktop,
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: isMobile
+                    ? TITLE_SIZES.mobile.main
+                    : TITLE_SIZES.desktop.main,
+                  fontWeight: "900",
+                  color: "#FFD700",
+                  margin: `0 0 ${
+                    isMobile
+                      ? TITLE_SUBTITLE_GAP.mobile
+                      : TITLE_SUBTITLE_GAP.desktop
+                  } 0`,
+                  lineHeight: isMobile ? 1.2 : 1.1,
+                  letterSpacing: "-0.5px",
+                  textShadow: "0 2px 8px rgba(255,215,0,0.2)",
+                }}
+              >
+                С заботой о вас
+              </h2>
+              <p
+                style={{
+                  fontSize: isMobile ? "18px" : "22px",
+                  color: "rgba(255,255,255,0.9)",
+                  margin: 0,
+                  lineHeight: 1.6,
+                  fontWeight: 500,
+                }}
+              >
+                Внимание не только к деталям, но и к вашим соседям и другим
+                жильцам дома
+              </p>
+            </div>
+
+            <div
+              style={{
+                width: "100vw",
+                marginLeft: "calc(-50vw + 50%)",
+                overflow: "hidden",
+                aspectRatio: "4 / 5",
+                position: "relative",
+              }}
+            >
+              <video
+                ref={videoRef}
+                loop
+                playsInline
+                preload="metadata"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  display: "block",
+                  objectFit: "cover",
+                  objectPosition: "center center",
+                }}
+                onClick={() => {
+                  enableGlobalVideoSound();
+                  if (videoRef.current) {
+                    userUnmutedRef.current = true;
+                    videoRef.current.muted = false;
+                    videoRef.current.volume = 1;
+                    videoRef.current.play().catch(() => {});
+                  }
+                }}
+                controls
+              >
+                <source
+                  src="/videos/care-about-you.MOV"
+                  type="video/quicktime"
+                />
+                <source src="/videos/care-about-you.MOV" type="video/mp4" />
+                Ваш браузер не поддерживает видео
+              </video>
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "1400px",
+                margin: "0",
+                paddingTop: isMobile
+                  ? TITLE_CONTENT_GAP.mobile
+                  : TITLE_CONTENT_GAP.desktop,
                 paddingLeft: isMobile ? "20px" : "24px",
                 paddingRight: isMobile ? "20px" : "24px",
                 boxSizing: "border-box",
               }}
             >
-              <h2
+              <p
                 style={{
-                  fontSize: isMobile ? "7vw" : 40,
-                  fontWeight: 800,
+                  fontSize: isMobile ? "16px" : "20px",
+                  color: "rgba(255,255,255,0.9)",
                   margin: 0,
+                  lineHeight: 1.6,
+                  fontWeight: 400,
                 }}
               >
-                Портфолио
-              </h2>
-              <div
-                style={{
-                  opacity: 0.8,
-                  fontSize: isMobile ? "3.5vw" : 16,
-                  marginTop: isMobile ? 4 : 8,
-                }}
-              >
-                Живые примеры наших работ
-              </div>
+                Во время ремонта квартиры в жилом доме мы полностью упаковываем
+                лифты, а также всю входную группу на этаже
+              </p>
             </div>
-
-            {/* сетка 3×2 / 2×3 / 1×6 */}
-            <HomePortfolioGrid
-              items={portfolioItems}
-              onTileClick={() => setQuestioModalOpen(true)}
-            />
           </div>
         </section>
 
         {/* дизайн проекты */}
-        <div
+        <h2
+          id="design-projects"
           style={{
+            fontSize: isMobile ? "8vw" : "48px",
+            fontWeight: 800,
+            margin: "0 0 20px 0",
+            color: "#fff",
+            textAlign: "left",
+            lineHeight: 1.1,
+            paddingLeft: isMobile ? "20px" : "24px",
             scrollMarginTop: "54px",
-            textAlign: "center",
-
-            margin: "0 auto",
-
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: isMobile ? "2.5vh" : "7.5vh",
+            paddingTop: isMobile ? "20px" : "24px",
           }}
         >
-          <p
-            style={{
-              fontSize: isMobile ? "12vw" : "90px",
-            }}
-          >
-            Дизайн-проекты
-          </p>
-        </div>
+          Дизайн-проекты
+        </h2>
 
         <section
           id="designProjects"
           ref={designProjectsRef}
           style={{
-            // scrollMarginTop: "54px",
-            textAlign: "center",
-
-            margin: "0 auto",
+            width: "100%",
             overflow: "visible",
-            marginLeft: isMobile ? "0%" : "5%",
-            marginRight: isMobile ? "0%" : "5%",
-            height: "auto",
             paddingBottom: isMobile ? "15px" : "25px",
           }}
         >
           <PhotoGrid
             isMobile={isMobile}
-            scrollToportfolio={scrollToportfolio}
           />
         </section>
       </div>
     </div>
+    </ScrollProvider>
   );
 };
 

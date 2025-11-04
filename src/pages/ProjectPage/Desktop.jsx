@@ -128,6 +128,7 @@ const ProjectPageDesktop = () => {
       style={{
         width: "auto",
         height: "auto",
+        paddingTop: "60px",
         backgroundColor: "#04141D",
         display: "flex",
         flexDirection: "column",

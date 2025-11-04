@@ -89,6 +89,7 @@ const DesignerRepairPageMobile = () => {
           backgroundColor: "#0a1a26",
           color: "#fff",
           fontFamily: "'Arial', sans-serif",
+          paddingTop: "60px",
           paddingBottom: 60,
         }}
       >

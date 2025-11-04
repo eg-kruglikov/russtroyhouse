@@ -95,6 +95,7 @@ const Mobile = () => {
       style={{
         color: "#fff",
         fontFamily: "'Arial', sans-serif",
+        paddingTop: "60px",
         paddingBottom: 60,
         background: "#0a1a26",
       }}

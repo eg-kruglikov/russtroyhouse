@@ -20,6 +20,7 @@ const borderSoft = "1px solid rgba(255,255,255,.10)";
 
 const Page = {
   minHeight: "100vh",
+  paddingTop: "60px",
   background: deep,
   color: "#fff",
   fontFamily: "'Arial', sans-serif",

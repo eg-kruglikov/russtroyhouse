@@ -15,6 +15,7 @@ import ProjectPage from "./pages/ProjectPage";
 import CapitalRepairPage from "./pages/Repair/CapitalRepairPage";
 import CosmeticRepairPage from "./pages/Repair/CosmeticRepairPage";
 import DesignerRepairPage from "./pages/Repair/DesignerRepairPage";
+import WhiteboxRepairPage from "./pages/Repair/WhiteboxRepairPage";
 
 import PortfolioProjectPage from "./pages/Portfolio/Project";
 
@@ -22,6 +23,7 @@ import { useScrollRestoration } from "./hooks/useScrollRestoration";
 import { ymNavigate, ymError, ymPageViewsCount } from "./utils/metrika";
 
 import ContactsPage from "./pages/Contacts";
+import Header from "./components/blocks/Header";
 
 const RedirectHandler = () => {
   useEffect(() => {
@@ -120,12 +122,14 @@ const AppContent = () => {
   return (
     <>
       <RedirectHandler />
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         {/* Страницы ремонтов */}
         <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
         <Route path="/repair/capital" element={<CapitalRepairPage />} />
         <Route path="/repair/designer" element={<DesignerRepairPage />} />
+        <Route path="/repair/whitebox" element={<WhiteboxRepairPage />} />
 
         <Route path="/project/:id" element={<ProjectPage />} />
         <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />

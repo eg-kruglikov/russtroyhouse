@@ -105,6 +105,7 @@ const ProjectPage = () => {
       style={{
         width: "100vw",
         height: "100vh",
+        paddingTop: "60px",
         backgroundColor: "#04141D",
         display: "flex",
         flexDirection: "column",

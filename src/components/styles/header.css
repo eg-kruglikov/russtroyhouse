@@ -17,9 +17,9 @@
 /* Расположение линий - только 2 линии */
 .burger span:nth-child(1) {
   top: 4px;
-  width: 100%;
+  width: 85%;
 }
 .burger span:nth-child(2) {
   top: 13px;
-  width: 70%;
+  width: 55%;
 }

@@ -120,6 +120,7 @@ const Desktop = () => {
       style={{
         color: "#fff",
         fontFamily: "'Arial', sans-serif",
+        paddingTop: "60px",
         paddingBottom: 80,
         background: "#06141d",
       }}

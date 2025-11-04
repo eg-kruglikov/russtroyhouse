@@ -324,9 +324,9 @@ const RepairCalculator = ({ isMobile }) => {
           >
             <h2
               style={{
-                fontSize: isMobile ? "28px" : "48px",
+                fontSize: isMobile ? "24px" : "40px",
                 fontWeight: "800",
-                color: "#ffffff",
+                color: "#FFD700",
                 margin: "0 0 16px 0",
                 lineHeight: isMobile ? 1.3 : 1.2,
                 letterSpacing: "-0.5px",
@@ -336,7 +336,7 @@ const RepairCalculator = ({ isMobile }) => {
             </h2>
             <p
               style={{
-                fontSize: isMobile ? "14px" : "18px",
+                fontSize: isMobile ? "16px" : "22px",
                 fontWeight: "400",
                 color: "rgba(255,255,255,0.85)",
                 margin: "0",

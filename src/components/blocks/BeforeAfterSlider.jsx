@@ -261,8 +261,8 @@ const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
             left: "50%",
             top: "50%",
             transform: "translate(-50%, -50%)",
-            width: "40px",
-            height: "40px",
+            width: "32px",
+            height: "32px",
             background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
             border: "2px solid rgba(255, 255, 255, 0.95)",
             borderRadius: "50%",
@@ -275,15 +275,22 @@ const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
             touchAction: "none",
           }}
         >
-          <span
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="rgba(0, 0, 0, 0.8)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             style={{
-              color: "rgba(0, 0, 0, 0.8)",
-              fontSize: "18px",
-              fontWeight: 900,
+              display: "block",
             }}
           >
-            ↔
-          </span>
+            <polyline points="9 18 6 12 9 6" />
+            <polyline points="15 6 18 12 15 18" />
+          </svg>
         </div>
       </div>
     </div>
