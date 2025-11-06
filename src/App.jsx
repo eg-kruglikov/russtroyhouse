@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import { useEffect } from "react";
+import { PhoneIconProvider } from "./contexts/PhoneIconContext";
 
 import Home from "./pages/Home";
 import ProjectPage from "./pages/ProjectPage";
@@ -121,9 +122,10 @@ const AppContent = () => {
 
   return (
     <>
-      <RedirectHandler />
-      <Header />
-      <Routes>
+      <PhoneIconProvider>
+        <RedirectHandler />
+        <Header />
+        <Routes>
         <Route path="/" element={<Home />} />
         {/* Страницы ремонтов */}
         <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
@@ -138,6 +140,7 @@ const AppContent = () => {
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </PhoneIconProvider>
     </>
   );
 };

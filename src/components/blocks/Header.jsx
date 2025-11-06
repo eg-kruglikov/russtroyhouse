@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
 import { useLocation } from "react-router-dom";
 import { useScrollContext } from "../../contexts/ScrollContext";
+import { usePhoneIconContext } from "../../contexts/PhoneIconContext";
 import { ymGoal, ymNotBounce } from "../../utils/metrika";
 import CompanyName from "./CompanyName";
 
@@ -36,13 +37,22 @@ const Header = ({
 }) => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const isCapitalPage = location.pathname === "/repair/capital";
   const scrollContext = useScrollContext();
+  const { isScrolledToEnd, setIsScrolledToEnd } = usePhoneIconContext();
   const [isMobile, setIsMobile] = useState(isMobileProp !== undefined ? isMobileProp : window.innerWidth <= 768);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isWideScreen, setIsWideScreen] = useState(false);
   const menuRef = useRef(null);
   const burgerRef = useRef(null);
   const savedScrollY = useRef(0);
+
+  // Сбрасываем состояние при переходе на другую страницу
+  useEffect(() => {
+    if (!isCapitalPage) {
+      setIsScrolledToEnd(false);
+    }
+  }, [location.pathname, isCapitalPage, setIsScrolledToEnd]);
 
   const press = usePressEffect();
   const ensureNotBounce = useNotBounceOnce();
@@ -424,7 +434,10 @@ const Header = ({
           >
             <path
               d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.1 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.79.59 2.65a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.43-1.21a2 2 0 0 1 2.11-.45c.86.27 1.75.47 2.65.59A2 2 0 0 1 22 16.92Z"
-              fill="rgba(255,255,255,0.85)"
+              fill={isCapitalPage && isScrolledToEnd ? "#FFD700" : "rgba(255,255,255,0.85)"}
+              style={{
+                transition: "fill 0.3s ease",
+              }}
             />
           </svg>
         </button>
