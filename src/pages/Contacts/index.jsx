@@ -26,17 +26,7 @@ const Page = {
   fontFamily: "'Arial', sans-serif",
 };
 
-const Header = {
-  display: "flex",
-  alignItems: "center",
-  gap: 12,
-  padding: "16px 20px",
-  borderBottom: "1px solid rgba(255,255,255,.08)",
-  position: "sticky",
-  top: 0,
-  zIndex: 5,
-  background: deep,
-};
+// удалён локальный Header — используется глобальный Header из приложения
 
 const Main = { maxWidth: 980, margin: "0 auto", padding: "20px" };
 const H1 = {
@@ -54,12 +44,11 @@ const Lead = {
 };
 const Cards = { display: "grid", gap: 16 };
 const Card = {
-  borderRadius: 18,
-  background:
-    "radial-gradient(140% 140% at 0% 0%, rgba(255,215,0,.06) 0%, rgba(15,36,49,1) 55%)",
-  boxShadow: "0 10px 28px rgba(0,0,0,.28)",
-  border: borderSoft,
-  padding: 16,
+  borderRadius: 0,
+  background: "transparent",
+  boxShadow: "none",
+  border: "none",
+  padding: 0,
 };
 const CardHead = { fontWeight: 900, fontSize: 20, marginBottom: 10 };
 const CardText = {
@@ -189,47 +178,26 @@ const ContactsPage = () => {
         isMobile={isMobile}
       />
 
-      {/* Header */}
-      <div style={Header}>
-        <img
-          src="/logo.png"
-          alt="РуссУютСтрой"
-          style={{ width: 36, height: 36, borderRadius: 8, display: "block" }}
-        />
-        <div style={{ fontWeight: 900, fontSize: 18, color: whiteSoft }}>
-          РуссУютСтрой
-        </div>
-      </div>
+      {/* локальная шапка удалена */}
 
       {/* Main */}
       <div style={Main}>
-        <h1 style={H1}>Контакты</h1>
-        <div style={Lead}>Любым удобным способом — отвечаем быстро.</div>
 
         <div style={Cards}>
           {/* Акция */}
-          <section
-            style={{
-              ...Card,
-              background:
-                "linear-gradient(135deg, rgba(255,215,0,.15) 0%, rgba(255,140,0,.08) 100%)",
-              border: "2px solid rgba(255,215,0,.3)",
-              boxShadow:
-                "0 12px 32px rgba(255,215,0,.15), 0 0 80px rgba(255,215,0,.08)",
-            }}
-          >
+          <section style={{ ...Card }}>
             <div
               style={{
                 ...CardHead,
                 color: yellow,
-                fontSize: 22,
+                fontSize: 28,
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
               }}
             >
-              <span style={{ fontSize: 24 }}>🍂</span>
               Акция осени
+              <span style={{ fontSize: 28 }}>🍂</span>
             </div>
             <div
               style={{
@@ -258,13 +226,13 @@ const ContactsPage = () => {
             </div>
             <div
               style={{
-                padding: "10px 16px",
-                borderRadius: 10,
-                background: "rgba(255,215,0,.1)",
-                border: "1px solid rgba(255,215,0,.2)",
+                padding: 0,
+                borderRadius: 0,
+                background: "transparent",
+                border: "none",
                 fontSize: 13,
                 opacity: 0.85,
-                textAlign: "center",
+                textAlign: "left",
                 marginBottom: 8,
               }}
             >
@@ -272,14 +240,14 @@ const ContactsPage = () => {
             </div>
             <div
               style={{
-                padding: "8px 12px",
-                borderRadius: 8,
-                background: "rgba(255,69,0,.15)",
-                border: "1px solid rgba(255,69,0,.3)",
+                padding: 0,
+                borderRadius: 0,
+                background: "transparent",
+                border: "none",
                 fontSize: 13,
                 fontWeight: 600,
                 opacity: 0.9,
-                textAlign: "center",
+                textAlign: "left",
                 color: "#ff9966",
               }}
             >
@@ -287,27 +255,39 @@ const ContactsPage = () => {
             </div>
           </section>
 
-          {/* Оставить заявку */}
-          <section style={Card}>
-            <div style={CardHead}>Оставить заявку</div>
-            <div style={CardText}>
-              Оставьте номер телефона — мы перезвоним в течение 15 минут и
-              ответим на все вопросы.
-            </div>
-            <Btn
-              onClick={() => setQuestioModalOpen(true)}
-              icon={
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                    fill={deep}
-                  />
-                </svg>
-              }
+          {/* Способы связи + Оставить заявку (единый блок, чтобы сократить интервал) */}
+          <div style={{ marginTop: 16 }}>
+            <div
+              style={{
+                fontWeight: 900,
+                fontSize: 30,
+                color: "#ffffff",
+                marginBottom: 4,
+              }}
             >
-              Заказать звонок
-            </Btn>
-          </section>
+              Способы связи
+            </div>
+            <section style={Card}>
+              <div style={CardHead}>Оставить заявку</div>
+              <div style={CardText}>
+                Оставьте номер телефона — мы перезвоним в течение 15 минут и
+                ответим на все вопросы.
+              </div>
+              <Btn
+                onClick={() => setQuestioModalOpen(true)}
+                icon={
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                      fill={deep}
+                    />
+                  </svg>
+                }
+              >
+                Заказать звонок
+              </Btn>
+            </section>
+          </div>
 
           {/* Позвонить */}
           <section style={Card}>
@@ -379,36 +359,10 @@ const ContactsPage = () => {
             </Btn>
           </section>
 
-          {/* На главную */}
-          <div
-            style={{
-              ...Card,
-              background: "transparent",
-              border: "none",
-              boxShadow: "none",
-              paddingTop: 6,
-            }}
-          >
-            <Btn
-              outline
-              onClick={wrap(() => navigate("/"), "contacts_home")}
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M15 18l-6-6 6-6"
-                    stroke="#fff"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              }
-            >
-              На главную
-            </Btn>
-          </div>
+          {/* Кнопка На главную удалена */}
         </div>
       </div>
-      {/* Карта и контакты (перенесено с главной) */}
+      {/* Карта и контакты */}
       <div
         style={{
           position: "relative",
@@ -417,36 +371,7 @@ const ContactsPage = () => {
           padding: "32px 0",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "2px",
-            background:
-              "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
-            backgroundSize: "40px 8px",
-            animation: "dash-move-left 2s linear infinite",
-          }}
-        />
-
         <Map />
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            height: "2px",
-            background:
-              "repeating-linear-gradient(90deg, transparent 0 20px, white 20px 32px)",
-            backgroundSize: "40px 8px",
-            animation: "dash-move-right 2s linear infinite",
-            scrollMarginTop: "54px",
-          }}
-        />
       </div>
 
       <Footer />

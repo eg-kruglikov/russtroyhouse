@@ -38,6 +38,21 @@ export function enableGlobalVideoSound() {
   });
 }
 
+export function disableGlobalVideoSound() {
+  if (!soundEnabled) return;
+  soundEnabled = false;
+  try {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, "0");
+    }
+  } catch (_) {}
+  subscribers.forEach((cb) => {
+    try {
+      cb(soundEnabled);
+    } catch (_) {}
+  });
+}
+
 export function subscribeGlobalVideoSound(callback) {
   subscribers.add(callback);
   return () => subscribers.delete(callback);

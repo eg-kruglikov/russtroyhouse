@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import map from "../../assets/map.png";
-import { usePressEffect } from "../../hooks/useSomething";
 
 const Map = () => {
   const [vw, setVw] = useState(() => window.innerWidth);
-  const press = usePressEffect();
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth);
@@ -17,11 +15,8 @@ const Map = () => {
   const height = isMobile ? 200 : 320;
 
   return (
-    <div
-      style={{ display: "flex", justifyContent: "center", padding: "0 16px" }}
-    >
+    <div style={{ width: "100%" }}>
       <section
-        {...press}
         onClick={() => {
           window.open(
             "https://yandex.ru/maps/?pt=37.844056,55.921869&z=17&l=map",
@@ -29,11 +24,10 @@ const Map = () => {
           );
         }}
         style={{
-          ...press.style,
           width: "100%",
-          maxWidth,
-          borderRadius: 16,
-          boxShadow: "0 10px 28px rgba(0,0,0,.25)",
+          maxWidth: "100%",
+          borderRadius: 0,
+          boxShadow: "none",
           backgroundImage: `url(${map})`,
           backgroundSize: "cover",
           backgroundPosition: "50% 50%",
@@ -41,6 +35,7 @@ const Map = () => {
           overflow: "hidden",
           position: "relative",
           cursor: "pointer",
+          WebkitTapHighlightColor: "transparent",
         }}
         aria-label="Открыть карту в Яндекс.Картах"
       />

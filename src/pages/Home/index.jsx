@@ -17,7 +17,8 @@ import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
 import {
   useGlobalVideoSound,
   isGlobalVideoSoundEnabled,
-  enableGlobalVideoSound,
+    enableGlobalVideoSound,
+    disableGlobalVideoSound,
 } from "../../hooks/useGlobalVideoSound";
 import {
   SECTION_BACKGROUND,
@@ -74,20 +75,24 @@ const Home = () => {
     if (!videoContainerRef.current || !videoRef.current) return;
     const videoEl = videoRef.current;
 
-    // Всегда начинаем без звука (как в Instagram)
-    videoEl.muted = !isGlobalVideoSoundEnabled();
+    // Всегда начинаем без звука (как в Instagram). Даже если глобально включён звук,
+    // авто-плей с аудио может быть заблокирован браузером.
+    // Переключение звука делаем только по явному действию пользователя.
+    videoEl.muted = true;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(async (entry) => {
           if (entry.isIntersecting) {
             try {
-              // Если пользователь уже включал звук или глобально включён звук — не мьютим
-              const shouldBeMuted = !(
-                userUnmutedRef.current || isGlobalVideoSoundEnabled()
-              );
-              videoEl.muted = shouldBeMuted;
+              // При входе в зону видимости всегда запускаем без звука
+              videoEl.muted = true;
               await videoEl.play();
+              // Если пользователь ранее включил звук (реальным действием), разблокируем звук после старта
+              if (userUnmutedRef.current) {
+                videoEl.muted = false;
+                videoEl.volume = 1;
+              }
             } catch (_) {}
           } else {
             videoEl.pause();
@@ -104,8 +109,8 @@ const Home = () => {
   // При смене глобального звука синхронизируем текущий ролик
   useEffect(() => {
     if (!videoRef.current) return;
-    if (soundEnabled) {
-      userUnmutedRef.current = true;
+    if (soundEnabled && userUnmutedRef.current) {
+      // Разрешаем звук только если был явный клик пользователя
       videoRef.current.muted = false;
       videoRef.current.volume = 1;
     } else {
@@ -113,13 +118,19 @@ const Home = () => {
     }
   }, [soundEnabled]);
 
-  // Отслеживаем ручное включение звука пользователем через системные контролы
+  // Отслеживаем ручное включение/выключение звука пользователем через системные контролы
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
     const onVolumeChange = () => {
-      if (!videoEl.muted && videoEl.volume > 0) {
-        userUnmutedRef.current = true;
+      const isUnmuted = !videoEl.muted && videoEl.volume > 0;
+      userUnmutedRef.current = isUnmuted;
+      if (isUnmuted) {
+        // Пользователь включил звук руками — включаем глобальный флаг
+        enableGlobalVideoSound();
+      } else {
+        // Пользователь выключил звук — глобально тоже выключаем
+        disableGlobalVideoSound();
       }
     };
     videoEl.addEventListener("volumechange", onVolumeChange);
@@ -1133,6 +1144,7 @@ const Home = () => {
             </div>
 
             <div
+              ref={videoContainerRef}
               style={{
                 width: "100vw",
                 marginLeft: "calc(-50vw + 50%)",
@@ -1141,6 +1153,62 @@ const Home = () => {
                 position: "relative",
               }}
             >
+              {/* Кнопка звука поверх видео в правом верхнем углу */}
+              <button
+                aria-label={soundEnabled ? "Выключить звук видео" : "Включить звук видео"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (soundEnabled) {
+                    disableGlobalVideoSound();
+                    if (videoRef.current) {
+                      videoRef.current.muted = true;
+                    }
+                  } else {
+                    enableGlobalVideoSound();
+                    if (videoRef.current) {
+                      userUnmutedRef.current = true;
+                      videoRef.current.muted = false;
+                      videoRef.current.volume = 1;
+                      videoRef.current.play().catch(() => {});
+                    }
+                  }
+                }}
+                onFocus={(e) => e.currentTarget.blur()}
+                tabIndex={-1}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  zIndex: 5,
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  background: "rgba(0,0,0,0.5)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  cursor: "pointer",
+                  backdropFilter: "blur(3px)",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                {soundEnabled ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M15 9a5 5 0 0 1 0 6" />
+                    <path d="M17.5 5.5a9 9 0 0 1 0 13" />
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="22" y1="9" x2="16" y2="15" />
+                    <line x1="16" y1="9" x2="22" y2="15" />
+                  </svg>
+                )}
+              </button>
               <video
                 ref={videoRef}
                 loop
