@@ -38,6 +38,7 @@ const Header = ({
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isCapitalPage = location.pathname === "/repair/capital";
+  const isContactsPage = location.pathname === "/contacts";
   const scrollContext = useScrollContext();
   const { isScrolledToEnd, setIsScrolledToEnd } = usePhoneIconContext();
   const [isMobile, setIsMobile] = useState(isMobileProp !== undefined ? isMobileProp : window.innerWidth <= 768);
@@ -59,7 +60,7 @@ const Header = ({
   const navigateWithMetrika = useNavigateWithMetrika();
 
   // Получаем функции скролла из контекста или пропсов (для обратной совместимости)
-  const scrollFunctions = scrollContext || {
+  const scrollFunctions = scrollContext?.scrollFunctions || {
     scrollToHero,
     scrollToAbout,
     scrollToServices,
@@ -109,11 +110,47 @@ const Header = ({
     "Дизайн проекты": "nav_design_click",
   };
 
-  // универсальный обработчик кликов по пунктам навигации
-  const handleNavClick = (name, actionFn) => {
+  const triggerNavAction = (item, behavior = "smooth") => {
+    if (!item) return;
+
+    const scrollFnFromContext =
+      item.scrollKey && scrollFunctions?.[item.scrollKey];
+    const fallbackFn =
+      typeof item.href === "function" ? item.href : undefined;
+    const scrollFn = scrollFnFromContext || fallbackFn;
+
+    if (isHomePage && typeof scrollFn === "function") {
+      scrollFn(behavior);
+      return;
+    }
+
+    if (item.scrollKey) {
+      const targetRoute =
+        item.route && item.route.startsWith("/")
+          ? item.route
+          : `/${item.route || ""}`;
+
+      navigateWithMetrika(targetRoute || "/", {
+        scrollTo: item.scrollKey,
+      });
+      return;
+    }
+
+    if (item.route) {
+      navigateWithMetrika(item.route);
+      return;
+    }
+
+    if (typeof scrollFn === "function") {
+      scrollFn(behavior);
+    }
+  };
+
+  const handleMenuSelection = (item, { behavior = "smooth" } = {}) => {
+    if (!item) return;
     ensureNotBounce();
-    ymGoal(goalsMap[name] || "nav_click");
-    actionFn?.();
+    ymGoal(goalsMap[item.name] || "nav_click");
+    triggerNavAction(item, behavior);
   };
 
   // логотип → наверх (если нужно) + цель
@@ -218,39 +255,18 @@ const Header = ({
   }, [menuOpen]);
 
   // Обработчики навигации
-  const handleNavAction = (name, scrollFn, route) => {
-    if (isHomePage && scrollFn) {
-      scrollFn();
-    } else if (route) {
-      // Если route содержит hash, сначала переходим на главную, потом скроллим
-      if (route.includes("#") && route.startsWith("/#")) {
-        navigateWithMetrika("/");
-        // После навигации на главную, ждем и скроллим к нужному элементу
-        setTimeout(() => {
-          const hash = route.split("#")[1];
-          const element = document.getElementById(hash);
-          if (element) {
-            const yOffset = -75;
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: "smooth" });
-          }
-        }, 100);
-      } else {
-        navigateWithMetrika(route);
-      }
-    }
-  };
-
   // Структура меню
   const menuItems = [
     { 
       name: "Главная", 
+      scrollKey: "scrollToHero",
       href: scrollFunctions.scrollToHero, 
       route: "/",
       type: "link" 
     },
     { 
       name: "Калькулятор ремонта", 
+      scrollKey: "scrollToCalculator",
       href: scrollFunctions.scrollToCalculator, 
       route: "/#calculator",
       type: "link" 
@@ -258,45 +274,53 @@ const Header = ({
     {
       name: "Ремонты",
       type: "submenu",
+      scrollKey: "scrollToNashiUslugi",
       href: scrollFunctions.scrollToNashiUslugi,
       route: "/#nashi-uslugi",
       submenu: [
         {
           name: "Косметический",
+          scrollKey: "scrollToCosmetic",
           href: scrollFunctions.scrollToCosmetic,
-          route: "/repair/cosmetic",
+          route: "/#cosmetic",
         },
         {
           name: "Капитальный",
+          scrollKey: "scrollToCapital",
           href: scrollFunctions.scrollToCapital,
-          route: "/repair/capital",
+          route: "/#capital",
         },
         {
           name: "Дизайнерский",
+          scrollKey: "scrollToDesigner",
           href: scrollFunctions.scrollToDesigner,
-          route: "/repair/designer",
+          route: "/#designer",
         },
         {
           name: "Вайт бокс/Чистовая отделка",
+          scrollKey: "scrollToWhitebox",
           href: scrollFunctions.scrollToWhitebox,
-          route: "/repair/whitebox",
+          route: "/#whitebox",
         },
       ],
     },
     { 
       name: "Наши последние работы", 
+      scrollKey: "scrollToportfolio",
       href: scrollFunctions.scrollToportfolio, 
       route: "/#portfolio",
       type: "link" 
     },
     { 
       name: "Отзывы", 
+      scrollKey: "scrollToReviews",
       href: scrollFunctions.scrollToReviews, 
       route: "/#reviews",
       type: "link" 
     },
     { 
       name: "Дизайн проекты", 
+      scrollKey: "scrollToDesignProjects",
       href: scrollFunctions.scrollToDesignProjects, 
       route: "/#design-projects",
       type: "link" 
@@ -383,7 +407,7 @@ const Header = ({
               .map((item, i) => (
                 <button
                   {...press}
-                  onClick={() => handleNavClick(item.name, () => handleNavAction(item.name, item.href, item.route))}
+                  onClick={() => handleMenuSelection(item)}
                   key={i}
                   style={{
                     all: "unset",
@@ -405,42 +429,44 @@ const Header = ({
         )}
 
         {/* Иконка телефона справа */}
-        <button
-          onClick={() => {
-            ensureNotBounce();
-            ymGoal("nav_phone_click");
-            ymNotBounce();
-            navigateWithMetrika("/contacts");
-          }}
-          style={{
-            all: "unset",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "24px",
-            height: "24px",
-            marginLeft: "auto",
-            WebkitTapHighlightColor: "transparent",
-          }}
-          aria-label="Позвонить"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            style={{ display: "block" }}
+        {!isContactsPage && (
+          <button
+            onClick={() => {
+              ensureNotBounce();
+              ymGoal("nav_phone_click");
+              ymNotBounce();
+              navigateWithMetrika("/contacts");
+            }}
+            style={{
+              all: "unset",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "24px",
+              height: "24px",
+              marginLeft: "auto",
+              WebkitTapHighlightColor: "transparent",
+            }}
+            aria-label="Позвонить"
           >
-            <path
-              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.1 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.79.59 2.65a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.43-1.21a2 2 0 0 1 2.11-.45c.86.27 1.75.47 2.65.59A2 2 0 0 1 22 16.92Z"
-              fill={isCapitalPage && isScrolledToEnd ? "#FFD700" : "rgba(255,255,255,0.85)"}
-              style={{
-                transition: "fill 0.3s ease",
-              }}
-            />
-          </svg>
-        </button>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              style={{ display: "block" }}
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.1 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.79.59 2.65a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.43-1.21a2 2 0 0 1 2.11-.45c.86.27 1.75.47 2.65.59A2 2 0 0 1 22 16.92Z"
+                fill={isCapitalPage && isScrolledToEnd ? "#FFD700" : "rgba(255,255,255,0.85)"}
+                style={{
+                  transition: "fill 0.3s ease",
+                }}
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Мобильное выпадающее меню */}
@@ -611,7 +637,7 @@ const Header = ({
                             navigator.vibrate?.(30);
                             // Выполняем навигацию/скролл после закрытия меню
                             setTimeout(() => {
-                              handleNavAction(item.name, item.href, item.route);
+                              triggerNavAction(item);
                             }, 300);
                           }}
                           style={{
@@ -652,7 +678,7 @@ const Header = ({
                                 navigator.vibrate?.(30);
                                 // Выполняем навигацию/скролл после закрытия меню
                                 setTimeout(() => {
-                                  handleNavAction(subItem.name, subItem.href, subItem.route);
+                                  triggerNavAction(subItem);
                                 }, 300);
                               }}
                               style={{
@@ -687,7 +713,7 @@ const Header = ({
                           navigator.vibrate?.(30);
                           // Выполняем навигацию/скролл после закрытия меню
                           setTimeout(() => {
-                            handleNavAction(item.name, item.href, item.route);
+                            triggerNavAction(item);
                           }, 300);
                         }}
                         style={{

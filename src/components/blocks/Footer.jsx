@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const Footer = () => (
+const Footer = ({ showAddress = true }) => (
   <footer
     style={{
       backgroundColor: "#04141D",
@@ -13,10 +13,14 @@ const Footer = () => (
     }}
   >
     <div style={{ marginBottom: "16px" }}>
-      <div style={{ fontSize: "16px", fontWeight: "500", marginBottom: "8px" }}>
-        📍 МОСКОВСКАЯ ОБЛАСТЬ, Г. КОРОЛЁВ, УЛ ПРОСПЕКТ КОРОЛЁВА 5Д, ТРЦ —
-        СТАТУС, 3 ЭТАЖ, ОФИС 315
-      </div>
+      {showAddress && (
+        <div
+          style={{ fontSize: "16px", fontWeight: "500", marginBottom: "8px" }}
+        >
+          📍 МОСКОВСКАЯ ОБЛАСТЬ, Г. КОРОЛЁВ, УЛ ПРОСПЕКТ КОРОЛЁВА 5Д, ТРЦ —
+          СТАТУС, 3 ЭТАЖ, ОФИС 315
+        </div>
+      )}
       <div
         style={{
           fontSize: "13px",

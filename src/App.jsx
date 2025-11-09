@@ -25,6 +25,7 @@ import { ymNavigate, ymError, ymPageViewsCount } from "./utils/metrika";
 
 import ContactsPage from "./pages/Contacts";
 import Header from "./components/blocks/Header";
+import { ScrollProvider } from "./contexts/ScrollContext";
 
 const RedirectHandler = () => {
   useEffect(() => {
@@ -123,23 +124,25 @@ const AppContent = () => {
   return (
     <>
       <PhoneIconProvider>
-        <RedirectHandler />
-        <Header />
-        <Routes>
-        <Route path="/" element={<Home />} />
-        {/* Страницы ремонтов */}
-        <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
-        <Route path="/repair/capital" element={<CapitalRepairPage />} />
-        <Route path="/repair/designer" element={<DesignerRepairPage />} />
-        <Route path="/repair/whitebox" element={<WhiteboxRepairPage />} />
+        <ScrollProvider>
+          <RedirectHandler />
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* Страницы ремонтов */}
+            <Route path="/repair/cosmetic" element={<CosmeticRepairPage />} />
+            <Route path="/repair/capital" element={<CapitalRepairPage />} />
+            <Route path="/repair/designer" element={<DesignerRepairPage />} />
+            <Route path="/repair/whitebox" element={<WhiteboxRepairPage />} />
 
-        <Route path="/project/:id" element={<ProjectPage />} />
-        <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
+            <Route path="/project/:id" element={<ProjectPage />} />
+            <Route path="/portfolio/:slug" element={<PortfolioProjectPage />} />
 
-        <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </ScrollProvider>
       </PhoneIconProvider>
     </>
   );

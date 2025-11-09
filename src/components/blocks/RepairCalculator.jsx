@@ -1,39 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import { usePressEffect } from "../../hooks/useSomething";
+import React, { useState, useRef } from "react";
 import { ymGoal } from "../../utils/metrika";
 import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 // CSS для кастомных radio buttons
 const radioButtonStyles = `
   .repair-calculator input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
-    outline: none;
-    margin: 0;
-    flex-shrink: 0;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
   }
-  
-  .repair-calculator input[type="radio"]:checked {
-    border-color: #FF6B35;
-    background-color: white;
-    background-image: radial-gradient(circle, #FF6B35 0%, #FF6B35 40%, white 40%, white 100%);
-  }
-  
-  .repair-calculator input[type="radio"]:focus,
-  .repair-calculator input[type="radio"]:active {
-    outline: none;
-    box-shadow: none;
-  }
+
   
   .repair-calculator label {
     -webkit-tap-highlight-color: transparent;
@@ -62,14 +40,140 @@ const radioButtonStyles = `
 `;
 
 const RepairCalculator = ({ isMobile }) => {
-  const press = usePressEffect();
-  const repairTypeRefs = useRef({});
+  const AREA_MIN = 30;
+  const AREA_MAX = 350;
+
   const areaInputRef = useRef(null);
+  const toNumber = (value) => {
+    const num =
+      typeof value === "number" ? value : Number.parseFloat(value || "0");
+    if (Number.isNaN(num)) {
+      return AREA_MIN;
+    }
+    return Math.min(Math.max(num, AREA_MIN), AREA_MAX);
+  };
+
+  const handleAreaChange = (value) => {
+    setArea(toNumber(value));
+  };
+
+  const repairOptionsLayout = {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    columnGap: isMobile ? "16px" : "32px",
+    rowGap: "20px",
+    alignItems: "start",
+    gridAutoRows: "auto",
+  };
+
+  const headerStyle = {
+    fontSize: isMobile ? "18px" : "22px",
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.9)",
+    paddingBottom: "4px",
+    borderBottom: "1px solid rgba(255,255,255,0.1)",
+    marginBottom: "4px",
+  };
+
+  const rowGridStyle = {
+    display: "grid",
+    gridTemplateColumns: `${isMobile ? 18 : 20}px 1fr`,
+    alignItems: "center",
+    columnGap: isMobile ? "10px" : "12px",
+    padding: "4px 0",
+  };
+
+  const spacerHeight = isMobile ? "26px" : "30px";
+
+  const repairOptions = [
+    { value: "cosmetic", label: "Косметический" },
+    { value: "capital", label: "Капитальный" },
+    { value: "whitebox", label: "Белый бокс" },
+    { value: "designer", label: "Дизайнерский" },
+  ];
+
+  const roomOptions = [
+    { value: "studio", label: "Студия" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4+", label: "4+" },
+  ];
+
+  const materialOptions = [
+    { value: "standard", label: "Стандарт" },
+    { value: "comfort", label: "Комфорт" },
+    { value: "premium", label: "Премиум" },
+  ];
+
+  const premisesOptions = [
+    { value: "newbuilding", label: "Новостройка" },
+    { value: "secondary", label: "Вторичка" },
+    { value: "apartments", label: "Апартаменты" },
+  ];
+
+  const topRowCount = Math.max(repairOptions.length, roomOptions.length);
+  const bottomRowCount = Math.max(
+    materialOptions.length,
+    premisesOptions.length
+  );
+
+  const renderOptionColumn = (
+    title,
+    options,
+    selectedValue,
+    onSelect,
+    totalRows
+  ) => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateRows: `auto repeat(${totalRows}, auto)`,
+        rowGap: "8px",
+        alignContent: "start",
+      }}
+    >
+      <div style={headerStyle}>{title}</div>
+      {options.map((option) => (
+        <label key={option.value} style={rowGridStyle}>
+          <input
+            type="checkbox"
+            checked={selectedValue === option.value}
+            onChange={(e) => {
+              if (e.target.checked) {
+                onSelect(option.value);
+              }
+            }}
+            style={{
+              accentColor: "#FF6B35",
+              width: isMobile ? "18px" : "20px",
+              height: isMobile ? "18px" : "20px",
+            }}
+          />
+          <span
+            style={{
+              fontSize: isMobile ? "14px" : "16px",
+              color:
+                selectedValue === option.value
+                  ? "#FFD700"
+                  : "rgba(255,255,255,0.75)",
+              fontWeight: selectedValue === option.value ? "600" : "400",
+            }}
+          >
+            {option.label}
+          </span>
+        </label>
+      ))}
+      {Array.from({ length: totalRows - options.length }).map((_, idx) => (
+        <div key={`${title}-spacer-${idx}`} style={{ height: spacerHeight }} />
+      ))}
+    </div>
+  );
 
   // Состояние калькулятора
   const [repairType, setRepairType] = useState("cosmetic");
   const [roomCount, setRoomCount] = useState("studio");
-  const [area, setArea] = useState("50");
+  const [area, setArea] = useState(50);
   const [materialQuality, setMaterialQuality] = useState("standard");
   const [premisesType, setPremisesType] = useState("newbuilding");
   const [replanning, setReplanning] = useState(false);
@@ -172,25 +276,6 @@ const RepairCalculator = ({ isMobile }) => {
   };
 
   const { total, perSquare, timeRange } = calculatePrice();
-
-  // Сброс фона всех элементов при изменении выбора
-  useEffect(() => {
-    Object.values(repairTypeRefs.current).forEach((ref) => {
-      if (ref) {
-        ref.style.backgroundColor = "transparent";
-      }
-    });
-  }, [repairType]);
-
-  // Функция для убирания фокуса с инпута площади
-  const blurAreaInput = () => {
-    if (
-      areaInputRef.current &&
-      document.activeElement === areaInputRef.current
-    ) {
-      areaInputRef.current.blur();
-    }
-  };
 
   // Отправка формы
   const handleSubmit = async (e) => {
@@ -325,7 +410,7 @@ const RepairCalculator = ({ isMobile }) => {
           >
             <h2
               style={{
-                fontSize: isMobile ? "24px" : "40px",
+                fontSize: isMobile ? "28px" : "48px",
                 fontWeight: "800",
                 color: "#FFD700",
                 margin: "0 0 16px 0",
@@ -379,416 +464,38 @@ const RepairCalculator = ({ isMobile }) => {
                     gap: "20px",
                   }}
                 >
-                  {/* Тип ремонта */}
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Тип ремонта
-                    </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                        marginLeft: "-6px",
-                      }}
-                    >
-                      {[
-                        { value: "cosmetic", label: "Косметический" },
-                        { value: "capital", label: "Капитальный" },
-                        { value: "whitebox", label: "Белый бокс" },
-                        { value: "designer", label: "Дизайнерский" },
-                      ].map((option) => (
-                        <label
-                          key={option.value}
-                          ref={(el) =>
-                            (repairTypeRefs.current[option.value] = el)
-                          }
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            cursor: "pointer",
-                            padding: "12px 16px",
-                            borderRadius: "8px",
-                            backgroundColor: "transparent",
-                            border:
-                              repairType === option.value
-                                ? "1px solid #FF6B35"
-                                : "1px solid rgba(255,255,255,0.2)",
-                            transition:
-                              "border 0.2s ease, backgroundColor 0.2s ease",
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            blurAreaInput();
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                          onMouseEnter={(e) => {
-                            if (repairType !== option.value) {
-                              e.currentTarget.style.backgroundColor =
-                                "rgba(255,255,255,0.05)";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name="repairType"
-                            value={option.value}
-                            checked={repairType === option.value}
-                            onChange={(e) => setRepairType(e.target.value)}
-                          />
-                          <span
-                            style={{
-                              fontSize: isMobile ? "14px" : "16px",
-                              color:
-                                repairType === option.value
-                                  ? "#FFFFFF"
-                                  : "rgba(255,255,255,0.9)",
-                              fontWeight:
-                                repairType === option.value ? "600" : "400",
-                            }}
-                          >
-                            {option.label}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                  <div style={repairOptionsLayout}>
+                    {renderOptionColumn(
+                      "Тип ремонта",
+                      repairOptions,
+                      repairType,
+                      setRepairType,
+                      topRowCount
+                    )}
+                    {renderOptionColumn(
+                      "Количество комнат",
+                      roomOptions,
+                      roomCount,
+                      setRoomCount,
+                      topRowCount
+                    )}
                   </div>
 
-                  {/* Количество комнат */}
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Количество комнат
-                    </label>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(3, 1fr)",
-                        gap: "8px",
-                      }}
-                    >
-                      {[
-                        { value: "studio", label: "Студия" },
-                        { value: "1", label: "1" },
-                        { value: "2", label: "2" },
-                        { value: "3", label: "3" },
-                        { value: "4+", label: "4+" },
-                      ].map((option) => (
-                        <label
-                          key={option.value}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                            padding: "12px 8px",
-                            borderRadius: "8px",
-                            backgroundColor: "transparent",
-                            border:
-                              roomCount === option.value
-                                ? "1px solid #FF6B35"
-                                : "1px solid rgba(255,255,255,0.2)",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            blurAreaInput();
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                          onMouseEnter={(e) => {
-                            if (roomCount !== option.value) {
-                              e.currentTarget.style.backgroundColor =
-                                "rgba(255,255,255,0.05)";
-                            } else {
-                              e.currentTarget.style.backgroundColor =
-                                "transparent";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name="roomCount"
-                            value={option.value}
-                            checked={roomCount === option.value}
-                            onChange={(e) => setRoomCount(e.target.value)}
-                          />
-                          <span
-                            style={{
-                              fontSize: isMobile ? "14px" : "16px",
-                              color:
-                                roomCount === option.value
-                                  ? "#FFFFFF"
-                                  : "rgba(255,255,255,0.9)",
-                              fontWeight:
-                                roomCount === option.value ? "600" : "400",
-                            }}
-                          >
-                            {option.label}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Площадь */}
-                  <div style={{ width: "100%" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Площадь (м²)
-                    </label>
-                    <input
-                      ref={areaInputRef}
-                      type="number"
-                      value={area}
-                      onChange={(e) => setArea(e.target.value)}
-                      placeholder="Введите площадь"
-                      min="1"
-                      max="1000"
-                      style={{
-                        width: "100%",
-                        padding: "12px 16px",
-                        fontSize: isMobile ? "16px" : "18px",
-                        backgroundColor: "rgba(255,255,255,0.05)",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        borderRadius: "8px",
-                        color: "#ffffff",
-                        outline: "none",
-                        transition: "all 0.2s ease",
-                        boxSizing: "border-box",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "#FF6B35";
-                        e.currentTarget.style.backgroundColor =
-                          "rgba(255,255,255,0.1)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor =
-                          "rgba(255,255,255,0.2)";
-                        e.currentTarget.style.backgroundColor =
-                          "rgba(255,255,255,0.05)";
-                      }}
-                    />
-                  </div>
-
-                  {/* Качество материалов */}
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Качество материалов
-                    </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                        marginLeft: "-6px",
-                      }}
-                    >
-                      {[
-                        { value: "standard", label: "Стандарт" },
-                        { value: "comfort", label: "Комфорт" },
-                        { value: "premium", label: "Премиум" },
-                      ].map((option) => (
-                        <label
-                          key={option.value}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            cursor: "pointer",
-                            padding: "12px 16px",
-                            borderRadius: "8px",
-                            backgroundColor: "transparent",
-                            border:
-                              materialQuality === option.value
-                                ? "1px solid #FF6B35"
-                                : "1px solid rgba(255,255,255,0.2)",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            blurAreaInput();
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                          onMouseEnter={(e) => {
-                            if (materialQuality !== option.value) {
-                              e.currentTarget.style.backgroundColor =
-                                "rgba(255,255,255,0.05)";
-                            } else {
-                              e.currentTarget.style.backgroundColor =
-                                "transparent";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name="materialQuality"
-                            value={option.value}
-                            checked={materialQuality === option.value}
-                            onChange={(e) => setMaterialQuality(e.target.value)}
-                          />
-                          <span
-                            style={{
-                              fontSize: isMobile ? "14px" : "16px",
-                              color:
-                                materialQuality === option.value
-                                  ? "#FFFFFF"
-                                  : "rgba(255,255,255,0.9)",
-                              fontWeight:
-                                materialQuality === option.value
-                                  ? "600"
-                                  : "400",
-                            }}
-                          >
-                            {option.label}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Тип помещения */}
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Тип помещения
-                    </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                        marginLeft: "-6px",
-                      }}
-                    >
-                      {[
-                        {
-                          value: "newbuilding",
-                          label: "Новостройка",
-                          desc: "Бетонная коробка",
-                        },
-                        {
-                          value: "secondary",
-                          label: "Вторичка",
-                          desc: "Старые коммуникации",
-                        },
-                        {
-                          value: "apartments",
-                          label: "Апартаменты",
-                          desc: "Элитное жилье",
-                        },
-                      ].map((option) => (
-                        <label
-                          key={option.value}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            cursor: "pointer",
-                            padding: "12px 16px",
-                            borderRadius: "8px",
-                            backgroundColor: "transparent",
-                            border:
-                              premisesType === option.value
-                                ? "1px solid #FF6B35"
-                                : "1px solid rgba(255,255,255,0.2)",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            blurAreaInput();
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                          onMouseEnter={(e) => {
-                            if (premisesType !== option.value) {
-                              e.currentTarget.style.backgroundColor =
-                                "rgba(255,255,255,0.05)";
-                            } else {
-                              e.currentTarget.style.backgroundColor =
-                                "transparent";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name="premisesType"
-                            value={option.value}
-                            checked={premisesType === option.value}
-                            onChange={(e) => setPremisesType(e.target.value)}
-                          />
-                          <span
-                            style={{
-                              fontSize: isMobile ? "14px" : "16px",
-                              color:
-                                premisesType === option.value
-                                  ? "#FFFFFF"
-                                  : "rgba(255,255,255,0.9)",
-                              fontWeight:
-                                premisesType === option.value ? "600" : "400",
-                            }}
-                          >
-                            {option.label}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                  <div style={repairOptionsLayout}>
+                    {renderOptionColumn(
+                      "Качество материалов",
+                      materialOptions,
+                      materialQuality,
+                      setMaterialQuality,
+                      bottomRowCount
+                    )}
+                    {renderOptionColumn(
+                      "Тип помещения",
+                      premisesOptions,
+                      premisesType,
+                      setPremisesType,
+                      bottomRowCount
+                    )}
                   </div>
 
                   {/* Перепланировка */}
@@ -861,6 +568,68 @@ const RepairCalculator = ({ isMobile }) => {
                         </span>
                       </div>
                     </label>
+                  </div>
+
+                  {/* Площадь */}
+                  <div style={{ width: "100%" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: isMobile ? "14px" : "16px",
+                        fontWeight: "600",
+                        color: "rgba(255,255,255,0.9)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Площадь (м²)
+                    </label>
+                    <div
+                      style={{
+                        width: "100%",
+                        padding: isMobile ? "8px 12px" : "10px 16px",
+                        fontSize: isMobile ? "24px" : "32px",
+                        fontWeight: "700",
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        borderRadius: "12px",
+                        color: "#FFFFFF",
+                        textAlign: "center",
+                        marginBottom: "16px",
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      {formatNumber(area)}
+                    </div>
+                    <input
+                      ref={areaInputRef}
+                      type="range"
+                      value={area}
+                      min={AREA_MIN}
+                      max={AREA_MAX}
+                      step={1}
+                      onInput={(e) => handleAreaChange(e.target.valueAsNumber)}
+                      onChange={(e) => handleAreaChange(e.target.valueAsNumber)}
+                      onTouchMove={(e) =>
+                        handleAreaChange(e.target.valueAsNumber)
+                      }
+                      onTouchStart={(e) =>
+                        handleAreaChange(e.target.valueAsNumber)
+                      }
+                      onPointerMove={(e) => {
+                        if (e.buttons === 1) {
+                          handleAreaChange(e.target.valueAsNumber);
+                        }
+                      }}
+                      onPointerDown={(e) =>
+                        handleAreaChange(e.target.valueAsNumber)
+                      }
+                      style={{
+                        width: "100%",
+                        accentColor: "#FF6B35",
+                        touchAction: "none",
+                        WebkitTapHighlightColor: "transparent",
+                      }}
+                    />
                   </div>
                 </div>
               </div>

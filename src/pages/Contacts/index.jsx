@@ -6,6 +6,7 @@ import Footer from "../../components/blocks/Footer";
 import { usePressEffect } from "../../hooks/useSomething";
 import { ymGoal } from "../../utils/metrika";
 import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
+import officeMain from "../../assets/office_main.jpg";
 
 const WA_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
   "Здравствуйте! Хочу обсудить ремонт."
@@ -13,7 +14,7 @@ const WA_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
 const TG_CHANNEL = "https://t.me/russtroyhouse";
 
 // ====== СТИЛИ ======
-const deep = "#0a1a26";
+const deep = "#04141D";
 const yellow = "#FFD700";
 const whiteSoft = "rgba(255,255,255,.9)";
 const borderSoft = "1px solid rgba(255,255,255,.10)";
@@ -182,7 +183,6 @@ const ContactsPage = () => {
 
       {/* Main */}
       <div style={Main}>
-
         <div style={Cards}>
           {/* Акция */}
           <section style={{ ...Card }}>
@@ -215,12 +215,12 @@ const ContactsPage = () => {
             </div>
             <div style={{ ...CardText, fontSize: 16, fontWeight: 500 }}>
               Скажите{" "}
-              <span style={{ color: yellow, fontWeight: 800 }}>
+              <span style={{ color: "#ffffff", fontWeight: 800 }}>
                 "Ремонт 2025"
               </span>{" "}
               при первом звонке и получите{" "}
               <span style={{ color: yellow, fontWeight: 800 }}>
-                скидку до 10%
+                скидку до 7%
               </span>{" "}
               на любой вид ремонта!
             </div>
@@ -236,128 +236,148 @@ const ContactsPage = () => {
                 marginBottom: 8,
               }}
             >
-              ⏰ Акция действует до конца года
-            </div>
-            <div
-              style={{
-                padding: 0,
-                borderRadius: 0,
-                background: "transparent",
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                opacity: 0.9,
-                textAlign: "left",
-                color: "#ff9966",
-              }}
-            >
-              🔥 Количество мест в акции ограничено
+              ⏰ Акция действует до конца календарной осени.
             </div>
           </section>
 
-          {/* Способы связи + Оставить заявку (единый блок, чтобы сократить интервал) */}
-          <div style={{ marginTop: 16 }}>
-            <div
+          {/* Кнопки связи */}
+          <div
+            style={{
+              marginTop: 16,
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
+            <button
+              {...press}
+              onClick={() => setQuestioModalOpen(true)}
               style={{
-                fontWeight: 900,
-                fontSize: 30,
-                color: "#ffffff",
-                marginBottom: 4,
+                ...press.style,
+                background: "transparent",
+                border: "none",
+                color: "#FFD700",
+                fontSize: 19,
+                fontWeight: 700,
+                textDecoration: "none",
+                display: "inline-block",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                padding: 0,
+                textAlign: "left",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.8";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
               }}
             >
-              Способы связи
-            </div>
-            <section style={Card}>
-              <div style={CardHead}>Оставить заявку</div>
-              <div style={CardText}>
-                Оставьте номер телефона — мы перезвоним в течение 15 минут и
-                ответим на все вопросы.
-              </div>
-              <Btn
-                onClick={() => setQuestioModalOpen(true)}
-                icon={
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                      fill={deep}
-                    />
-                  </svg>
-                }
-              >
-                Заказать звонок
-              </Btn>
-            </section>
-          </div>
+              Заказать звонок
+            </button>
 
-          {/* Позвонить */}
-          <section style={Card}>
-            <div style={CardHead}>Позвонить</div>
-            <div style={CardText}>
-              Позвоните прямо сейчас — ответим на любой вопрос и сориентируем по
-              срокам и стоимости.
-            </div>
-            <Btn
+            <button
+              {...press}
               onClick={() => {
                 if (isMobile) confirmCall();
                 else showNumber();
               }}
-              icon={IconPhone}
+              style={{
+                ...press.style,
+                background: "transparent",
+                border: "none",
+                color: "#FFD700",
+                fontSize: 19,
+                fontWeight: 700,
+                textDecoration: "none",
+                display: "inline-block",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                padding: 0,
+                textAlign: "left",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.8";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+              }}
             >
               {numberDisplayed ? "+7 (926) 408-18-11" : "Позвонить"}
-            </Btn>
-          </section>
+            </button>
 
-          {/* WhatsApp */}
-          <section style={Card}>
-            <div style={CardHead}>Написать в WhatsApp</div>
-            <div style={CardText}>
-              Если неудобно говорить — с удовольствием ответим Вам в чате.
-            </div>
-            <Btn
-              href={WA_LINK}
+            <button
+              {...press}
               onClick={wrap(
                 () => window.open(WA_LINK, "_blank"),
                 "lead_whatsapp"
               )}
-              icon={
-                <img
-                  alt="WhatsApp"
-                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                  style={{ width: 24, height: 24, display: "block" }}
-                />
-              }
+              style={{
+                ...press.style,
+                background: "transparent",
+                border: "none",
+                color: "#FFD700",
+                fontSize: 19,
+                fontWeight: 700,
+                textDecoration: "none",
+                display: "inline-block",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                padding: 0,
+                textAlign: "left",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "0.8";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+              }}
             >
-              <span style={{ color: "black", fontWeight: 700 }}>
-                Написать&nbsp;
-              </span>
-              <span style={{ color: "white", fontWeight: 700 }}>WhatsApp</span>
-            </Btn>
-          </section>
+              Написать в WhatsApp
+            </button>
+          </div>
 
-          {/* Telegram */}
-          <section style={Card}>
-            <div style={CardHead}>Наш Telegram-канал</div>
-            <div style={CardText}>
-              Делимся советами и показываем наши объекты.
-            </div>
-            <Btn
-              href={TG_CHANNEL}
-              outline
-              onClick={wrap(
-                () => window.open(TG_CHANNEL, "_blank"),
-                "contacts_telegram_channel"
-              )}
-              icon={
-                <img
-                  alt="Telegram"
-                  src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                  style={{ width: 18, height: 18, display: "block" }}
-                />
-              }
+          <div
+            style={{
+              marginTop: 28,
+              marginLeft: "calc(-50vw + 50%)",
+              width: "100vw",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              src={officeMain}
+              alt="Офис РусСтройХаус"
+              style={{
+                display: "block",
+                width: "100%",
+                height: "auto",
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              marginTop: 18,
+              textAlign: "left",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: 16,
+              lineHeight: 1.5,
+            }}
+          >
+            МОСКОВСКАЯ ОБЛАСТЬ, Г. КОРОЛЁВ, УЛ ПРОСПЕКТ КОРОЛЁВА 5Д, ТРЦ —
+            СТАТУС, 3 ЭТАЖ, ОФИС 315
+            <div
+              style={{
+                marginTop: 6,
+                fontWeight: 500,
+                opacity: 0.9,
+              }}
             >
-              Открыть канал
-            </Btn>
-          </section>
+              Будем рады видеть вас в гостях.
+            </div>
+          </div>
 
           {/* Кнопка На главную удалена */}
         </div>
@@ -368,13 +388,13 @@ const ContactsPage = () => {
           position: "relative",
           margin: "0 auto",
           width: "100%",
-          padding: "32px 0",
+          padding: "20px 0 32px",
         }}
       >
         <Map />
       </div>
 
-      <Footer />
+      <Footer showAddress={false} />
     </div>
   );
 };

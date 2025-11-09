@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 /**
  * FullWidthImageGallery - Галерея изображений на всю ширину экрана со свайпом и счетчиком
@@ -12,6 +12,10 @@ const FullWidthImageGallery = ({
   aspectRatio = "1280 / 960",
   altPrefix = "Изображение",
   isMobile = false,
+  onIndexChange,
+  counterFormatter,
+  counterStyle,
+  counterTextStyle,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const touchStartX = useRef(0);
@@ -42,9 +46,19 @@ const FullWidthImageGallery = ({
     touchEndX.current = 0;
   };
 
+  useEffect(() => {
+    if (typeof onIndexChange === "function") {
+      onIndexChange(currentImageIndex);
+    }
+  }, [currentImageIndex, onIndexChange]);
+
   if (!images || images.length === 0) {
     return null;
   }
+
+  const counterContent = counterFormatter
+    ? counterFormatter(currentImageIndex, images.length)
+    : `${currentImageIndex + 1}/${images.length}`;
 
   return (
     <div
@@ -72,6 +86,7 @@ const FullWidthImageGallery = ({
           justifyContent: "center",
           zIndex: 10,
           backdropFilter: "blur(8px)",
+          ...counterStyle,
         }}
       >
         <span
@@ -79,9 +94,10 @@ const FullWidthImageGallery = ({
             color: "#fff",
             fontSize: isMobile ? 12 : 14,
             fontWeight: 700,
+            ...counterTextStyle,
           }}
         >
-          {currentImageIndex + 1}/{images.length}
+          {counterContent}
         </span>
       </div>
 
