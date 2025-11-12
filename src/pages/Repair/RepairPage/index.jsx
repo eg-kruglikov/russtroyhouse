@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { projects } from "../../../data/portfolio";
 import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
 import { usePressEffect } from "../../../hooks/useSomething";
+import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
+import { useMetrikaActivity } from "../../../hooks/useMetrikaActivity";
+import { ymGoal } from "../../../utils/metrika";
 
 // Конфиг под типы ремонта
 const REPAIR_CONFIG = {
@@ -79,13 +82,29 @@ const styles = `
 export default function RepairPage() {
   const { type } = useParams();
   const cfg = REPAIR_CONFIG[type] ?? REPAIR_CONFIG.cosmetic;
-  const navigate = useNavigate();
+  const navigateWithMetrika = useNavigateWithMetrika();
   const press = usePressEffect();
+
+  useMetrikaActivity();
 
   const items = useMemo(
     () => projects.filter((p) => p.meta?.type === cfg.typeLabel),
     [cfg.typeLabel]
   );
+
+  const handleConsultationClick = () => {
+    ymGoal("repair_consult_click", { category: cfg.typeLabel });
+    navigateWithMetrika("/", {
+      scrollTo: "#contact",
+      hash: "#contact",
+    });
+  };
+
+  const handleProjectClick = (slug) => {
+    if (!slug) return;
+    ymGoal("repair_portfolio_click", { category: cfg.typeLabel, slug });
+    navigateWithMetrika(`/portfolio/${slug}`);
+  };
 
   return (
     <div className="repair-wrap">
@@ -100,7 +119,7 @@ export default function RepairPage() {
           <button
             {...press}
             className="repair-btn"
-            onClick={() => navigate("/#contact")}
+            onClick={handleConsultationClick}
             style={press.style}
           >
             Получить консультацию
@@ -140,7 +159,7 @@ export default function RepairPage() {
                 <button
                   {...press}
                   className="card__btn"
-                  onClick={() => navigate(`/portfolio/${p.slug}`)}
+                  onClick={() => handleProjectClick(p.slug)}
                   style={press.style}
                 >
                   Подробнее

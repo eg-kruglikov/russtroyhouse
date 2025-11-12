@@ -1,4 +1,5 @@
 :root {
+  --color-background-primary: #041723;
 }
 @keyframes fadeInUp {
   from {
@@ -18,8 +19,7 @@
 
 body {
   margin: 0;
-
-  background-color: #04141d;
+  background-color: var(--color-background-primary);
   overflow-x: visible !important;
   position: relative;
 }

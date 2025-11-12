@@ -1,10 +1,40 @@
 // src/pages/RepairCapital/Desktop.jsx
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
+import { useResponsiveShell } from "../../../hooks/useResponsiveShell";
+import { useNotBounceOnce } from "../../../hooks/useNotBounceOnce";
+import { usePressEffect } from "../../../hooks/useSomething";
+import { createMenuItems, NAV_GOALS_MAP } from "../../../utils/navigationConfig";
+import { ymGoal } from "../../../utils/metrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
+import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Desktop = () => {
   const navigate = useNavigateWithMetrika();
+  const press = usePressEffect();
+  const ensureNotBounce = useNotBounceOnce();
+  const {
+    contentWidth: shellContentWidth,
+    layoutPadding,
+    showSidebar,
+    sidebarWidth,
+  } = useResponsiveShell();
+  const sidebarGap = 0;
+  const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
+  const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
+
+  // Меню для sidebar
+  const menuItems = useMemo(() => createMenuItems({}), []);
+
+  const handleSidebarSelection = (item) => {
+    if (!item) return;
+    ensureNotBounce();
+    ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+    if (item.route) {
+      navigate(item.route);
+    }
+  };
 
   // Галерея фото для блока "Качество и практичность"
   const qualityImages = [
@@ -31,36 +61,6 @@ const Desktop = () => {
     "/images/photolibrary/portfolio/repair/3.jpg",
   ];
 
-
-  // ——— helpers ———
-  const Section = ({ children, style = {} }) => (
-    <div
-      style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "60px 80px",
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-
-  const H2 = ({ children, style = {} }) => (
-    <h2
-      style={{
-        color: "#FFD700",
-        fontSize: 36,
-        marginBottom: 24,
-        fontWeight: 800,
-        lineHeight: 1.15,
-        ...style,
-      }}
-    >
-      {children}
-    </h2>
-  );
-
   return (
     <div
       style={{
@@ -68,9 +68,150 @@ const Desktop = () => {
         fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 80,
-        background: "#06141d",
+        background: SECTION_BACKGROUND,
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          width: "100%",
+          boxSizing: "border-box",
+          gap: `${sidebarGap}px`,
+          paddingLeft: `${layoutPadding}px`,
+          paddingRight: `${layoutPadding}px`,
+          transform: showSidebar ? `translateX(${containerShift}px)` : undefined,
+        }}
+      >
+        {showSidebar && (
+          <aside
+            style={{
+              flex: `0 0 ${sidebarWidth}px`,
+              maxWidth: `${sidebarWidth}px`,
+              width: `${sidebarWidth}px`,
+              background: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.06)",
+              borderRadius: "0px",
+              padding: "28px 22px 28px",
+              position: "sticky",
+              top: "60px",
+              height: "auto",
+              maxHeight: "calc(100vh - 108px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "24px",
+              overflowY: "auto",
+              alignSelf: "flex-start",
+              WebkitBackdropFilter: "blur(12px)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "none",
+            }}
+          >
+            <nav
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "18px",
+              }}
+            >
+              {menuItems.map((item, index) => {
+                if (item.type === "submenu") {
+                  return (
+                    <div
+                      key={`${item.name}-${index}`}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
+                    >
+                      <button
+                        {...press}
+                        onClick={() => handleSidebarSelection(item)}
+                        style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          color: "rgba(255,255,255,0.92)",
+                          fontFamily: "Arial, sans-serif",
+                          fontWeight: 800,
+                          fontSize: "16px",
+                          letterSpacing: "0.6px",
+                          textTransform: "uppercase",
+                          padding: "4px 0",
+                          transition: "color 0.2s ease",
+                        }}
+                      >
+                        {item.name}
+                      </button>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          paddingLeft: "8px",
+                        }}
+                      >
+                        {item.submenu?.map((subItem, subIndex) => (
+                          <button
+                            {...press}
+                            key={`${subItem.name}-${subIndex}`}
+                            onClick={() => handleSidebarSelection(subItem)}
+                            style={{
+                              all: "unset",
+                              cursor: "pointer",
+                              color: "rgba(255,255,255,0.92)",
+                              fontFamily: "Arial, sans-serif",
+                              fontWeight: 600,
+                              fontSize: "16px",
+                              letterSpacing: "0.3px",
+                              textTransform: "none",
+                              lineHeight: 1.6,
+                              opacity: 0.94,
+                              transition: "color 0.2s ease, opacity 0.2s ease",
+                            }}
+                          >
+                            {subItem.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <button
+                    {...press}
+                    key={`${item.name}-${index}`}
+                    onClick={() => handleSidebarSelection(item)}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      color: "rgba(255,255,255,0.95)",
+                      fontFamily: "Arial, sans-serif",
+                      fontWeight: 800,
+                      fontSize: "16px",
+                      letterSpacing: "0.5px",
+                      textTransform: "uppercase",
+                      lineHeight: 1.5,
+                      padding: "2px 0",
+                      transition: "color 0.2s ease",
+                    }}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
+        <main
+          style={{
+            flex: `0 0 ${fallbackContentWidth}px`,
+            maxWidth: `${fallbackContentWidth}px`,
+            width: "100%",
+          }}
+        >
       {/* ——— Hero ——— */}
       <div
         style={{
@@ -81,7 +222,7 @@ const Desktop = () => {
         }}
       >
         <img
-          src="/images/photolibrary/portfolio/capital/2/8.jpg"
+          src="/images/repair/zelenyBor/1.webp"
           alt="Капитальный ремонт"
           style={{
             width: "100%",
@@ -119,9 +260,8 @@ const Desktop = () => {
       {/* Описание под изображением */}
       <div
         style={{
-          padding: "24px 24px 0",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "24px 0 0",
+          width: "100%",
         }}
       >
         <p
@@ -148,9 +288,8 @@ const Desktop = () => {
       {/* Блок "Эстетика и стиль" */}
       <div
         style={{
-          padding: "40px 24px 0",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "40px 0 0",
+          width: "100%",
         }}
       >
         <h2
@@ -176,9 +315,8 @@ const Desktop = () => {
       {/* Описание */}
       <div
         style={{
-          padding: "0 24px",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "0",
+          width: "100%",
         }}
       >
         <p
@@ -190,17 +328,16 @@ const Desktop = () => {
             textAlign: "left",
           }}
         >
-          Мы создаём уютные и современные интерьеры — под любые запросы и бюджеты.
-          Реализуем идеи, сочетающие комфорт, дизайн и практичность.
+          Мы создаём уютные и современные интерьеры — под любые запросы и
+          бюджеты. Реализуем идеи, сочетающие комфорт, дизайн и практичность.
         </p>
       </div>
 
       {/* Блок "От идеи до реализации" */}
       <div
         style={{
-          padding: "40px 24px 0",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "40px 0 0",
+          width: "100%",
         }}
       >
         <h2
@@ -215,7 +352,7 @@ const Desktop = () => {
           От идеи до реализации
         </h2>
       </div>
-      
+
       {/* Галерея фото на всю ширину экрана */}
       <FullWidthImageGallery
         images={etapyImages}
@@ -226,9 +363,8 @@ const Desktop = () => {
       {/* Описание */}
       <div
         style={{
-          padding: "0 24px",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "0",
+          width: "100%",
         }}
       >
         <p
@@ -249,9 +385,8 @@ const Desktop = () => {
       {/* Блок "Качество и практичность" (нижний) */}
       <div
         style={{
-          padding: "40px 24px 0",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "40px 0 0",
+          width: "100%",
         }}
       >
         <h2
@@ -277,9 +412,8 @@ const Desktop = () => {
       {/* Описание */}
       <div
         style={{
-          padding: "0 24px",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "0",
+          width: "100%",
         }}
       >
         <p
@@ -297,12 +431,16 @@ const Desktop = () => {
         </p>
       </div>
 
+      <FullWidthViewportVideo
+        videoSrc="/videos/1.mp4"
+        containerStyle={{ marginTop: 24 }}
+      />
+
       {/* Блок "Сроки и стоимость" */}
       <div
         style={{
-          padding: "40px 24px 0",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "40px 0 0",
+          width: "100%",
         }}
       >
         <h2
@@ -340,11 +478,24 @@ const Desktop = () => {
       {/* Описание */}
       <div
         style={{
-          padding: "0 24px",
-          maxWidth: 1200,
-          margin: "0 auto",
+          padding: "0",
+          width: "100%",
         }}
       >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 16,
+          }}
+        >
+          Средняя цена капитального ремонта — около 9 500 ₽ за м². Это ориентир:
+          финальная смета зависит от уровня материалов, инженерных решений и
+          объёма работ.
+        </p>
         <p
           style={{
             color: "#fff",
@@ -408,10 +559,11 @@ const Desktop = () => {
             textAlign: "left",
           }}
         >
-          Мы строго соблюдаем договорённости — работаем чётко по срокам и этапам.
+          Мы держим слово и остаёмся ответственными за результат.
         </p>
       </div>
-
+        </main>
+      </div>
     </div>
   );
 };

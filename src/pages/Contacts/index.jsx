@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import QuestionModal from "../../components/windows/FeedbackModal";
 import Map from "../../components/blocks/Map";
 import Footer from "../../components/blocks/Footer";
 import { usePressEffect } from "../../hooks/useSomething";
 import { ymGoal } from "../../utils/metrika";
 import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
+import { useResponsiveShell } from "../../hooks/useResponsiveShell";
+import { useNotBounceOnce } from "../../hooks/useNotBounceOnce";
+import { useNavigateWithMetrika } from "../../hooks/useNavigateWithMetrika";
+import { createMenuItems, NAV_GOALS_MAP } from "../../utils/navigationConfig";
 import officeMain from "../../assets/office_main.jpg";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const WA_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
   "Здравствуйте! Хочу обсудить ремонт."
@@ -14,7 +19,7 @@ const WA_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
 const TG_CHANNEL = "https://t.me/russtroyhouse";
 
 // ====== СТИЛИ ======
-const deep = "#04141D";
+const deep = SECTION_BACKGROUND;
 const yellow = "#FFD700";
 const whiteSoft = "rgba(255,255,255,.9)";
 const borderSoft = "1px solid rgba(255,255,255,.10)";
@@ -28,8 +33,6 @@ const Page = {
 };
 
 // удалён локальный Header — используется глобальный Header из приложения
-
-const Main = { maxWidth: 980, margin: "0 auto", padding: "20px" };
 const H1 = {
   fontSize: 28,
   textAlign: "center",
@@ -101,10 +104,23 @@ const IconPhone = (
 
 const ContactsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [numberDisplayed, setNumberDisplayed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [questioModalOpen, setQuestioModalOpen] = useState(false);
+  const [activeScrollKey, setActiveScrollKey] = useState(null);
   const press = usePressEffect();
+  const ensureNotBounce = useNotBounceOnce();
+  const navigateWithMetrika = useNavigateWithMetrika();
+  const {
+    contentWidth: shellContentWidth,
+    layoutPadding,
+    showSidebar,
+    sidebarWidth,
+  } = useResponsiveShell();
+  const sidebarGap = 0;
+  const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
+  const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
 
   // Отслеживаем активность пользователя (скролл, время на странице)
   useMetrikaActivity();
@@ -171,6 +187,18 @@ const ContactsPage = () => {
       setTimeout(() => cb?.(), 150); // задержка, чтобы успел отработать reachGoal
     };
 
+  // Меню для sidebar
+  const menuItems = useMemo(() => createMenuItems({}), []);
+
+  const handleSidebarSelection = (item) => {
+    if (!item) return;
+    ensureNotBounce();
+    ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+    if (item.route) {
+      navigateWithMetrika(item.route);
+    }
+  };
+
   return (
     <div style={Page}>
       <QuestionModal
@@ -182,8 +210,164 @@ const ContactsPage = () => {
       {/* локальная шапка удалена */}
 
       {/* Main */}
-      <div style={Main}>
-        <div style={Cards}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          width: "100%",
+          boxSizing: "border-box",
+          gap: `${sidebarGap}px`,
+          paddingLeft: `${layoutPadding}px`,
+          paddingRight: `${layoutPadding}px`,
+          transform: showSidebar ? `translateX(${containerShift}px)` : undefined,
+        }}
+      >
+        {showSidebar && (
+          <aside
+            style={{
+              flex: `0 0 ${sidebarWidth}px`,
+              maxWidth: `${sidebarWidth}px`,
+              width: `${sidebarWidth}px`,
+              background: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.06)",
+              borderRadius: "0px",
+              padding: "28px 22px 28px",
+              position: "sticky",
+              top: "60px",
+              height: "auto",
+              maxHeight: "calc(100vh - 108px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "24px",
+              overflowY: "auto",
+              alignSelf: "flex-start",
+              WebkitBackdropFilter: "blur(12px)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "none",
+            }}
+          >
+            <nav
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "18px",
+              }}
+            >
+              {menuItems.map((item, index) => {
+                if (item.type === "submenu") {
+                  const isSubmenuActive = item.scrollKey === activeScrollKey;
+
+                  return (
+                    <div
+                      key={`${item.name}-${index}`}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
+                    >
+                      <button
+                        {...press}
+                        onClick={() => handleSidebarSelection(item)}
+                        style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          color: isSubmenuActive
+                            ? "#FFD700"
+                            : "rgba(255,255,255,0.92)",
+                          fontFamily: "Arial, sans-serif",
+                          fontWeight: 800,
+                          fontSize: "16px",
+                          letterSpacing: "0.6px",
+                          textTransform: "uppercase",
+                          padding: "4px 0",
+                          transition: "color 0.2s ease",
+                        }}
+                      >
+                        {item.name}
+                      </button>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          paddingLeft: "8px",
+                        }}
+                      >
+                        {item.submenu?.map((subItem, subIndex) => {
+                          const isSubItemActive =
+                            subItem.scrollKey === activeScrollKey;
+                          return (
+                            <button
+                              {...press}
+                              key={`${subItem.name}-${subIndex}`}
+                              onClick={() => handleSidebarSelection(subItem)}
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                color: isSubItemActive
+                                  ? "#FFD700"
+                                  : "rgba(255,255,255,0.92)",
+                                fontFamily: "Arial, sans-serif",
+                                fontWeight: 600,
+                                fontSize: "16px",
+                                letterSpacing: "0.3px",
+                                textTransform: "none",
+                                lineHeight: 1.6,
+                                opacity: isSubItemActive ? 1 : 0.94,
+                                transition:
+                                  "color 0.2s ease, opacity 0.2s ease",
+                              }}
+                            >
+                              {subItem.name}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+
+                const isItemActive = item.scrollKey === activeScrollKey;
+
+                return (
+                  <button
+                    {...press}
+                    key={`${item.name}-${index}`}
+                    onClick={() => handleSidebarSelection(item)}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      color: isItemActive
+                        ? "#FFD700"
+                        : "rgba(255,255,255,0.95)",
+                      fontFamily: "Arial, sans-serif",
+                      fontWeight: 800,
+                      fontSize: "16px",
+                      letterSpacing: "0.5px",
+                      textTransform: "uppercase",
+                      lineHeight: 1.5,
+                      padding: "2px 0",
+                      transition: "color 0.2s ease",
+                    }}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
+        <main
+          style={{
+            flex: `0 0 ${fallbackContentWidth}px`,
+            maxWidth: `${fallbackContentWidth}px`,
+            width: "100%",
+            padding: "20px 0",
+          }}
+        >
+          <div style={Cards}>
           {/* Акция */}
           <section style={{ ...Card }}>
             <div
@@ -340,9 +524,9 @@ const ContactsPage = () => {
           <div
             style={{
               marginTop: 28,
-              marginLeft: "calc(-50vw + 50%)",
-              width: "100vw",
+              width: "100%",
               overflow: "hidden",
+              borderRadius: "0px",
             }}
           >
             <img
@@ -380,18 +564,19 @@ const ContactsPage = () => {
           </div>
 
           {/* Кнопка На главную удалена */}
-        </div>
-      </div>
-      {/* Карта и контакты */}
-      <div
-        style={{
-          position: "relative",
-          margin: "0 auto",
-          width: "100%",
-          padding: "20px 0 32px",
-        }}
-      >
-        <Map />
+          </div>
+
+          {/* Карта и контакты */}
+          <div
+            style={{
+              position: "relative",
+              margin: "28px 0 32px",
+              width: "100%",
+            }}
+          >
+            <Map />
+          </div>
+        </main>
       </div>
 
       <Footer showAddress={false} />

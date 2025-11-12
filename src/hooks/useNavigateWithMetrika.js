@@ -1,9 +1,9 @@
 // src/hooks/useNavigateWithMetrika.js
 import { useNavigate } from "react-router-dom";
-import { ymNavigate } from "../utils/metrika";
 
 /**
- * Универсальный navigate с отправкой событий в Метрику.
+ * Универсальный navigate для переходов по сайту.
+ * Отправка событий в Метрику происходит автоматически в App.jsx через useEffect на location.
  *
  * Использование:
  *  navigateWithMetrika("/contacts")
@@ -14,26 +14,37 @@ export function useNavigateWithMetrika() {
   const navigate = useNavigate();
 
   return (to = "/", opts = {}) => {
-    // Подготовим путь для хита Метрики
+    const { hash, replace, state, scrollTo } = opts || {};
+    const normalizedHash =
+      typeof hash === "string" && hash.length > 0
+        ? hash.startsWith("#")
+          ? hash
+          : `#${hash}`
+        : "";
+
+    // Подготовим путь для навигации
     const page =
       typeof to === "string" ? (to.startsWith("/") ? to : `/${to}`) : "/";
 
-    // Используем централизованную функцию метрики
-    ymNavigate(page);
-
     // Если хотим передать state (например, scrollTo), пробрасываем его
     const navOpts =
-      opts && (opts.scrollTo || opts.state || opts.replace)
+      scrollTo || state || replace
         ? {
-            ...(opts.replace ? { replace: true } : {}),
+            ...(replace ? { replace: true } : {}),
             state: {
-              ...(opts.state || {}),
-              ...(opts.scrollTo ? { scrollTo: opts.scrollTo } : {}),
+              ...(state || {}),
+              ...(scrollTo ? { scrollTo } : {}),
             },
           }
         : undefined;
 
-    // маленькая задержка, чтобы Метрика успела зафиксировать хит
-    setTimeout(() => navigate(page, navOpts), 100);
+    // Выполняем навигацию (метрика сработает автоматически через useEffect в App.jsx)
+    navigate(page, navOpts);
+
+    if (normalizedHash) {
+      requestAnimationFrame(() => {
+        window.history.replaceState(null, "", `${page}${normalizedHash}`);
+      });
+    }
   };
 }

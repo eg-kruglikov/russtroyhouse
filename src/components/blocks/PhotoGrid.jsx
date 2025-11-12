@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FullWidthImageGallery from "./FullWidthImageGallery";
 import { ymNavigate } from "../../utils/metrika";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const images = [
   {
@@ -47,12 +48,13 @@ const PhotoGrid = ({ isMobile }) => {
 
   const galleryWrapperStyle = {
     position: "relative",
-    width: "100vw",
-    marginLeft: "calc(-50vw + 50%)",
+    width: isMobile ? "100vw" : "100%",
+    marginLeft: isMobile ? "calc(-50vw + 50%)" : 0,
+    maxWidth: "100%",
   };
 
   const contentWrapperStyle = {
-    backgroundColor: "#04141D",
+    backgroundColor: SECTION_BACKGROUND,
     padding: isMobile ? "14px 20px 18px" : "20px 24px 24px",
     display: "flex",
     flexDirection: "column",

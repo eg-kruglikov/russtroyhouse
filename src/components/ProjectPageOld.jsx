@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import QuestionModal from "./windows/QuestionModal";
+import { SECTION_BACKGROUND } from "../utils/spacing";
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -38,7 +39,7 @@ const ProjectPage = () => {
       style={{
         width: "100vw", // занимает всю ширину экрана
         minHeight: "100vh",
-        backgroundColor: "#04141D",
+        backgroundColor: SECTION_BACKGROUND,
         display: "flex",
         flexDirection: "column",
       }}

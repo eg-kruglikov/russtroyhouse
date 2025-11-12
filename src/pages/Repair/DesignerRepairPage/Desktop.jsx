@@ -1,135 +1,81 @@
-// src/pages/RepairDesigner/Desktop.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useMemo } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
-import { projects } from "../../../data/portfolio";
-import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
-import { handleImageError } from "../../../utils/imageFallback";
+import { useResponsiveShell } from "../../../hooks/useResponsiveShell";
+import { useNotBounceOnce } from "../../../hooks/useNotBounceOnce";
 import { usePressEffect } from "../../../hooks/useSomething";
+import { createMenuItems, NAV_GOALS_MAP } from "../../../utils/navigationConfig";
+import { ymGoal } from "../../../utils/metrika";
+import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
+import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Desktop = () => {
   const navigate = useNavigateWithMetrika();
   const press = usePressEffect();
+  const ensureNotBounce = useNotBounceOnce();
+  const {
+    contentWidth: shellContentWidth,
+    layoutPadding,
+    showSidebar,
+    sidebarWidth,
+  } = useResponsiveShell();
+  const sidebarGap = 0;
+  const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
+  const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
 
-  // ——— helpers ———
-  const Section = ({ children, style = {} }) => (
-    <div
-      style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "60px 80px",
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
+  const menuItems = useMemo(() => createMenuItems({}), []);
 
-  const H2 = ({ children, style = {} }) => (
+  const handleSidebarSelection = (item) => {
+    if (!item) return;
+    ensureNotBounce();
+    ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+    if (item.route) {
+      navigate(item.route);
+    }
+  };
+
+  const conceptImages = [
+    "/images/photolibrary/portfolio/designer/1/1.jpg",
+    "/images/photolibrary/portfolio/designer/1/2.jpg",
+
+    "/images/photolibrary/portfolio/designer/1/4.jpg",
+    "/images/photolibrary/portfolio/designer/1/5.jpg",
+  ];
+
+  const processImages = [
+    "/images/photolibrary/portfolio/designer/2/1.JPG",
+    "/images/photolibrary/portfolio/designer/2/2.JPG",
+    "/images/photolibrary/portfolio/designer/2/3.JPG",
+    "/images/photolibrary/portfolio/designer/2/4.JPG",
+    "/images/photolibrary/portfolio/designer/2/5.JPG",
+    "/images/photolibrary/portfolio/designer/2/6.JPG",
+  ];
+
+  const detailImages = [
+    "/images/photolibrary/portfolio/designer/1/5.jpg",
+    "/images/photolibrary/portfolio/designer/1/8.jpg",
+    "/images/photolibrary/portfolio/designer/1/9.jpg",
+  ];
+
+  const qualityPracticalImages = [
+    "/images/photolibrary/portfolio/repair/1.jpg",
+    "/images/photolibrary/portfolio/repair/2.jpg",
+    "/images/photolibrary/portfolio/repair/3.jpg",
+  ];
+
+  const Title = ({ children }) => (
     <h2
       style={{
-        color: "#FFD700",
-        fontSize: 36,
+        color: "#fff",
+        fontSize: 44,
         marginBottom: 24,
         fontWeight: 800,
-        lineHeight: 1.15,
-        ...style,
+        textAlign: "left",
       }}
     >
       {children}
     </h2>
   );
-
-  const PriceRow = ({ text, price }) => (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr auto",
-        alignItems: "center",
-        gap: 24,
-        padding: "18px 0",
-        borderBottom: "1px solid rgba(255,255,255,.12)",
-      }}
-    >
-      <div style={{ fontSize: 20, lineHeight: 1.6 }}>{text}</div>
-      <div style={{ color: "#FFD700", fontWeight: 800, fontSize: 20 }}>
-        {price}
-      </div>
-    </div>
-  );
-
-  const Chip = ({ children }) => (
-    <span
-      style={{
-        display: "inline-block",
-        background: "rgba(255,215,0,.12)",
-        color: "#FFD700",
-        border: "1px solid rgba(255,215,0,.35)",
-        padding: "8px 12px",
-        borderRadius: 999,
-        fontSize: 14,
-        fontWeight: 700,
-      }}
-    >
-      {children}
-    </span>
-  );
-
-  // ——— данные ———
-  const designerItems = projects
-    .filter((p) => p.meta?.type === "Дизайнерский")
-    .slice(0, 2);
-
-  const steps = [
-    "Бриф и обмеры",
-    "Планировки и концепция",
-    "3D-визуализации и материалы",
-    "Рабочие чертежи и смета",
-    "Реализация и авторский надзор",
-    "Сдача объекта и гарантия",
-  ];
-
-  const pricesDesign = [
-    {
-      text: "Обмерный план, ТЗ, планировочные решения",
-      price: "от 800 ₽/м²",
-    },
-    {
-      text: "Мудборды, подбор стилистики и материалов",
-      price: "от 600 ₽/м²",
-    },
-    { text: "3D-визуализации основных помещений", price: "от 900 ₽/м²" },
-    {
-      text: "Рабочая документация (чертежи, узлы, ведомости)",
-      price: "от 700 ₽/м²",
-    },
-    {
-      text: "Авторский надзор (визиты, правки, контроль)",
-      price: "от 15 000 ₽/мес",
-    },
-    {
-      text: "Комплектация (шоурумы, спецификации, поставки)",
-      price: "по запросу",
-    },
-  ];
-
-  const pricesBuild = [
-    { text: "Подготовка: штукатурка/стяжка по маякам", price: "от 650 ₽/м²" },
-    { text: "Сложные потолочные решения, ниши, карнизы", price: "по запросу" },
-    {
-      text: "Электрика под проект (световые сценарии)",
-      price: "от 950 ₽/точка",
-    },
-    {
-      text: "Плиточные работы (форматы 60×120 и крупнее)",
-      price: "от 1 400 ₽/м²",
-    },
-    { text: "Покраска, декоративные покрытия, панели", price: "от 750 ₽/м²" },
-    {
-      text: "Монтаж дверей, плинтусов, встроенной мебели",
-      price: "по запросу",
-    },
-  ];
 
   return (
     <div
@@ -138,29 +84,170 @@ const Desktop = () => {
         fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 80,
-        background: "#06141d",
+        background: SECTION_BACKGROUND,
       }}
     >
-      {/* ——— Hero ——— */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          width: "100%",
+          boxSizing: "border-box",
+          gap: `${sidebarGap}px`,
+          paddingLeft: `${layoutPadding}px`,
+          paddingRight: `${layoutPadding}px`,
+          transform: showSidebar ? `translateX(${containerShift}px)` : undefined,
+        }}
+      >
+        {showSidebar && (
+          <aside
+            style={{
+              flex: `0 0 ${sidebarWidth}px`,
+              maxWidth: `${sidebarWidth}px`,
+              width: `${sidebarWidth}px`,
+              background: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.06)",
+              borderRadius: "0px",
+              padding: "28px 22px 28px",
+              position: "sticky",
+              top: "60px",
+              height: "auto",
+              maxHeight: "calc(100vh - 108px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "24px",
+              overflowY: "auto",
+              alignSelf: "flex-start",
+              WebkitBackdropFilter: "blur(12px)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "none",
+            }}
+          >
+            <nav
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "18px",
+              }}
+            >
+              {menuItems.map((item, index) => {
+                if (item.type === "submenu") {
+                  return (
+                    <div
+                      key={`${item.name}-${index}`}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
+                      }}
+                    >
+                      <button
+                        {...press}
+                        onClick={() => handleSidebarSelection(item)}
+                        style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          color: "rgba(255,255,255,0.92)",
+                          fontFamily: "Arial, sans-serif",
+                          fontWeight: 800,
+                          fontSize: "16px",
+                          letterSpacing: "0.6px",
+                          textTransform: "uppercase",
+                          padding: "4px 0",
+                          transition: "color 0.2s ease",
+                        }}
+                      >
+                        {item.name}
+                      </button>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          paddingLeft: "8px",
+                        }}
+                      >
+                        {item.submenu?.map((subItem, subIndex) => (
+                          <button
+                            {...press}
+                            key={`${subItem.name}-${subIndex}`}
+                            onClick={() => handleSidebarSelection(subItem)}
+                            style={{
+                              all: "unset",
+                              cursor: "pointer",
+                              color: "rgba(255,255,255,0.92)",
+                              fontFamily: "Arial, sans-serif",
+                              fontWeight: 600,
+                              fontSize: "16px",
+                              letterSpacing: "0.3px",
+                              textTransform: "none",
+                              lineHeight: 1.6,
+                              opacity: 0.94,
+                              transition: "color 0.2s ease, opacity 0.2s ease",
+                            }}
+                          >
+                            {subItem.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <button
+                    {...press}
+                    key={`${item.name}-${index}`}
+                    onClick={() => handleSidebarSelection(item)}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      color: "rgba(255,255,255,0.95)",
+                      fontFamily: "Arial, sans-serif",
+                      fontWeight: 800,
+                      fontSize: "16px",
+                      letterSpacing: "0.5px",
+                      textTransform: "uppercase",
+                      lineHeight: 1.5,
+                      padding: "2px 0",
+                      transition: "color 0.2s ease",
+                    }}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
+        <main
+          style={{
+            flex: `0 0 ${fallbackContentWidth}px`,
+            maxWidth: `${fallbackContentWidth}px`,
+            width: "100%",
+          }}
+        >
+      {/* Hero */}
       <div
         style={{
           position: "relative",
           width: "100%",
           height: 520,
           overflow: "hidden",
-          borderBottom: "3px solid #FFD700",
         }}
       >
         <img
-          src="/images/repair/designer/hero.jpg"
+          src="/images/repair/zelenyBor/1.webp"
           alt="Дизайнерский ремонт"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            filter: "brightness(.8)",
+            filter: "brightness(.9)",
           }}
         />
+
         <div
           style={{
             position: "absolute",
@@ -176,600 +263,307 @@ const Desktop = () => {
               margin: 0,
               color: "#fff",
               textShadow: "0 0 14px rgba(0,0,0,.75)",
-              fontWeight: 900,
+              fontWeight: 800,
               letterSpacing: 0.4,
             }}
           >
             Дизайнерский ремонт
           </h1>
-          {/* без кнопки */}
         </div>
       </div>
 
-      {/* ——— Премиальный оффер ——— */}
+      {/* Описание под изображением */}
       <div
         style={{
-          background:
-            "linear-gradient(135deg, rgba(255,215,0,.12) 0%, rgba(10,26,38,1) 45%, rgba(10,26,38,1) 55%, rgba(255,215,0,.08) 100%)",
-          border: "1px solid rgba(255,215,0,.18)",
-          borderRadius: 20,
-          boxShadow:
-            "0 30px 60px rgba(0,0,0,.45), inset 0 0 120px rgba(255,215,0,.06)",
-          margin: 20,
+          padding: "24px 0 0",
+          width: "100%",
         }}
       >
-        <div
+        <p
           style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "48px 56px",
-            display: "grid",
-            gridTemplateColumns: "1.25fr .95fr",
-            gap: 36,
-            alignItems: "center",
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            whiteSpace: "pre-line",
           }}
         >
-          {/* Левая колонка */}
-          <div>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "8px 14px",
-                borderRadius: 999,
-                background: "rgba(255,215,0,.12)",
-                border: "1px solid rgba(255,215,0,.35)",
-                color: "#FFD700",
-                fontWeight: 800,
-                fontSize: 14,
-                letterSpacing: 0.3,
-                marginBottom: 14,
-                boxShadow: "0 6px 16px rgba(255,215,0,.18)",
-              }}
-            >
-              Дизайн-проект + реализация «под ключ»
-            </div>
-
-            <h3
-              style={{
-                margin: "6px 0 10px",
-                fontSize: 36,
-                lineHeight: 1.2,
-                fontWeight: 900,
-                color: "#fff",
-                textShadow: "0 2px 14px rgba(0,0,0,.35)",
-              }}
-            >
-              Авторская концепция, премиальные материалы, идеальная реализация
-            </h3>
-
-            <p
-              style={{
-                margin: "0 0 24px",
-                fontSize: 19,
-                lineHeight: 1.7,
-                color: "rgba(255,255,255,.95)",
-                maxWidth: 720,
-              }}
-            >
-              🎨 Создадим интерьер вашей мечты с 3D-визуализацией. Увидите
-              результат ещё до начала работ — никаких сюрпризов!
-            </p>
-
-            {/* Ключевые преимущества - компактными карточками */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 16,
-                marginTop: 24,
-              }}
-            >
-              {[
-                {
-                  icon: "📐",
-                  title: "3D-визуализация",
-                  desc: "Покажем будущий интерьер",
-                },
-                {
-                  icon: "🎯",
-                  title: "Авторский надзор",
-                  desc: "Контролируем каждый этап",
-                },
-                {
-                  icon: "💎",
-                  title: "Премиум-материалы",
-                  desc: "Скидки у поставщиков",
-                },
-                {
-                  icon: "⚡",
-                  title: "Смарт-решения",
-                  desc: "Умный дом и освещение",
-                },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02))",
-                    border: "1px solid rgba(255,215,0,.2)",
-                    borderRadius: 12,
-                    padding: "16px 18px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                  }}
-                >
-                  <span style={{ fontSize: 28 }}>{item.icon}</span>
-                  <div>
-                    <div
-                      style={{
-                        color: "#FFD700",
-                        fontWeight: 700,
-                        fontSize: 16,
-                      }}
-                    >
-                      {item.title}
-                    </div>
-                    <div
-                      style={{
-                        color: "rgba(255,255,255,.7)",
-                        fontSize: 14,
-                        marginTop: 4,
-                      }}
-                    >
-                      {item.desc}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Правая колонка — карточка CTA */}
-          <div
-            style={{
-              background: "#0a1a26",
-              border: "1px solid rgba(255,255,255,.06)",
-              borderRadius: 16,
-              padding: 24,
-              boxShadow: "0 16px 48px rgba(0,0,0,.45)",
-            }}
-          >
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
-                color: "#0a1a26",
-                fontWeight: 900,
-                fontSize: 14,
-                padding: "10px 16px",
-                borderRadius: 12,
-                boxShadow: "0 8px 20px rgba(255,215,0,.4)",
-                marginBottom: 18,
-              }}
-            >
-              ✨ Бесплатный бонус
-            </div>
-
-            <div
-              style={{
-                fontSize: 26,
-                fontWeight: 900,
-                marginBottom: 12,
-                lineHeight: 1.2,
-              }}
-            >
-              Узнайте стоимость вашего проекта
-            </div>
-            <div
-              style={{
-                color: "rgba(255,255,255,.9)",
-                lineHeight: 1.8,
-                marginBottom: 20,
-                fontSize: 16,
-              }}
-            >
-              Выезд дизайнера и расчёт сметы — бесплатно! Покажем портфолио,
-              обсудим ваши идеи и составим план.
-            </div>
-
-            <div style={{ display: "grid", rowGap: 10, marginBottom: 18 }}>
-              {[
-                "Персональный дизайнер-куратор",
-                "Чёткие спецификации и смета",
-                "Фото/видео-отчёты по этапам",
-              ].map((t) => (
-                <div
-                  key={t}
-                  style={{ display: "flex", gap: 10, alignItems: "center" }}
-                >
-                  <span
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "#FFD700",
-                    }}
-                  />
-                  <span>{t}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              {...press}
-              onClick={() => navigate("/contacts")}
-              style={{
-                ...press.style,
-                background: "linear-gradient(135deg, #FFD700 0%, #FFC700 100%)",
-                color: "#0a1a26",
-                border: "none",
-                borderRadius: 16,
-                padding: "18px 32px",
-                fontWeight: 900,
-                fontSize: 18,
-                cursor: "pointer",
-                width: "100%",
-                boxShadow: "0 16px 40px rgba(255,215,0,.4)",
-              }}
-            >
-              🎁 Получить бесплатную консультацию
-            </button>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 14,
-                marginTop: 14,
-                flexWrap: "wrap",
-                color: "rgba(255,255,255,.7)",
-                fontSize: 13,
-              }}
-            >
-              <span>• 3D-подарок •</span>
-              <span>• Авторский надзор •</span>
-              <span>• Гарантия •</span>
-            </div>
-          </div>
-        </div>
+          {`Дизайнерский ремонт — это синергия продуманной концепции и безупречной реализации.
+Мы создаём проект с учётом сценариев жизни, подбираем материалы и пускаем в работу команду мастеров, привыкших к премиальным интерьерам.
+Каждый этап контролирует автор проекта: от визуализаций до финальной расстановки света и мебели.`}
+        </p>
       </div>
 
-      {/* ——— Этапы ——— */}
-      <Section style={{ paddingTop: 40 }}>
-        <H2>Как мы работаем</H2>
+      {/* Концепция и атмосфера */}
+      <div
+        style={{
+          padding: "40px 0 0",
+          width: "100%",
+        }}
+      >
+        <Title>Концепция и атмосфера</Title>
+      </div>
 
-        <div
+      <FullWidthImageGallery
+        images={conceptImages}
+        altPrefix="Концепция дизайнерского ремонта"
+        isMobile={false}
+      />
+
+      <div
+        style={{
+          padding: "0",
+          width: "100%",
+        }}
+      >
+        <p
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 48,
-            alignItems: "start",
-          }}
-        >
-          {/* Левая колонка — таймлайн */}
-          <div style={{ position: "relative", marginTop: 12 }}>
-            <div
-              style={{
-                position: "absolute",
-                left: 80,
-                top: 4,
-                bottom: 4,
-                width: 2,
-                background: "rgba(255,215,0,.55)",
-                transform: "translateX(-1px)",
-              }}
-            />
-            <div style={{ display: "grid", rowGap: 22 }}>
-              {steps.map((t, i) => (
-                <div
-                  key={t}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "160px 1fr",
-                    alignItems: "center",
-                    columnGap: 20,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 160,
-                      height: 36,
-                      display: "grid",
-                      placeItems: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: "#FFD700",
-                        color: "#0a1a26",
-                        display: "grid",
-                        placeItems: "center",
-                        fontWeight: 900,
-                        fontSize: 16,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {i + 1}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 22, fontWeight: 700 }}>{t}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Правая колонка — блок цен (дизайн-проект) */}
-          <div>
-            {/* Блок о регионе работы */}
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <p
-                style={{
-                  color: "#ffffff",
-                  fontSize: 18,
-                  fontWeight: 500,
-                  margin: 0,
-                  opacity: 0.9,
-                }}
-              >
-                Мы работаем в Москве и Московской области
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "#0a1a26",
-                borderRadius: 16,
-                padding: "24px 28px",
-                boxShadow: "0 8px 28px rgba(0,0,0,.35)",
-                border: "1px solid rgba(255,255,255,.06)",
-                marginBottom: 24,
-              }}
-            >
-              <div
-                style={{
-                  color: "#FFD700",
-                  fontSize: 20,
-                  fontWeight: 800,
-                  marginBottom: 12,
-                }}
-              >
-                Дизайн-проект (ориентировочно)
-              </div>
-              {pricesDesign.map((p) => (
-                <PriceRow key={p.text} text={p.text} price={p.price} />
-              ))}
-            </div>
-
-            <div
-              style={{
-                background: "#0a1a26",
-                borderRadius: 16,
-                padding: "24px 28px",
-                boxShadow: "0 8px 28px rgba(0,0,0,.35)",
-                border: "1px solid rgba(255,255,255,.06)",
-              }}
-            >
-              <div
-                style={{
-                  color: "#FFD700",
-                  fontSize: 20,
-                  fontWeight: 800,
-                  marginBottom: 12,
-                }}
-              >
-                Реализация по проекту (основные позиции)
-              </div>
-              {pricesBuild.map((p) => (
-                <PriceRow key={p.text} text={p.text} price={p.price} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* ——— Наши работы — 2 карточки (Дизайнерский) ——— */}
-      <Section style={{ paddingTop: 10 }}>
-        <H2 style={{ textAlign: "center" }}>
-          Наши работы — дизайнерский ремонт
-        </H2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 24,
-          }}
-        >
-          {designerItems.map((p) => (
-            <Link
-              key={p.slug}
-              to={`/portfolio/${p.slug}`}
-              style={{ textDecoration: "none" }}
-            >
-              <div
-                style={{
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  background: "#0f2431",
-                  boxShadow: "0 10px 28px rgba(0,0,0,.25)",
-                  cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                }}
-              >
-                {/* Картинка */}
-                <img
-                  src={p.images?.[0] || FALLBACK_IMAGE}
-                  data-original-src={p.images?.[0] || ""}
-                  alt={p.title}
-                  loading="lazy"
-                  onError={handleImageError}
-                  style={{
-                    width: "100%",
-                    height: 340,
-                    objectFit: "cover",
-                    display: "block",
-                  }}
-                />
-
-                {/* Текстовый блок */}
-                <div
-                  style={{
-                    padding: 18,
-                    borderTop: "1px solid rgba(255,255,255,.08)",
-                    flexGrow: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  {/* Заголовок + бейдж площади */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginBottom: 6,
-                    }}
-                  >
-                    <div
-                      style={{
-                        color: "#fff",
-                        fontSize: 20,
-                        fontWeight: 800,
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {p.title.replace(/—.+/, "").trim()}
-                    </div>
-                    {p.meta?.area && (
-                      <span
-                        style={{
-                          background: "rgba(255,215,0,.15)",
-                          color: "#FFD700",
-                          fontWeight: 800,
-                          fontSize: 14,
-                          padding: "4px 10px",
-                          borderRadius: 12,
-                          border: "1px solid rgba(255,215,0,.35)",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {p.meta.area}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Адрес */}
-                  {p.subtitle && (
-                    <div
-                      style={{
-                        fontSize: 15,
-                        color: "rgba(255,255,255,.8)",
-                        marginBottom: 14,
-                      }}
-                    >
-                      {p.subtitle}
-                    </div>
-                  )}
-
-                  {/* Кнопка */}
-                  <div
-                    style={{
-                      marginTop: "auto",
-                      paddingTop: "12px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: "#FFD700",
-                        fontSize: 17,
-                        fontWeight: 700,
-                        textDecoration: "none",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.gap = "12px";
-                        e.currentTarget.style.opacity = "0.8";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.gap = "8px";
-                        e.currentTarget.style.opacity = "1";
-                      }}
-                    >
-                      Подробнее
-                      <span style={{ fontSize: "20px" }}>→</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </Section>
-
-      {/* === Back to home (Desktop) === */}
-      <div style={{ marginTop: "60px", textAlign: "center" }}>
-        <button
-          {...press}
-          onClick={() => navigate("/")}
-          aria-label="На главную"
-          style={{
-            ...press.style,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 12,
-            padding: "16px 36px",
-            background: "transparent",
-            border: "2px solid #fff",
             color: "#fff",
-            borderRadius: 999,
-            fontWeight: 800,
             fontSize: 18,
-            cursor: "pointer",
-            boxShadow: "0 6px 18px rgba(0,0,0,.25)",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = "#fff";
-            e.currentTarget.style.color = "#0a1a26";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.color = "#fff";
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
           }}
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            style={{ display: "block" }}
+          Погружаемся в стиль, подбираем текстуры, световые сценарии и создаём
+          гармоничную атмосферу под ваш образ жизни.
+        </p>
+      </div>
+
+      {/* Детали */}
+      <div
+        style={{
+          padding: "40px 0 0",
+          width: "100%",
+        }}
+      >
+        <Title>Детали и контроль качества</Title>
+      </div>
+
+      <FullWidthImageGallery
+        images={detailImages}
+        altPrefix="Детали дизайнерского ремонта"
+        isMobile={false}
+        aspectRatio="auto"
+      />
+
+      <div
+        style={{
+          padding: "0",
+          width: "100%",
+        }}
+      >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+          }}
+        >
+          Следим за стыками, светом и мебелью, проверяем каждую позицию по
+          спецификациям и передаём объект в состоянии «как на визуализациях».
+        </p>
+      </div>
+
+      {/* Процесс */}
+      <div
+        style={{
+          padding: "40px 0 0",
+          width: "100%",
+        }}
+      >
+        <Title>От идеи до реализации</Title>
+      </div>
+
+      <FullWidthImageGallery
+        images={processImages}
+        altPrefix="Этапы дизайнерского ремонта"
+        isMobile={false}
+      />
+
+      <div
+        style={{
+          padding: "0",
+          width: "100%",
+        }}
+      >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+          }}
+        >
+          Проводим обмеры и 3D-визуализации, согласовываем рабочие чертежи,
+          контролируем строителей и ведём авторский надзор до сдачи объекта.
+        </p>
+      </div>
+
+      {/* Качество и практичность */}
+      <div
+        style={{
+          padding: "40px 0 0",
+          width: "100%",
+        }}
+      >
+        <Title>Качество и практичность</Title>
+      </div>
+
+      <FullWidthImageGallery
+        images={qualityPracticalImages}
+        altPrefix="Качество и практичность"
+        isMobile={false}
+      />
+
+      <div
+        style={{
+          padding: "0",
+          width: "100%",
+        }}
+      >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+          }}
+        >
+          Мы делаем качественно и рационально: подбираем материалы с оптимальным
+          соотношением цена/качество, чтобы вы не переплачивали — и получали
+          ремонт на десятилетия.
+        </p>
+      </div>
+
+      <FullWidthViewportVideo
+        videoSrc="/videos/1.mp4"
+        containerStyle={{ marginTop: 24 }}
+      />
+
+      {/* Сроки и стоимость */}
+      <div
+        style={{
+          padding: "40px 0 0",
+          width: "100%",
+        }}
+      >
+        <Title>Сроки и стоимость</Title>
+      </div>
+
+      <div
+        style={{
+          marginBottom: 20,
+          width: "100%",
+        }}
+      >
+        <img
+          src="/images/photolibrary/portfolio/capital/1.jpg"
+          alt="Сроки и стоимость"
+          style={{
+            width: "100%",
+            aspectRatio: "1280 / 960",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      </div>
+
+      <div
+        style={{
+          padding: "0",
+          width: "100%",
+        }}
+      >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 16,
+          }}
+        >
+          Средняя цена дизайнерского ремонта — около 13 000 ₽ за м². Это
+          ориентир: финальная стоимость зависит от авторских решений, материалов
+          и комплектации. Дополнительно детально контролируем черновой этап:
+          руководим инженерными работами и используем надёжные материалы, чтобы
+          отопление, водоснабжение, водоотведение, вентиляция и электрика
+          служили безотказно многие годы.
+        </p>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 16,
+          }}
+        >
+          Примерную стоимость ремонта можно рассчитать в нашем калькуляторе на
+          главной странице.
+        </p>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 16,
+            borderLeft: "2px solid #FFD700",
+            paddingLeft: 18,
+          }}
+        >
+          Для точной сметы свяжитесь с нами любым удобным способом на странице{" "}
+          <a
+            href="/contacts"
+            onClick={(event) => {
+              event.preventDefault();
+              navigate("/contacts");
+            }}
+            style={{
+              color: "#FFD700",
+              textDecoration: "none",
+              fontWeight: 600,
+            }}
           >
-            <path
-              d="M15 6L9 12L15 18"
-              stroke="currentColor"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span style={{ textTransform: "uppercase", letterSpacing: ".5px" }}>
-            На главную
-          </span>
-        </button>
+            контактов
+          </a>
+          .
+        </p>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 16,
+          }}
+        >
+          Сроки определяются после личной консультации и фиксируются в смете.
+        </p>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+          }}
+        >
+          Мы держим слово и остаёмся ответственными за результат.
+        </p>
+      </div>
+        </main>
       </div>
     </div>
   );

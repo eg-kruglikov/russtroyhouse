@@ -10,14 +10,13 @@ const CompanyName = ({ isMobile }) => {
         color: "rgba(255,255,255,0.85)",
         whiteSpace: "nowrap",
         fontStyle: "normal",
-        letterSpacing: "normal",
-        textTransform: "none",
+        letterSpacing: "0.5px",
         textRendering: "optimizeLegibility",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
       }}
     >
-      РуссУютСтрой
+      Руссуютстрой
     </div>
   );
 };

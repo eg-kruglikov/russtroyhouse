@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ymNavigate } from "../../utils/metrika";
+import { TITLE_SIZES } from "../../utils/spacing";
 
 const Services = ({ isMobile, servicesRef }) => {
   const navigate = useNavigate();
@@ -39,9 +40,9 @@ const Services = ({ isMobile, servicesRef }) => {
       route: "designer",
     },
     {
-      title: "Вайт бокс\nЧистовая отделка",
+      title: "Чистовая/черновая отделка",
       description:
-        "Полный цикл ремонта — от черновых до чистовых работ.\n\nДелаем всё: разводку коммуникаций, штукатурку, гипсокартон, стяжку, поклейку обоев, укладку напольных покрытий, установку сантехники и освещения.\n\nМожно заказать как полный ремонт, так и отдельные этапы — вайт бокс или чистовую отделку.",
+        "Полный цикл ремонта — от черновых до чистовых работ.\n\nДелаем всё: разводку коммуникаций, штукатурку, гипсокартон, стяжку, поклейку обоев, укладку напольных покрытий, установку сантехники и освещения.\n\nМожно заказать как полный ремонт, так и отдельные этапы — чистовую или черновую отделку.",
       price: "5000",
       image: "/images/repair/zelenyBor/1.webp",
       route: "whitebox",
@@ -61,7 +62,7 @@ const Services = ({ isMobile, servicesRef }) => {
       <h2
         id="nashi-uslugi"
         style={{
-          fontSize: isMobile ? "8vw" : "48px",
+          fontSize: isMobile ? TITLE_SIZES.mobile.main : TITLE_SIZES.desktop.main,
           fontWeight: 800,
           margin: "0 0 20px 0",
           color: "#FFD700",
@@ -74,10 +75,9 @@ const Services = ({ isMobile, servicesRef }) => {
       </h2>
       <div
         style={{
-          display: isMobile ? "flex" : "grid",
-          flexDirection: isMobile ? "column" : undefined,
-          gridTemplateColumns: isMobile ? undefined : "repeat(3, 1fr)",
-          gap: isMobile ? "40px" : "0",
+          display: "flex",
+          flexDirection: "column",
+          gap: isMobile ? "40px" : "48px",
           width: "100%",
           margin: "0",
         }}
@@ -100,26 +100,25 @@ const Services = ({ isMobile, servicesRef }) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: isMobile ? "transparent" : "#0f2431",
-                borderRadius: "0",
+                backgroundColor: "transparent",
+                borderRadius: "12px",
                 overflow: "hidden",
-                boxShadow: isMobile ? "none" : "0 10px 40px rgba(0,0,0,0.3)",
-                border: isMobile ? "none" : "1px solid rgba(255,255,255,0.05)",
+                boxShadow: "none",
               }}
             >
               {/* Заголовок над фото */}
               <div
                 style={{
-                  padding: isMobile ? "0 20px 16px 20px" : "24px 24px 20px",
+                  padding: isMobile ? "0 20px 16px 20px" : "0 24px 16px 24px",
                 }}
               >
                 <h2
                   style={{
-                    fontSize: isMobile ? "6vw" : "30px",
+                    fontSize: isMobile ? TITLE_SIZES.mobile.service : TITLE_SIZES.desktop.main,
                     fontWeight: 800,
                     margin: "0",
                     color: "#fff",
-                    lineHeight: 1.1,
+                    lineHeight: 1.15,
                     whiteSpace:
                       service.route === "whitebox" ? "pre-line" : "normal",
                   }}
@@ -128,13 +127,13 @@ const Services = ({ isMobile, servicesRef }) => {
                 </h2>
               </div>
 
-              {/* Изображение или слайдер */}
+              {/* Изображение */}
               <div
                 style={{
                   position: "relative",
-                  width: "100vw",
-                  height: isMobile ? "250px" : "280px",
-                  marginLeft: "calc(-50vw + 50%)",
+                  width: "100%",
+                  aspectRatio: isMobile ? "4 / 3" : "3 / 2",
+                  overflow: "hidden",
                 }}
               >
                 <img
@@ -146,8 +145,6 @@ const Services = ({ isMobile, servicesRef }) => {
                     height: "100%",
                     objectFit: "cover",
                     display: "block",
-                    borderRadius: "0",
-                    boxShadow: "none",
                   }}
                 />
               </div>
@@ -155,30 +152,27 @@ const Services = ({ isMobile, servicesRef }) => {
               {/* Контент */}
               <div
                 style={{
-                  padding: isMobile ? "20px 20px" : "28px 24px 32px",
+                  padding: isMobile ? "20px" : "28px 32px 32px",
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: isMobile ? "flex-start" : "flex-start",
+                  alignItems: "flex-start",
                   textAlign: "left",
-                  flex: 1,
+                  gap: "18px",
                 }}
               >
-                {/* Описание */}
                 <p
                   style={{
-                    fontSize: isMobile ? "4.2vw" : "16px",
+                    fontSize: isMobile ? "4.2vw" : "21px",
                     fontWeight: 400,
                     color: "rgba(255,255,255,0.85)",
                     lineHeight: 1.6,
-                    margin: "0 0 20px 0",
-                    flex: 1,
+                    margin: "0",
                     whiteSpace: "pre-line",
                   }}
                 >
                   {service.description}
                 </p>
 
-                {/* Ссылка вместо кнопки */}
                 <a
                   onClick={(e) => {
                     e.preventDefault();
@@ -187,27 +181,26 @@ const Services = ({ isMobile, servicesRef }) => {
                   href={`/repair/${service.route}`}
                   style={{
                     color: "#FFD700",
-                    fontSize: isMobile ? "4.5vw" : "19px",
+                    fontSize: isMobile ? "4.5vw" : "24px",
                     fontWeight: 700,
                     textDecoration: "none",
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "10px",
                     cursor: "pointer",
                     transition: "all 0.2s ease",
-                    marginTop: "auto",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.gap = "12px";
+                    e.currentTarget.style.gap = "14px";
                     e.currentTarget.style.opacity = "0.8";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.gap = "8px";
+                    e.currentTarget.style.gap = "10px";
                     e.currentTarget.style.opacity = "1";
                   }}
                 >
                   Подробнее
-                  <span style={{ fontSize: "22px" }}>→</span>
+                  <span style={{ fontSize: isMobile ? "5vw" : "28px" }}>→</span>
                 </a>
               </div>
             </div>

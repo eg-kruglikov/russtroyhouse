@@ -6,6 +6,7 @@ import "swiper/css/free-mode";
 
 import SwiperCore from "swiper";
 import { FreeMode, Mousewheel, Autoplay } from "swiper/modules";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 // подключаем модули
 SwiperCore.use([FreeMode, Mousewheel, Autoplay]);
@@ -24,7 +25,7 @@ const designerImages = ["/img7.jpg", "/img8.jpg", "/img9.jpg"];
 
 export default function FlowSlider(isMobile) {
   return (
-    <div style={{ padding: "20px 0", backgroundColor: "#04141D" }}>
+    <div style={{ padding: "20px 0", backgroundColor: SECTION_BACKGROUND }}>
       <Swiper
         spaceBetween={1}
         slidesPerView={"auto"}

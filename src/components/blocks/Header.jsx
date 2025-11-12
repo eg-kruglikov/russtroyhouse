@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { usePressEffect } from "../../hooks/useSomething";
 import "../styles/header.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,16 +8,10 @@ import { useScrollContext } from "../../contexts/ScrollContext";
 import { usePhoneIconContext } from "../../contexts/PhoneIconContext";
 import { ymGoal, ymNotBounce } from "../../utils/metrika";
 import CompanyName from "./CompanyName";
-
-// отправляем notBounce один раз при первом реальном действии
-const useNotBounceOnce = () => {
-  const sentRef = useRef(false);
-  return () => {
-    if (sentRef.current) return;
-    ymNotBounce();
-    sentRef.current = true;
-  };
-};
+import { useNotBounceOnce } from "../../hooks/useNotBounceOnce";
+import { useResponsiveShell } from "../../hooks/useResponsiveShell";
+import { createMenuItems, NAV_GOALS_MAP } from "../../utils/navigationConfig";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const Header = ({
   isMobile: isMobileProp,
@@ -40,13 +34,22 @@ const Header = ({
   const isCapitalPage = location.pathname === "/repair/capital";
   const isContactsPage = location.pathname === "/contacts";
   const scrollContext = useScrollContext();
+  const activeScrollKey = scrollContext?.activeScrollKey;
   const { isScrolledToEnd, setIsScrolledToEnd } = usePhoneIconContext();
-  const [isMobile, setIsMobile] = useState(isMobileProp !== undefined ? isMobileProp : window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(
+    isMobileProp !== undefined ? isMobileProp : window.innerWidth <= 768
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [isWideScreen, setIsWideScreen] = useState(false);
   const menuRef = useRef(null);
   const burgerRef = useRef(null);
   const savedScrollY = useRef(0);
+  const {
+    showSidebar,
+    sidebarWidth,
+    layoutPadding,
+    contentWidth: shellContentWidth,
+  } = useResponsiveShell();
 
   // Сбрасываем состояние при переходе на другую страницу
   useEffect(() => {
@@ -94,20 +97,29 @@ const Header = ({
     return () => window.removeEventListener("resize", checkWideScreen);
   }, []);
 
-  // соответствие названий кнопок целям Метрики
-  const goalsMap = {
-    Главная: "nav_hero_click",
-    "Калькулятор ремонта": "nav_calculator_click",
-    Ремонты: "nav_repairs_click",
-    Косметический: "nav_cosmetic_click",
-    Капитальный: "nav_capital_click",
-    Дизайнерский: "nav_designer_click",
-    "Вайт бокс/Чистовая отделка": "nav_whitebox_click",
-    Вайтбокс: "nav_whitebox_click", // для обратной совместимости
-    "Наши последние работы": "nav_portfolio_click",
-    Отзывы: "nav_reviews_click",
-    "Больше наших работ": "nav_more_works_click",
-    "Дизайн проекты": "nav_design_click",
+  const normalizeRoute = (route) => {
+    if (!route) {
+      return { path: "/", hash: "" };
+    }
+
+    const [rawPath = "", rawHash = ""] = route.split("#");
+    const trimmedPath = rawPath.trim();
+    const path =
+      trimmedPath.length > 0
+        ? trimmedPath.startsWith("/")
+          ? trimmedPath
+          : `/${trimmedPath}`
+        : "/";
+
+    const trimmedHash = rawHash.trim();
+    const hash =
+      trimmedHash.length > 0
+        ? trimmedHash.startsWith("#")
+          ? trimmedHash
+          : `#${trimmedHash}`
+        : "";
+
+    return { path, hash };
   };
 
   const triggerNavAction = (item, behavior = "smooth") => {
@@ -115,8 +127,7 @@ const Header = ({
 
     const scrollFnFromContext =
       item.scrollKey && scrollFunctions?.[item.scrollKey];
-    const fallbackFn =
-      typeof item.href === "function" ? item.href : undefined;
+    const fallbackFn = typeof item.href === "function" ? item.href : undefined;
     const scrollFn = scrollFnFromContext || fallbackFn;
 
     if (isHomePage && typeof scrollFn === "function") {
@@ -125,13 +136,11 @@ const Header = ({
     }
 
     if (item.scrollKey) {
-      const targetRoute =
-        item.route && item.route.startsWith("/")
-          ? item.route
-          : `/${item.route || ""}`;
+      const { path: targetPath, hash: targetHash } = normalizeRoute(item.route);
 
-      navigateWithMetrika(targetRoute || "/", {
+      navigateWithMetrika(targetPath || "/", {
         scrollTo: item.scrollKey,
+        hash: targetHash,
       });
       return;
     }
@@ -149,7 +158,7 @@ const Header = ({
   const handleMenuSelection = (item, { behavior = "smooth" } = {}) => {
     if (!item) return;
     ensureNotBounce();
-    ymGoal(goalsMap[item.name] || "nav_click");
+    ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
     triggerNavAction(item, behavior);
   };
 
@@ -255,79 +264,28 @@ const Header = ({
   }, [menuOpen]);
 
   // Обработчики навигации
-  // Структура меню
-  const menuItems = [
-    { 
-      name: "Главная", 
-      scrollKey: "scrollToHero",
-      href: scrollFunctions.scrollToHero, 
-      route: "/",
-      type: "link" 
-    },
-    { 
-      name: "Калькулятор ремонта", 
-      scrollKey: "scrollToCalculator",
-      href: scrollFunctions.scrollToCalculator, 
-      route: "/#calculator",
-      type: "link" 
-    },
-    {
-      name: "Ремонты",
-      type: "submenu",
-      scrollKey: "scrollToNashiUslugi",
-      href: scrollFunctions.scrollToNashiUslugi,
-      route: "/#nashi-uslugi",
-      submenu: [
-        {
-          name: "Косметический",
-          scrollKey: "scrollToCosmetic",
-          href: scrollFunctions.scrollToCosmetic,
-          route: "/#cosmetic",
-        },
-        {
-          name: "Капитальный",
-          scrollKey: "scrollToCapital",
-          href: scrollFunctions.scrollToCapital,
-          route: "/#capital",
-        },
-        {
-          name: "Дизайнерский",
-          scrollKey: "scrollToDesigner",
-          href: scrollFunctions.scrollToDesigner,
-          route: "/#designer",
-        },
-        {
-          name: "Вайт бокс/Чистовая отделка",
-          scrollKey: "scrollToWhitebox",
-          href: scrollFunctions.scrollToWhitebox,
-          route: "/#whitebox",
-        },
-      ],
-    },
-    { 
-      name: "Наши последние работы", 
-      scrollKey: "scrollToportfolio",
-      href: scrollFunctions.scrollToportfolio, 
-      route: "/#portfolio",
-      type: "link" 
-    },
-    { 
-      name: "Отзывы", 
-      scrollKey: "scrollToReviews",
-      href: scrollFunctions.scrollToReviews, 
-      route: "/#reviews",
-      type: "link" 
-    },
-    { 
-      name: "Дизайн проекты", 
-      scrollKey: "scrollToDesignProjects",
-      href: scrollFunctions.scrollToDesignProjects, 
-      route: "/#design-projects",
-      type: "link" 
-    },
-  ];
+  const menuItems = useMemo(
+    () => createMenuItems(scrollFunctions),
+    [scrollFunctions]
+  );
 
   const colorTextHeader = "#cdcdcd";
+  const highlightColor = "#FFD700";
+  const isSidebarLayoutActive = showSidebar && isHomePage;
+  const headerMaxWidth = showSidebar
+    ? sidebarWidth + shellContentWidth + layoutPadding * 2
+    : 1060;
+  const baseHorizontalPadding = isMobile ? 20 : layoutPadding;
+  const sidebarInternalPadding = 22; // padding слева внутри sidebar'а
+  const sidebarBorderWidth = 1;
+  const sidebarGap = 0;
+  const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
+  const headerPaddingLeft = showSidebar
+    ? layoutPadding + sidebarInternalPadding + sidebarBorderWidth
+    : baseHorizontalPadding;
+  const headerPaddingRight = baseHorizontalPadding;
+  const shouldRenderBurger = isMobile && !showSidebar;
+  const shouldRenderDesktopNav = !isMobile && !showSidebar;
 
   return (
     <header
@@ -337,7 +295,7 @@ const Header = ({
         left: 0,
         width: "100%",
         height: "60px",
-        backgroundColor: "#04141D",
+        backgroundColor: SECTION_BACKGROUND,
         padding: "0",
         borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
         zIndex: 1000,
@@ -345,19 +303,22 @@ const Header = ({
     >
       <div
         style={{
-          maxWidth: "1060px",
+          maxWidth: `${headerMaxWidth}px`,
           display: "flex",
           alignItems: "center",
-          gap: isMobile ? "20px" : "24px",
+          gap: showSidebar ? "0px" : isMobile ? "20px" : "24px",
           margin: "0 auto",
           height: "100%",
-          paddingLeft: isMobile ? "20px" : "24px",
-          paddingRight: isMobile ? "20px" : "24px",
+          paddingLeft: `${headerPaddingLeft}px`,
+          paddingRight: `${headerPaddingRight}px`,
           fontFamily: "Arial, sans-serif", // базовый шрифт для контейнера
+          transform: showSidebar
+            ? `translateX(${containerShift}px)`
+            : undefined,
         }}
       >
         {/* Бургер-иконка — мобилка */}
-        {isMobile && (
+        {shouldRenderBurger && (
           <div
             ref={burgerRef}
             className="burger"
@@ -378,7 +339,7 @@ const Header = ({
         )}
 
         {/* Название компании */}
-        {(isMobile || isWideScreen) && (
+        {(isMobile || isWideScreen || showSidebar) && (
           <button
             onClick={handleLogoClick}
             style={{
@@ -394,7 +355,7 @@ const Header = ({
         )}
 
         {/* Навигация — десктоп */}
-        {!isMobile && (
+        {shouldRenderDesktopNav && (
           <nav
             style={{
               display: "flex",
@@ -443,23 +404,23 @@ const Header = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "24px",
-              height: "24px",
+              width: "28px",
+              height: "28px",
               marginLeft: "auto",
               WebkitTapHighlightColor: "transparent",
             }}
             aria-label="Позвонить"
           >
             <svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               style={{ display: "block" }}
             >
               <path
                 d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.1 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.32 1.79.59 2.65a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.43-1.21a2 2 0 0 1 2.11-.45c.86.27 1.75.47 2.65.59A2 2 0 0 1 22 16.92Z"
-                fill={isCapitalPage && isScrolledToEnd ? "#FFD700" : "rgba(255,255,255,0.85)"}
+                fill={isMobile ? "rgba(255,255,255,0.85)" : "#FFD700"}
                 style={{
                   transition: "fill 0.3s ease",
                 }}
@@ -482,14 +443,11 @@ const Header = ({
               onClick={changeStateBurger}
               onTouchStart={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
               }}
               onTouchMove={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
               }}
               onWheel={(e) => {
-                e.preventDefault();
                 e.stopPropagation();
               }}
               style={{
@@ -527,7 +485,7 @@ const Header = ({
                 zIndex: 1001,
                 display: "flex",
                 flexDirection: "column",
-                padding: "24px",
+                padding: "10px 24px 10px 24px",
                 overflowY: "auto",
                 WebkitOverflowScrolling: "touch",
                 fontFamily: "Arial, sans-serif", // sans-serif для меню
@@ -539,8 +497,7 @@ const Header = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "8px",
-                  paddingTop: "0px",
+                  marginBottom: "4px",
                   flexShrink: 0,
                 }}
               >
@@ -610,13 +567,16 @@ const Header = ({
                   display: "flex",
                   flexDirection: "column",
                   gap: "4px",
-                  paddingTop: "4px",
                 }}
               >
-                {menuItems.map((item, i) => (
-                  <div key={i}>
-                    {item.type === "submenu" ? (
+                {menuItems.map((item, i) => {
+                  if (item.type === "submenu") {
+                    const isSubmenuActive =
+                      item.scrollKey && activeScrollKey === item.scrollKey;
+
+                    return (
                       <div
+                        key={i}
                         style={{
                           backgroundColor: "transparent",
                           borderRadius: "16px",
@@ -632,7 +592,7 @@ const Header = ({
                           {...press}
                           onClick={() => {
                             ensureNotBounce();
-                            ymGoal(goalsMap[item.name] || "nav_click");
+                            ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
                             setMenuOpen(false);
                             navigator.vibrate?.(30);
                             // Выполняем навигацию/скролл после закрытия меню
@@ -644,7 +604,9 @@ const Header = ({
                             all: "unset",
                             cursor: "pointer",
                             display: "block",
-                            color: "#FFD700",
+                            color: isSubmenuActive
+                              ? highlightColor
+                              : "rgba(255,255,255,0.95)",
                             fontFamily: "Arial, sans-serif",
                             fontWeight: "800",
                             fontSize: isMobile ? "16px" : "18px",
@@ -655,6 +617,7 @@ const Header = ({
                             WebkitTapHighlightColor: "transparent",
                             padding: "0",
                             width: "100%",
+                            transition: "color 0.2s ease",
                           }}
                         >
                           {item.name}
@@ -667,48 +630,65 @@ const Header = ({
                             paddingLeft: "12px",
                           }}
                         >
-                          {item.submenu.map((subItem, j) => (
-                            <button
-                              {...press}
-                              key={j}
-                              onClick={() => {
-                                ensureNotBounce();
-                                ymGoal(goalsMap[subItem.name] || "nav_click");
-                                setMenuOpen(false);
-                                navigator.vibrate?.(30);
-                                // Выполняем навигацию/скролл после закрытия меню
-                                setTimeout(() => {
-                                  triggerNavAction(subItem);
-                                }, 300);
-                              }}
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                display: "block",
-                                color: "rgba(255,255,255,.92)",
-                                fontFamily: "Arial, sans-serif",
-                                textDecoration: "none",
-                                fontWeight: "500",
-                                fontSize: isMobile ? "14px" : "15px",
-                                textTransform: "none",
-                                letterSpacing: "0.3px",
-                                WebkitTapHighlightColor: "transparent",
-                                padding: "0",
-                                textAlign: "left",
-                                lineHeight: 1.6,
-                              }}
-                            >
-                              {subItem.name}
-                            </button>
-                          ))}
+                          {item.submenu.map((subItem, j) => {
+                            const isSubItemActive =
+                              subItem.scrollKey === activeScrollKey;
+
+                            return (
+                              <button
+                                {...press}
+                                key={j}
+                                onClick={() => {
+                                  ensureNotBounce();
+                                  ymGoal(
+                                    NAV_GOALS_MAP[subItem.name] || "nav_click"
+                                  );
+                                  setMenuOpen(false);
+                                  navigator.vibrate?.(30);
+                                  // Выполняем навигацию/скролл после закрытия меню
+                                  setTimeout(() => {
+                                    triggerNavAction(subItem);
+                                  }, 300);
+                                }}
+                                style={{
+                                  all: "unset",
+                                  cursor: "pointer",
+                                  display: "block",
+                                  color: isSubItemActive
+                                    ? highlightColor
+                                    : "rgba(255,255,255,0.92)",
+                                  fontFamily: "Arial, sans-serif",
+                                  textDecoration: "none",
+                                  fontWeight: isSubItemActive ? "600" : "500",
+                                  fontSize: isMobile ? "14px" : "15px",
+                                  textTransform: "none",
+                                  letterSpacing: "0.3px",
+                                  WebkitTapHighlightColor: "transparent",
+                                  padding: "0",
+                                  textAlign: "left",
+                                  lineHeight: 1.6,
+                                  transition: "color 0.2s ease",
+                                }}
+                              >
+                                {subItem.name}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
-                    ) : (
+                    );
+                  }
+
+                  const isItemActive =
+                    item.scrollKey && activeScrollKey === item.scrollKey;
+
+                  return (
+                    <div key={i}>
                       <button
                         {...press}
                         onClick={() => {
                           ensureNotBounce();
-                          ymGoal(goalsMap[item.name] || "nav_click");
+                          ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
                           setMenuOpen(false);
                           navigator.vibrate?.(30);
                           // Выполняем навигацию/скролл после закрытия меню
@@ -720,23 +700,24 @@ const Header = ({
                           all: "unset",
                           cursor: "pointer",
                           display: "block",
-                          color: "#fff",
+                          color: isItemActive ? highlightColor : "#fff",
                           fontFamily: "Arial, sans-serif",
                           textDecoration: "none",
-                          fontWeight: "600",
+                          fontWeight: isItemActive ? "700" : "600",
                           fontSize: "16px",
                           textTransform: "uppercase",
                           letterSpacing: "0.5px",
                           WebkitTapHighlightColor: "transparent",
-                          padding: "12px 0",
+                          padding: "6px 0",
                           textAlign: "left",
+                          transition: "color 0.2s ease",
                         }}
                       >
                         {item.name}
                       </button>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
             </motion.div>
           </>

@@ -10,7 +10,7 @@ import {
 import { useEffect } from "react";
 import { PhoneIconProvider } from "./contexts/PhoneIconContext";
 
-import Home from "./pages/Home";
+import Home from "./pages/Home/Index.jsx";
 import ProjectPage from "./pages/ProjectPage";
 
 import CapitalRepairPage from "./pages/Repair/CapitalRepairPage";
@@ -22,6 +22,7 @@ import PortfolioProjectPage from "./pages/Portfolio/Project";
 
 import { useScrollRestoration } from "./hooks/useScrollRestoration";
 import { ymNavigate, ymError, ymPageViewsCount } from "./utils/metrika";
+import { useEngagementGoals } from "./hooks/useEngagementGoals";
 
 import ContactsPage from "./pages/Contacts";
 import Header from "./components/blocks/Header";
@@ -30,6 +31,12 @@ import { ScrollProvider } from "./contexts/ScrollContext";
 const RedirectHandler = () => {
   useEffect(() => {
     const search = window.location.search;
+    if (!search) return;
+
+    const params = new URLSearchParams(search);
+    if (params.has("_ym_debug")) {
+      return;
+    }
 
     if (search.startsWith("?/")) {
       const newPath = search.slice(2); // убираем ?/
@@ -54,6 +61,7 @@ const App = () => {
 const AppContent = () => {
   const location = useLocation();
   const action = useNavigationType();
+  const { registerPageCount } = useEngagementGoals();
 
   // 🔹 Глобальный обработчик ошибок
   useEffect(() => {
@@ -93,7 +101,17 @@ const AppContent = () => {
     }
   }, []);
 
-  // Отслеживание количества просмотренных страниц
+  // 🔹 Отправка hit в Метрику при каждом изменении маршрута (для корректной работы Вебвизора в SPA)
+  useEffect(() => {
+    const url =
+      location.pathname + (location.search || "") + (location.hash || "");
+    
+    // Отправляем hit при каждом изменении маршрута
+    // Это помогает Вебвизору "видеть" смену экрана и корректно записывать активность
+    ymNavigate(url);
+  }, [location]);
+
+  // 🔹 Отслеживание количества просмотренных страниц
   useEffect(() => {
     const viewedPages = new Set(
       JSON.parse(sessionStorage.getItem("viewedPages") || "[]")
@@ -107,17 +125,9 @@ const AppContent = () => {
       const pageCount = viewedPages.size;
       ymPageViewsCount(pageCount);
     }
-  }, [location]);
 
-  useEffect(() => {
-    const isInitialLoad = (window.history?.state?.idx ?? 0) === 0;
-    if (isInitialLoad) return;
-    if (action === "POP") {
-      const url =
-        location.pathname + (location.search || "") + (location.hash || "");
-      ymNavigate(url);
-    }
-  }, [action, location]);
+    registerPageCount(viewedPages.size || 1);
+  }, [location, registerPageCount]);
 
   useScrollRestoration();
 

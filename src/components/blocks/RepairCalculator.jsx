@@ -59,20 +59,28 @@ const RepairCalculator = ({ isMobile }) => {
 
   const repairOptionsLayout = {
     display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    columnGap: isMobile ? "16px" : "32px",
-    rowGap: "20px",
+    gridTemplateColumns: isMobile
+      ? "repeat(2, minmax(0, 1fr))"
+      : "repeat(4, minmax(0, 1fr))",
+    columnGap: isMobile ? "16px" : "24px",
+    rowGap: isMobile ? "20px" : "28px",
     alignItems: "start",
-    gridAutoRows: "auto",
   };
 
   const headerStyle = {
     fontSize: isMobile ? "18px" : "22px",
     fontWeight: "600",
     color: "rgba(255,255,255,0.9)",
-    paddingBottom: "4px",
-    borderBottom: "1px solid rgba(255,255,255,0.1)",
-    marginBottom: "4px",
+    display: "flex",
+    alignItems: "flex-end",
+    minHeight: isMobile ? "44px" : "58px",
+    margin: 0,
+  };
+
+  const separatorStyle = {
+    height: "1px",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    margin: "8px 0 12px",
   };
 
   const rowGridStyle = {
@@ -112,8 +120,9 @@ const RepairCalculator = ({ isMobile }) => {
     { value: "apartments", label: "Апартаменты" },
   ];
 
-  const topRowCount = Math.max(repairOptions.length, roomOptions.length);
-  const bottomRowCount = Math.max(
+  const maxOptionRows = Math.max(
+    repairOptions.length,
+    roomOptions.length,
     materialOptions.length,
     premisesOptions.length
   );
@@ -128,12 +137,13 @@ const RepairCalculator = ({ isMobile }) => {
     <div
       style={{
         display: "grid",
-        gridTemplateRows: `auto repeat(${totalRows}, auto)`,
+        gridTemplateRows: `auto auto repeat(${totalRows}, auto)`,
         rowGap: "8px",
         alignContent: "start",
       }}
     >
       <div style={headerStyle}>{title}</div>
+      <div style={separatorStyle} />
       {options.map((option) => (
         <label key={option.value} style={rowGridStyle}>
           <input
@@ -276,6 +286,60 @@ const RepairCalculator = ({ isMobile }) => {
   };
 
   const { total, perSquare, timeRange } = calculatePrice();
+
+  const columnConfigs = isMobile
+    ? [
+        {
+          title: "Тип ремонта",
+          options: repairOptions,
+          value: repairType,
+          setter: setRepairType,
+        },
+        {
+          title: "Количество комнат",
+          options: roomOptions,
+          value: roomCount,
+          setter: setRoomCount,
+        },
+        {
+          title: "Качество материалов",
+          options: materialOptions,
+          value: materialQuality,
+          setter: setMaterialQuality,
+        },
+        {
+          title: "Тип помещения",
+          options: premisesOptions,
+          value: premisesType,
+          setter: setPremisesType,
+        },
+      ]
+    : [
+        {
+          title: "Тип ремонта",
+          options: repairOptions,
+          value: repairType,
+          setter: setRepairType,
+        },
+        {
+          title: "Качество материалов",
+          options: materialOptions,
+          value: materialQuality,
+          setter: setMaterialQuality,
+        },
+        {
+          title: "Количество комнат",
+          options: roomOptions,
+          value: roomCount,
+          setter: setRoomCount,
+        },
+        {
+          title: "Тип помещения",
+          options: premisesOptions,
+          value: premisesType,
+          setter: setPremisesType,
+        },
+      ];
 
   // Отправка формы
   const handleSubmit = async (e) => {
@@ -449,265 +513,242 @@ const RepairCalculator = ({ isMobile }) => {
           >
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                display: "flex",
+                flexDirection: "column",
                 gap: isMobile ? "24px" : "32px",
-                alignItems: "start",
               }}
             >
-              {/* Левая часть - параметры */}
-              <div>
+              <div style={repairOptionsLayout}>
+                {columnConfigs.map((config) => (
+                  <React.Fragment key={config.title}>
+                    {renderOptionColumn(
+                      config.title,
+                      config.options,
+                      config.value,
+                      config.setter,
+                      maxOptionRows
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  gap: isMobile ? "16px" : "24px",
+                  width: "100%",
+                  alignItems: "stretch",
+                }}
+              >
                 <div
                   style={{
+                    flex: isMobile ? "unset" : "0 0 60%",
                     display: "flex",
                     flexDirection: "column",
-                    gap: "20px",
                   }}
                 >
-                  <div style={repairOptionsLayout}>
-                    {renderOptionColumn(
-                      "Тип ремонта",
-                      repairOptions,
-                      repairType,
-                      setRepairType,
-                      topRowCount
-                    )}
-                    {renderOptionColumn(
-                      "Количество комнат",
-                      roomOptions,
-                      roomCount,
-                      setRoomCount,
-                      topRowCount
-                    )}
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: isMobile ? "14px" : "16px",
+                      fontWeight: "600",
+                      color: "rgba(255,255,255,0.9)",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Площадь (м²)
+                  </label>
+                  <div
+                    style={{
+                      width: "100%",
+                      padding: isMobile ? "8px 12px" : "10px 16px",
+                      fontSize: isMobile ? "24px" : "32px",
+                      fontWeight: "700",
+                      backgroundColor: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                      borderRadius: "12px",
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                      marginBottom: "16px",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {formatNumber(area)}
                   </div>
+                  <input
+                    ref={areaInputRef}
+                    type="range"
+                    value={area}
+                    min={AREA_MIN}
+                    max={AREA_MAX}
+                    step={1}
+                    onInput={(e) => handleAreaChange(e.target.valueAsNumber)}
+                    onChange={(e) => handleAreaChange(e.target.valueAsNumber)}
+                    onTouchMove={(e) =>
+                      handleAreaChange(e.target.valueAsNumber)
+                    }
+                    onTouchStart={(e) =>
+                      handleAreaChange(e.target.valueAsNumber)
+                    }
+                    onPointerMove={(e) => {
+                      if (e.buttons === 1) {
+                        handleAreaChange(e.target.valueAsNumber);
+                      }
+                    }}
+                    onPointerDown={(e) =>
+                      handleAreaChange(e.target.valueAsNumber)
+                    }
+                    style={{
+                      width: "100%",
+                      accentColor: "#FF6B35",
+                      touchAction: "none",
+                      WebkitTapHighlightColor: "transparent",
+                    }}
+                  />
+                </div>
 
-                  <div style={repairOptionsLayout}>
-                    {renderOptionColumn(
-                      "Качество материалов",
-                      materialOptions,
-                      materialQuality,
-                      setMaterialQuality,
-                      bottomRowCount
-                    )}
-                    {renderOptionColumn(
-                      "Тип помещения",
-                      premisesOptions,
-                      premisesType,
-                      setPremisesType,
-                      bottomRowCount
-                    )}
-                  </div>
-
-                  {/* Перепланировка */}
-                  <div>
-                    <label
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "12px",
-                        cursor: "pointer",
-                        padding: "12px 16px",
-                        borderRadius: "8px",
-                        backgroundColor: "transparent",
-                        border: replanning
-                          ? "1px solid #FF6B35"
-                          : "1px solid rgba(255,255,255,0.2)",
-                        transition: "all 0.2s ease",
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
+                <div
+                  style={{
+                    flex: isMobile ? "unset" : "0 0 40%",
+                  }}
+                >
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      cursor: "pointer",
+                      padding: isMobile ? "12px 14px" : "14px 16px",
+                      borderRadius: "10px",
+                      backgroundColor: "transparent",
+                      border: replanning
+                        ? "1px solid #FF6B35"
+                        : "1px solid rgba(255,255,255,0.25)",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!replanning) {
+                        e.currentTarget.style.backgroundColor =
+                          "rgba(255,255,255,0.05)";
+                      } else {
                         e.currentTarget.style.backgroundColor = "transparent";
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!replanning) {
-                          e.currentTarget.style.backgroundColor =
-                            "rgba(255,255,255,0.05)";
-                        } else {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={replanning}
-                        onChange={(e) => setReplanning(e.target.checked)}
-                        style={{
-                          accentColor: "#FF6B35",
-                          transform: "scale(1.2)",
-                        }}
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "2px",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: isMobile ? "14px" : "16px",
-                            color: replanning
-                              ? "#FFD700"
-                              : "rgba(255,255,255,0.9)",
-                            fontWeight: replanning ? "600" : "400",
-                          }}
-                        >
-                          Перепланировка
-                        </span>
-                        <span
-                          style={{
-                            fontSize: isMobile ? "12px" : "14px",
-                            color: "rgba(255,255,255,0.6)",
-                            marginLeft: "-5px",
-                          }}
-                        >
-                          +1500₽/м²
-                        </span>
-                      </div>
-                    </label>
-                  </div>
-
-                  {/* Площадь */}
-                  <div style={{ width: "100%" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: isMobile ? "14px" : "16px",
-                        fontWeight: "600",
-                        color: "rgba(255,255,255,0.9)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Площадь (м²)
-                    </label>
-                    <div
-                      style={{
-                        width: "100%",
-                        padding: isMobile ? "8px 12px" : "10px 16px",
-                        fontSize: isMobile ? "24px" : "32px",
-                        fontWeight: "700",
-                        backgroundColor: "rgba(255,255,255,0.05)",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        borderRadius: "12px",
-                        color: "#FFFFFF",
-                        textAlign: "center",
-                        marginBottom: "16px",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      {formatNumber(area)}
-                    </div>
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
                     <input
-                      ref={areaInputRef}
-                      type="range"
-                      value={area}
-                      min={AREA_MIN}
-                      max={AREA_MAX}
-                      step={1}
-                      onInput={(e) => handleAreaChange(e.target.valueAsNumber)}
-                      onChange={(e) => handleAreaChange(e.target.valueAsNumber)}
-                      onTouchMove={(e) =>
-                        handleAreaChange(e.target.valueAsNumber)
-                      }
-                      onTouchStart={(e) =>
-                        handleAreaChange(e.target.valueAsNumber)
-                      }
-                      onPointerMove={(e) => {
-                        if (e.buttons === 1) {
-                          handleAreaChange(e.target.valueAsNumber);
-                        }
-                      }}
-                      onPointerDown={(e) =>
-                        handleAreaChange(e.target.valueAsNumber)
-                      }
+                      type="checkbox"
+                      checked={replanning}
+                      onChange={(e) => setReplanning(e.target.checked)}
                       style={{
-                        width: "100%",
                         accentColor: "#FF6B35",
-                        touchAction: "none",
-                        WebkitTapHighlightColor: "transparent",
+                        transform: "scale(1.1)",
                       }}
                     />
-                  </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "2px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: isMobile ? "14px" : "16px",
+                          color: replanning
+                            ? "#FFD700"
+                            : "rgba(255,255,255,0.9)",
+                          fontWeight: replanning ? "600" : "400",
+                        }}
+                      >
+                        Перепланировка
+                      </span>
+                      <span
+                        style={{
+                          fontSize: isMobile ? "12px" : "13px",
+                          color: "rgba(255,255,255,0.6)",
+                          marginLeft: "-4px",
+                        }}
+                      >
+                        +1500₽/м²
+                      </span>
+                    </div>
+                  </label>
                 </div>
               </div>
 
-              {/* Правая часть - результат и форма */}
-              <div>
-                {/* Результат расчета */}
-                <div
+              <div
+                style={{
+                  marginTop: isMobile ? "24px" : "36px",
+                  backgroundColor: "transparent",
+                  textAlign: "left",
+                  padding: isMobile ? "0" : "0 4px",
+                }}
+              >
+                <h3
                   style={{
-                    backgroundColor: "transparent",
-                    paddingLeft: isMobile ? "20px" : "24px",
-                    paddingRight: isMobile ? "20px" : "24px",
-                    paddingTop: isMobile ? "20px" : "24px",
-                    paddingBottom: isMobile ? "20px" : "24px",
-                    marginBottom: "24px",
-                    marginLeft: "25px",
-                    textAlign: "left",
+                    fontSize: isMobile ? "18px" : "22px",
+                    fontWeight: "700",
+                    color: "#FFFFFF",
+                    margin: "0 0 14px 0",
                   }}
                 >
-                  <h3
-                    style={{
-                      fontSize: isMobile ? "16px" : "18px",
-                      fontWeight: "600",
-                      color: "#FFFFFF",
-                      margin: "0 0 12px 0",
-                    }}
-                  >
-                    Примерная стоимость
-                  </h3>
+                  Примерная стоимость
+                </h3>
 
-                  {total > 0 ? (
-                    <>
-                      <div
-                        style={{
-                          fontSize: isMobile ? "28px" : "36px",
-                          fontWeight: "800",
-                          color: "#ffffff",
-                          margin: "0 0 8px 0",
-                        }}
-                      >
-                        {formatNumber(total)}{" "}
-                        <span style={{ color: "#FFD700" }}>₽</span>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: isMobile ? "14px" : "16px",
-                          color: "rgba(255,255,255,0.8)",
-                          margin: "0",
-                        }}
-                      >
-                        (≈ {formatNumber(perSquare)} ₽ за м²)
-                      </div>
-                    </>
-                  ) : (
+                {total > 0 ? (
+                  <>
                     <div
                       style={{
-                        fontSize: isMobile ? "16px" : "18px",
-                        color: "rgba(255,255,255,0.6)",
+                        fontSize: isMobile ? "32px" : "48px",
+                        fontWeight: "800",
+                        color: "#ffffff",
+                        margin: "0 0 10px 0",
+                      }}
+                    >
+                      {formatNumber(total)}{" "}
+                      <span style={{ color: "#FFD700" }}>₽</span>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: isMobile ? "16px" : "20px",
+                        color: "rgba(255,255,255,0.85)",
                         margin: "0",
                       }}
                     >
-                      Введите площадь для расчета
+                      (≈ {formatNumber(perSquare)} ₽ за м²)
                     </div>
-                  )}
-
-                  <p
+                  </>
+                ) : (
+                  <div
                     style={{
-                      fontSize: isMobile ? "12px" : "14px",
+                      fontSize: isMobile ? "18px" : "20px",
                       color: "rgba(255,255,255,0.7)",
-                      margin: "12px 0 0 0",
-                      fontStyle: "italic",
+                      margin: "0",
                     }}
                   >
-                    Цена предварительная, точный расчёт уточнит специалист.
-                  </p>
-                </div>
+                    Введите площадь для расчета
+                  </div>
+                )}
 
-                {/* Форма и отправка удалены по требованию — оставляем только блок "Примерная стоимость" */}
+                <p
+                  style={{
+                    fontSize: isMobile ? "13px" : "16px",
+                    color: "rgba(255,255,255,0.75)",
+                    margin: "14px 0 0 0",
+                    fontStyle: "italic",
+                    maxWidth: isMobile ? "100%" : "520px",
+                  }}
+                >
+                  Цена предварительная, точный расчёт уточнит специалист.
+                </p>
               </div>
             </div>
           </div>

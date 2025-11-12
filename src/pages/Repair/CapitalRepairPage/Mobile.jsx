@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
+import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Mobile = () => {
   const navigate = useNavigateWithMetrika();
@@ -30,7 +32,6 @@ const Mobile = () => {
     "/images/photolibrary/portfolio/repair/3.jpg",
   ];
 
-
   useEffect(() => {
     const handleBack = () => {
       // лог только для отладки
@@ -47,36 +48,51 @@ const Mobile = () => {
         fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 60,
-        background: "#06141d",
+        background: SECTION_BACKGROUND,
       }}
     >
-      {/* Заголовок перед фото */}
-      <h1
+      {/* Hero */}
+      <div
         style={{
-          fontSize: "clamp(20px, 6vw, 28px)",
-          fontWeight: 900,
-          color: "#fff",
-          margin: 0,
-          padding: "20px 20px 16px 20px",
-          letterSpacing: 0.2,
-          wordWrap: "break-word",
-          overflowWrap: "break-word",
+          position: "relative",
+          width: "100%",
+          height: "35vh",
+          overflow: "hidden",
         }}
       >
-        КАПИТАЛЬНЫЙ РЕМОНТ
-      </h1>
-
-      {/* Hero */}
-      <div style={{ position: "relative", width: "100%", height: "35vh" }}>
         <img
-          src="/images/photolibrary/portfolio/capital/2/8.jpg"
+          src="/images/repair/zelenyBor/1.webp"
           alt="Капитальный ремонт"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
+            filter: "brightness(.95)",
           }}
         />
+
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            textAlign: "center",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "clamp(28px, 8vw, 38px)",
+              margin: 0,
+              color: "#fff",
+              textShadow: "0 0 12px rgba(0,0,0,.7)",
+              fontWeight: 800,
+              letterSpacing: 0.3,
+            }}
+          >
+            Капитальный ремонт
+          </h1>
+        </div>
       </div>
 
       {/* Описание под изображением */}
@@ -147,8 +163,8 @@ const Mobile = () => {
             textAlign: "left",
           }}
         >
-          Мы создаём уютные и современные интерьеры — под любые запросы и бюджеты.
-          Реализуем идеи, сочетающие комфорт, дизайн и практичность.
+          Мы создаём уютные и современные интерьеры — под любые запросы и
+          бюджеты. Реализуем идеи, сочетающие комфорт, дизайн и практичность.
         </p>
       </div>
 
@@ -246,6 +262,11 @@ const Mobile = () => {
         </p>
       </div>
 
+      <FullWidthViewportVideo
+        videoSrc="/videos/1.mp4"
+        containerStyle={{ marginTop: 20 }}
+      />
+
       {/* Блок "Сроки и стоимость" */}
       <div
         style={{
@@ -290,6 +311,19 @@ const Mobile = () => {
           padding: "0 20px",
         }}
       >
+        <p
+          style={{
+            color: "#fff",
+            fontSize: 16,
+            lineHeight: 1.6,
+            margin: 0,
+            textAlign: "left",
+            marginBottom: 12,
+          }}
+        >
+          Средняя цена капитального ремонта — около 9 500 ₽ за м². Это ориентир:
+          итог зависит от материалов, инженерных решений и объёма работ.
+        </p>
         <p
           style={{
             color: "#fff",
@@ -353,10 +387,9 @@ const Mobile = () => {
             textAlign: "left",
           }}
         >
-          Мы строго соблюдаем договорённости — работаем чётко по срокам и этапам.
+          Мы держим слово и остаёмся ответственными за результат.
         </p>
       </div>
-
     </div>
   );
 };

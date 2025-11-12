@@ -1,11 +1,12 @@
 // blocks/Footer.jsx
 
 import React from "react";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const Footer = ({ showAddress = true }) => (
   <footer
     style={{
-      backgroundColor: "#04141D",
+      backgroundColor: SECTION_BACKGROUND,
       color: "#fff",
       padding: "32px 16px",
       textAlign: "center",

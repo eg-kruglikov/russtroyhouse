@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ymNavigate } from "../../utils/metrika";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const ProjectPageDesktop = () => {
   const [data, setData] = useState(null);
@@ -129,7 +130,7 @@ const ProjectPageDesktop = () => {
         width: "auto",
         height: "auto",
         paddingTop: "60px",
-        backgroundColor: "#04141D",
+        backgroundColor: SECTION_BACKGROUND,
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
@@ -169,7 +170,7 @@ const ProjectPageDesktop = () => {
         style={{
           width: "100vw",
           height: "auto",
-          backgroundColor: "#04141D",
+          backgroundColor: SECTION_BACKGROUND,
           display: "flex",
           flexDirection: "column",
           boxSizing: "border-box",

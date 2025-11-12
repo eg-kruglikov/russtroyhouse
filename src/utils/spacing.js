@@ -68,11 +68,13 @@ export const TITLE_SIZES = {
   mobile: {
     main: "8vw", // Последние работы, С заботой о вас
     portfolio: "7vw", // Портфолио
+    service: "6vw", // Заголовки блоков услуг
   },
   desktop: {
-    main: "48px", // Последние работы
+    main: "38px", // Последние работы, Наши услуги, блоки ремонтов
     secondary: "42px", // С заботой о вас
     portfolio: "40px", // Портфолио
+    service: "32px", // Заголовки блоков услуг
   },
 };
 
@@ -91,7 +93,7 @@ export const SUBTITLE_SIZES = {
 // ========== ЦВЕТА ==========
 
 // Фон секций (как у шапки и основных блоков)
-export const SECTION_BACKGROUND = "#04141D";
+export const SECTION_BACKGROUND = "var(--color-background-primary)";
 
 // Цвет основного заголовка
 export const TITLE_COLOR = "#FFD700";

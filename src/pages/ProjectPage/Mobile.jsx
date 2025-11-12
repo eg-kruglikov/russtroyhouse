@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ymNavigate } from "../../utils/metrika";
+import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const ProjectPage = () => {
   const [data, setData] = useState(null);
@@ -106,7 +107,7 @@ const ProjectPage = () => {
         width: "100vw",
         height: "100vh",
         paddingTop: "60px",
-        backgroundColor: "#04141D",
+        backgroundColor: SECTION_BACKGROUND,
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
