@@ -230,7 +230,7 @@ const ContactsPage = () => {
               maxWidth: `${sidebarWidth}px`,
               width: `${sidebarWidth}px`,
               background: "transparent",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
+              border: "none",
               borderRadius: "0px",
               padding: "28px 22px 28px",
               position: "sticky",
@@ -256,8 +256,6 @@ const ContactsPage = () => {
             >
               {menuItems.map((item, index) => {
                 if (item.type === "submenu") {
-                  const isSubmenuActive = item.scrollKey === activeScrollKey;
-
                   return (
                     <div
                       key={`${item.name}-${index}`}
@@ -267,64 +265,33 @@ const ContactsPage = () => {
                         gap: "10px",
                       }}
                     >
-                      <button
-                        {...press}
-                        onClick={() => handleSidebarSelection(item)}
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          color: isSubmenuActive
-                            ? "#FFD700"
-                            : "rgba(255,255,255,0.92)",
-                          fontFamily: "Arial, sans-serif",
-                          fontWeight: 800,
-                          fontSize: "16px",
-                          letterSpacing: "0.6px",
-                          textTransform: "uppercase",
-                          padding: "4px 0",
-                          transition: "color 0.2s ease",
-                        }}
-                      >
-                        {item.name}
-                      </button>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "10px",
-                          paddingLeft: "8px",
-                        }}
-                      >
-                        {item.submenu?.map((subItem, subIndex) => {
-                          const isSubItemActive =
-                            subItem.scrollKey === activeScrollKey;
-                          return (
-                            <button
-                              {...press}
-                              key={`${subItem.name}-${subIndex}`}
-                              onClick={() => handleSidebarSelection(subItem)}
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                color: isSubItemActive
-                                  ? "#FFD700"
-                                  : "rgba(255,255,255,0.92)",
-                                fontFamily: "Arial, sans-serif",
-                                fontWeight: 600,
-                                fontSize: "16px",
-                                letterSpacing: "0.3px",
-                                textTransform: "none",
-                                lineHeight: 1.6,
-                                opacity: isSubItemActive ? 1 : 0.94,
-                                transition:
-                                  "color 0.2s ease, opacity 0.2s ease",
-                              }}
-                            >
-                              {subItem.name}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {item.submenu?.map((subItem, subIndex) => {
+                        const isSubItemActive =
+                          subItem.scrollKey === activeScrollKey;
+                        return (
+                          <button
+                            {...press}
+                            key={`${subItem.name}-${subIndex}`}
+                            onClick={() => handleSidebarSelection(subItem)}
+                            style={{
+                              all: "unset",
+                              cursor: "pointer",
+                              color: isSubItemActive
+                                ? "#FFD700"
+                                : "rgba(255,255,255,0.92)",
+                              fontFamily: "Arial, sans-serif",
+                              fontWeight: 500,
+                              fontSize: "16px",
+                              letterSpacing: "0.6px",
+                              textTransform: "uppercase",
+                              padding: "4px 0",
+                              transition: "color 0.2s ease",
+                            }}
+                          >
+                            {subItem.name}
+                          </button>
+                        );
+                      })}
                     </div>
                   );
                 }
@@ -343,7 +310,7 @@ const ContactsPage = () => {
                         ? "#FFD700"
                         : "rgba(255,255,255,0.95)",
                       fontFamily: "Arial, sans-serif",
-                      fontWeight: 800,
+                      fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.5px",
                       textTransform: "uppercase",
@@ -365,6 +332,8 @@ const ContactsPage = () => {
             maxWidth: `${fallbackContentWidth}px`,
             width: "100%",
             padding: "20px 0",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.10)",
+            borderRight: "none",
           }}
         >
           <div style={Cards}>

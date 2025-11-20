@@ -14,6 +14,7 @@ const CompanyName = ({ isMobile }) => {
         textRendering: "optimizeLegibility",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
+        paddingLeft: "18px",
       }}
     >
       Руссуютстрой
@@ -22,4 +23,3 @@ const CompanyName = ({ isMobile }) => {
 };
 
 export default CompanyName;
-

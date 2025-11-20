@@ -395,20 +395,39 @@ const Home = () => {
 
   useLayoutEffect(() => {
     if (location.pathname !== "/" || !scrollToStateKey) return;
-    const handler = scrollFunctions?.[scrollToStateKey];
-    if (typeof handler === "function") {
-      handler("auto");
-    } else if (typeof scrollToStateKey === "string") {
-      const targetId = scrollToStateKey.startsWith("#")
-        ? scrollToStateKey.slice(1)
-        : scrollToStateKey;
-      scrollToElementById(targetId, "auto");
+    
+    const performScroll = () => {
+      const handler = scrollFunctions?.[scrollToStateKey];
+      if (typeof handler === "function") {
+        handler("auto");
+      } else if (typeof scrollToStateKey === "string") {
+        const targetId = scrollToStateKey.startsWith("#")
+          ? scrollToStateKey.slice(1)
+          : scrollToStateKey;
+        scrollToElementById(targetId, "auto");
+      }
+    };
+
+    // На мобильных устройствах добавляем задержку, чтобы страница успела отрендериться
+    // после закрытия мобильного меню (300ms) и навигации
+    if (isMobile) {
+      // Используем requestAnimationFrame дважды для гарантии, что DOM обновлен
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Дополнительная задержка для полной отрисовки контента на мобильном
+          // Учитываем время закрытия меню (300ms) + время рендеринга страницы
+          setTimeout(performScroll, 150);
+        });
+      });
+    } else {
+      performScroll();
     }
   }, [
     location.pathname,
     scrollToStateKey,
     scrollFunctions,
     scrollToElementById,
+    isMobile,
   ]);
 
   useEffect(() => {
@@ -460,7 +479,6 @@ const Home = () => {
     };
 
     const idMappings = [
-      { id: "nashi-uslugi", key: "scrollToNashiUslugi" },
       { id: "cosmetic", key: "scrollToCosmetic" },
       { id: "capital", key: "scrollToCapital" },
       { id: "designer", key: "scrollToDesigner" },
@@ -621,7 +639,7 @@ const Home = () => {
               maxWidth: `${sidebarWidth}px`,
               width: `${sidebarWidth}px`,
               background: "transparent",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
+              border: "none",
               borderRadius: "0px",
               padding: "28px 22px 28px",
               position: "sticky",
@@ -647,8 +665,6 @@ const Home = () => {
             >
               {menuItems.map((item, index) => {
                 if (item.type === "submenu") {
-                  const isSubmenuActive = item.scrollKey === activeScrollKey;
-
                   return (
                     <div
                       key={`${item.name}-${index}`}
@@ -658,64 +674,33 @@ const Home = () => {
                         gap: "10px",
                       }}
                     >
-                      <button
-                        {...press}
-                        onClick={() => handleSidebarSelection(item)}
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          color: isSubmenuActive
-                            ? "#FFD700"
-                            : "rgba(255,255,255,0.92)",
-                          fontFamily: "Arial, sans-serif",
-                          fontWeight: 800,
-                          fontSize: "16px",
-                          letterSpacing: "0.6px",
-                          textTransform: "uppercase",
-                          padding: "4px 0",
-                          transition: "color 0.2s ease",
-                        }}
-                      >
-                        {item.name}
-                      </button>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "10px",
-                          paddingLeft: "8px",
-                        }}
-                      >
-                        {item.submenu?.map((subItem, subIndex) => {
-                          const isSubItemActive =
-                            subItem.scrollKey === activeScrollKey;
-                          return (
-                            <button
-                              {...press}
-                              key={`${subItem.name}-${subIndex}`}
-                              onClick={() => handleSidebarSelection(subItem)}
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                color: isSubItemActive
-                                  ? "#FFD700"
-                                  : "rgba(255,255,255,0.92)",
-                                fontFamily: "Arial, sans-serif",
-                                fontWeight: 600,
-                                fontSize: "16px",
-                                letterSpacing: "0.3px",
-                                textTransform: "none",
-                                lineHeight: 1.6,
-                                opacity: isSubItemActive ? 1 : 0.94,
-                                transition:
-                                  "color 0.2s ease, opacity 0.2s ease",
-                              }}
-                            >
-                              {subItem.name}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {item.submenu?.map((subItem, subIndex) => {
+                        const isSubItemActive =
+                          subItem.scrollKey === activeScrollKey;
+                        return (
+                          <button
+                            {...press}
+                            key={`${subItem.name}-${subIndex}`}
+                            onClick={() => handleSidebarSelection(subItem)}
+                            style={{
+                              all: "unset",
+                              cursor: "pointer",
+                              color: isSubItemActive
+                                ? "#FFD700"
+                                : "rgba(255,255,255,0.92)",
+                              fontFamily: "Arial, sans-serif",
+                              fontWeight: 500,
+                              fontSize: "16px",
+                              letterSpacing: "0.6px",
+                              textTransform: "uppercase",
+                              padding: "4px 0",
+                              transition: "color 0.2s ease",
+                            }}
+                          >
+                            {subItem.name}
+                          </button>
+                        );
+                      })}
                     </div>
                   );
                 }
@@ -734,7 +719,7 @@ const Home = () => {
                         ? "#FFD700"
                         : "rgba(255,255,255,0.95)",
                       fontFamily: "Arial, sans-serif",
-                      fontWeight: 800,
+                      fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.5px",
                       textTransform: "uppercase",
@@ -755,6 +740,13 @@ const Home = () => {
             flex: `0 0 ${fallbackContentWidth}px`,
             maxWidth: `${fallbackContentWidth}px`,
             width: "100%",
+            borderLeft: isMobile
+              ? "none"
+              : "1px solid rgba(255, 255, 255, 0.10)",
+            borderRight: "none",
+            outline: "none",
+            boxShadow: "none",
+            position: "relative",
           }}
         >
           {/* Иконка трубки*/}
@@ -889,100 +881,135 @@ const Home = () => {
             <section
               ref={calculatorRef}
               id="calculator"
-              style={{ scrollMarginTop: "74px" }}
+              style={{
+                scrollMarginTop: "74px",
+                borderRight: "none",
+                borderLeft: "none",
+                borderTop: "none",
+                borderBottom: "none",
+                outline: "none",
+                boxShadow: "none",
+                position: "relative",
+                isolation: "isolate",
+              }}
             >
               <RepairCalculator isMobile={isMobile} />
             </section>
 
-            {/* Блок со скидкой */}
+            {/* Hero-блок с контактами и изображением */}
             <section
               style={{
                 width: "100%",
                 backgroundColor: SECTION_BACKGROUND,
-                padding: isMobile ? "5px 0 30px 0" : "15px 0 50px 0",
+                padding: "0",
                 marginTop: "0",
                 position: "relative",
                 borderTop: "none",
                 boxSizing: "border-box",
               }}
             >
+              {/* Изображение на всю ширину */}
               <div
                 style={{
                   width: "100%",
-                  paddingLeft: isMobile ? "20px" : "24px",
-                  paddingRight: isMobile ? "20px" : "48px",
-                  boxSizing: "border-box",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: isMobile ? "20px" : "32px",
-                  alignItems: "flex-start",
+                  overflow: "hidden",
+                  position: "relative",
                 }}
               >
-                {/* Заголовок */}
-                <h2
+                <img
+                  src="/images/background_blok_number.webp"
+                  alt="Интерьер"
+                  loading="lazy"
                   style={{
-                    fontSize: isMobile ? TITLE_SIZES.mobile.service : TITLE_SIZES.desktop.service,
-                    fontWeight: "800",
-                    color: "#ffffff",
-                    margin: "0",
-                    lineHeight: isMobile ? 1.3 : 1.25,
                     width: "100%",
-                    textAlign: "left",
-                    letterSpacing: "0",
-                    wordSpacing: "0",
+                    height: "auto",
+                    display: "block",
+                    objectFit: "cover",
+                  }}
+                />
+
+                {/* Контентная часть поверх изображения */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: "100%",
+                    paddingLeft: isMobile ? "20px" : "24px",
+                    paddingRight: isMobile ? "20px" : "48px",
+                    paddingTop: isMobile ? "40px" : "40px",
+                    paddingBottom: isMobile ? "40px" : "40px",
+                    boxSizing: "border-box",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    gap: isMobile ? "20px" : "32px",
+                    alignItems: "flex-start",
                   }}
                 >
-                  {
-                    "Получите точный расчет за наш счет в течение 1-2 дней после звонка"
-                  }
-                </h2>
-
-                {/* Подзаголовок */}
-                <p
-                  style={{
-                    fontSize: isMobile ? "14px" : "20px",
-                    fontWeight: "400",
-                    color: "rgba(255,255,255,0.9)",
-                    margin: "0",
-                    lineHeight: 1.6,
-                    width: "100%",
-                    textAlign: "left",
-                    letterSpacing: "0",
-                    wordSpacing: "0",
-                  }}
-                >
-                  Гарантируем выезд специалиста и смету за наш счет
-                </p>
-
-                {/* Кнопка */}
-                <div>
-                  <Link
-                    to="/contacts"
+                  {/* Заголовок */}
+                  <h2
                     style={{
-                      textDecoration: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      color: "#FFD700",
-                      fontSize: isMobile ? "5vw" : "22px",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.gap = "14px";
-                      e.currentTarget.style.opacity = "0.9";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.gap = "10px";
-                      e.currentTarget.style.opacity = "1";
+                      fontSize: isMobile
+                        ? TITLE_SIZES.mobile.service
+                        : TITLE_SIZES.desktop.service,
+                      fontWeight: "800",
+                      color: "#ffffff",
+                      margin: "0",
+                      lineHeight: isMobile ? 1.3 : 1.25,
+                      width: "100%",
+                      textAlign: "left",
+                      letterSpacing: "0",
+                      wordSpacing: "0",
+                      textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
                     }}
                   >
-                    Получить расчет
-                    <span style={{ fontSize: isMobile ? "5.2vw" : "26px" }}>
-                      →
-                    </span>
-                  </Link>
+                    {
+                      "Получите точный расчет за наш счет в течение 1-2 дней после звонка"
+                    }
+                  </h2>
+
+                  {/* Подзаголовок */}
+                  <p
+                    style={{
+                      fontSize: isMobile ? "14px" : "24px",
+                      fontWeight: "400",
+                      color: "rgba(255,255,255,0.9)",
+                      margin: "0",
+                      lineHeight: 1.6,
+                      width: "100%",
+                      textAlign: "left",
+                      letterSpacing: "0",
+                      wordSpacing: "0",
+                      textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
+                    Гарантируем выезд специалиста и смету за наш счет
+                  </p>
+
+                  {/* Телефон */}
+                  <div>
+                    <a
+                      href="tel:+79264081811"
+                      onClick={() => {
+                        ymGoal("phone_click");
+                      }}
+                      style={{
+                        textDecoration: "none",
+                        display: "inline-block",
+                        color: "#ffffff",
+                        fontSize: isMobile ? "28px" : "42px",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        letterSpacing: "0.5px",
+                        textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+                      }}
+                    >
+                      +7 (926) 408-18-11
+                    </a>
+                  </div>
                 </div>
               </div>
             </section>
@@ -1045,339 +1072,341 @@ const Home = () => {
                 }}
                 ref={reviewsRef}
               >
-              <div
-                style={{
-                  textAlign: "left",
-                  marginBottom: isMobile ? 12 : 18,
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: isMobile ? TITLE_SIZES.mobile.main : TITLE_SIZES.desktop.main,
-                    fontWeight: 900,
-                    margin: 0,
-                    color: "#FFD700",
-                    lineHeight: isMobile ? 1.2 : 1.1,
-                    letterSpacing: "-0.5px",
-                    textShadow: "0 2px 8px rgba(255,215,0,0.2)",
-                  }}
-                >
-                  Отзывы
-                </h2>
                 <div
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
-                    color: "rgba(255,255,255,0.9)",
-                    marginTop: isMobile ? 6 : 8,
-                    fontWeight: 500,
+                    textAlign: "left",
+                    marginBottom: isMobile ? 12 : 18,
                   }}
                 >
-                  Чем довольны те, кто доверил нам ремонт.
+                  <h2
+                    style={{
+                      fontSize: isMobile
+                        ? TITLE_SIZES.mobile.main
+                        : TITLE_SIZES.desktop.main,
+                      fontWeight: 900,
+                      margin: 0,
+                      color: "#FFD700",
+                      lineHeight: isMobile ? 1.2 : 1.1,
+                      letterSpacing: "-0.5px",
+                      textShadow: "0 2px 8px rgba(255,215,0,0.2)",
+                    }}
+                  >
+                    Отзывы
+                  </h2>
+                  <div
+                    style={{
+                      fontSize: isMobile ? "18px" : "22px",
+                      color: "rgba(255,255,255,0.9)",
+                      marginTop: isMobile ? 6 : 8,
+                      fontWeight: 500,
+                    }}
+                  >
+                    Чем довольны те, кто доверил нам ремонт.
+                  </div>
                 </div>
-              </div>
 
-              {(() => {
-                const reviews = [
-                  {
-                    name: "Никита",
-                    place: "ЖК «Сердце Столицы»",
-                    text: "Благодарим за работу по ремонту квартиры в ЖК «Сердце Столицы». Бесплатная и быстрая смета, качественная и своевременная работа, заранее составленный график работ. Особая благодарность мастеру Севастьяну за постоянный контроль и связь. Помогли с выбором отделочных материалов со скидкой. Буду рекомендовать компанию друзьям!",
-                  },
-                  {
-                    name: "Андрей Т.",
-                    place: "Пушкинский район, МО",
-                    text: "Работали с директором Антоном Самылкиным и прорабом Севастьяном над домом 240 м². Компания выбрана после встреч с четырьмя подрядчиками — самая компетентная. Работы выполнены точно по проектам: вся электрика, водоснабжение, отопление, фиброармированная стяжка, штукатурка, плитка, установка дорогой сантехники. Каждый этап сдавался технадзору, замечания исправлялись. Дом сдан под ключ, все сроки соблюдены без задержек. Рекомендую!",
-                  },
-                  {
-                    name: "Боровских А.",
-                    place: "Москва",
-                    text: "Ремонт сделан хорошо. Особенно приятно отношение прораба Валерия — всегда корректно относился к вопросам, готов был объяснить и посоветовать. В процессе мы периодически уезжали, но он планировал работы так, чтобы это не задерживало процесс. Работы выполнены аккуратно, после ремонта квартира практически чистая. В целом работой доволен!",
-                  },
-                  {
-                    name: "Аноним",
-                    place: "Москва",
-                    text: "Обратились в компанию по совету друзей, которые были довольны работой. Сотрудники помогали во всём: от помощи в покупке черновых материалов до помощи в выборе отделочных материалов. Особенно понравилась работа прораба, который помог снизить затраты на дизайнера — грамотно посоветовал по размещению розеток и выключателей. Всегда был готов к компромиссам, приходил на встречи даже поздно вечером после рабочего дня. Довольны!",
-                  },
-                  {
-                    name: "Оля М.",
-                    place: "Москва",
-                    text: "Мастера компетентные, всегда готовы проконсультировать, посоветовать, объяснить, особенно важно, что работы делали для себя и на долго. Особая благодарность прорабу — советы были ценными, предложения конструктивными, постоянно контролировал процесс. Всё чётко, ясно и прозрачно! Работа строго по смете, итоговая сумма точно по договору — ни копейкой больше.",
-                  },
-                ];
+                {(() => {
+                  const reviews = [
+                    {
+                      name: "Никита",
+                      place: "ЖК «Сердце Столицы»",
+                      text: "Благодарим за работу по ремонту квартиры в ЖК «Сердце Столицы». Бесплатная и быстрая смета, качественная и своевременная работа, заранее составленный график работ. Особая благодарность мастеру Севастьяну за постоянный контроль и связь. Помогли с выбором отделочных материалов со скидкой. Буду рекомендовать компанию друзьям!",
+                    },
+                    {
+                      name: "Андрей Т.",
+                      place: "Пушкинский район, МО",
+                      text: "Работали с директором Антоном Самылкиным и прорабом Севастьяном над домом 240 м². Компания выбрана после встреч с четырьмя подрядчиками — самая компетентная. Работы выполнены точно по проектам: вся электрика, водоснабжение, отопление, фиброармированная стяжка, штукатурка, плитка, установка дорогой сантехники. Каждый этап сдавался технадзору, замечания исправлялись. Дом сдан под ключ, все сроки соблюдены без задержек. Рекомендую!",
+                    },
+                    {
+                      name: "Боровских А.",
+                      place: "Москва",
+                      text: "Ремонт сделан хорошо. Особенно приятно отношение прораба Валерия — всегда корректно относился к вопросам, готов был объяснить и посоветовать. В процессе мы периодически уезжали, но он планировал работы так, чтобы это не задерживало процесс. Работы выполнены аккуратно, после ремонта квартира практически чистая. В целом работой доволен!",
+                    },
+                    {
+                      name: "Аноним",
+                      place: "Москва",
+                      text: "Обратились в компанию по совету друзей, которые были довольны работой. Сотрудники помогали во всём: от помощи в покупке черновых материалов до помощи в выборе отделочных материалов. Особенно понравилась работа прораба, который помог снизить затраты на дизайнера — грамотно посоветовал по размещению розеток и выключателей. Всегда был готов к компромиссам, приходил на встречи даже поздно вечером после рабочего дня. Довольны!",
+                    },
+                    {
+                      name: "Оля М.",
+                      place: "Москва",
+                      text: "Мастера компетентные, всегда готовы проконсультировать, посоветовать, объяснить, особенно важно, что работы делали для себя и на долго. Особая благодарность прорабу — советы были ценными, предложения конструктивными, постоянно контролировал процесс. Всё чётко, ясно и прозрачно! Работа строго по смете, итоговая сумма точно по договору — ни копейкой больше.",
+                    },
+                  ];
 
-                // Функция для получения инициалов
-                const getInitials = (name) => {
-                  const parts = name.split(" ");
-                  if (parts.length >= 2) {
-                    return (parts[0][0] + parts[1][0]).toUpperCase();
-                  }
-                  return name[0].toUpperCase();
-                };
+                  // Функция для получения инициалов
+                  const getInitials = (name) => {
+                    const parts = name.split(" ");
+                    if (parts.length >= 2) {
+                      return (parts[0][0] + parts[1][0]).toUpperCase();
+                    }
+                    return name[0].toUpperCase();
+                  };
 
-                // Функция для генерации цвета аватарки
-                const getAvatarColor = (name) => {
-                  return "#5a6b78";
-                };
+                  // Функция для генерации цвета аватарки
+                  const getAvatarColor = (name) => {
+                    return "#5a6b78";
+                  };
 
-                // Обработчики свайпа (touch и mouse)
-                const handleStart = (clientX) => {
-                  touchStartX.current = clientX;
-                };
+                  // Обработчики свайпа (touch и mouse)
+                  const handleStart = (clientX) => {
+                    touchStartX.current = clientX;
+                  };
 
-                const handleMove = (clientX) => {
-                  touchEndX.current = clientX;
-                };
+                  const handleMove = (clientX) => {
+                    touchEndX.current = clientX;
+                  };
 
-                const handleEnd = () => {
-                  if (!touchStartX.current || !touchEndX.current) return;
+                  const handleEnd = () => {
+                    if (!touchStartX.current || !touchEndX.current) return;
 
-                  // Блокируем свайп во время анимации
-                  if (isAnimatingRef.current) {
+                    // Блокируем свайп во время анимации
+                    if (isAnimatingRef.current) {
+                      touchStartX.current = 0;
+                      touchEndX.current = 0;
+                      return;
+                    }
+
+                    const distance = touchStartX.current - touchEndX.current;
+                    const minSwipeDistance = 50;
+
+                    if (distance > minSwipeDistance) {
+                      // Свайп влево - следующая карточка
+                      // Короткая вибрация
+                      if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                      }
+                      setCurrentReviewIndex((prev) =>
+                        prev < reviews.length - 1 ? prev + 1 : 0
+                      );
+                    } else if (distance < -minSwipeDistance) {
+                      // Свайп вправо - предыдущая карточка
+                      // Короткая вибрация
+                      if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                      }
+                      setCurrentReviewIndex((prev) =>
+                        prev > 0 ? prev - 1 : reviews.length - 1
+                      );
+                    }
+
                     touchStartX.current = 0;
                     touchEndX.current = 0;
-                    return;
-                  }
+                  };
 
-                  const distance = touchStartX.current - touchEndX.current;
-                  const minSwipeDistance = 50;
+                  const handleTouchStart = (e) => {
+                    handleStart(e.touches[0].clientX);
+                  };
 
-                  if (distance > minSwipeDistance) {
-                    // Свайп влево - следующая карточка
-                    // Короткая вибрация
-                    if (navigator.vibrate) {
-                      navigator.vibrate(50);
+                  const handleTouchMove = (e) => {
+                    handleMove(e.touches[0].clientX);
+                  };
+
+                  const handleTouchEnd = () => {
+                    handleEnd();
+                  };
+
+                  // Обработчики для мыши (десктоп)
+                  const handleMouseDown = (e) => {
+                    handleStart(e.clientX);
+                  };
+
+                  const handleMouseMove = (e) => {
+                    if (touchStartX.current !== 0) {
+                      handleMove(e.clientX);
                     }
-                    setCurrentReviewIndex((prev) =>
-                      prev < reviews.length - 1 ? prev + 1 : 0
-                    );
-                  } else if (distance < -minSwipeDistance) {
-                    // Свайп вправо - предыдущая карточка
-                    // Короткая вибрация
-                    if (navigator.vibrate) {
-                      navigator.vibrate(50);
-                    }
-                    setCurrentReviewIndex((prev) =>
-                      prev > 0 ? prev - 1 : reviews.length - 1
-                    );
-                  }
+                  };
 
-                  touchStartX.current = 0;
-                  touchEndX.current = 0;
-                };
+                  const handleMouseUp = () => {
+                    handleEnd();
+                  };
 
-                const handleTouchStart = (e) => {
-                  handleStart(e.touches[0].clientX);
-                };
+                  const displayedReview = reviews[displayedReviewIndex];
 
-                const handleTouchMove = (e) => {
-                  handleMove(e.touches[0].clientX);
-                };
+                  const sliderContainerStyle = {
+                    position: "relative",
+                    width: "100%",
+                    overflow: "hidden",
+                    userSelect: "none",
+                    cursor: "grab",
+                  };
 
-                const handleTouchEnd = () => {
-                  handleEnd();
-                };
+                  // Плитка - трясется вместе с содержимым
+                  const cardStyle = {
+                    borderRadius: 16,
+                    background: SECTION_BACKGROUND,
+                    border: "1px solid rgba(255,255,255,.1)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,.4)",
+                    padding: isMobile
+                      ? "14px 20px 14px 18px"
+                      : "18px 26px 18px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    position: "relative",
+                    animation: isShaking ? "shake 0.3s ease-in-out" : "none",
+                    touchAction: "pan-y",
+                    userSelect: "none",
+                    cursor: "grab",
+                  };
 
-                // Обработчики для мыши (десктоп)
-                const handleMouseDown = (e) => {
-                  handleStart(e.clientX);
-                };
+                  // Содержимое - трясется вместе с плиткой, затухает/появляется
+                  const cardContentStyle = {
+                    opacity: contentOpacity,
+                    transition: "opacity 0.1s ease-in-out",
+                    position: "relative",
+                    zIndex: 1,
+                  };
 
-                const handleMouseMove = (e) => {
-                  if (touchStartX.current !== 0) {
-                    handleMove(e.clientX);
-                  }
-                };
+                  const indicatorStyle = {
+                    position: "absolute",
+                    top: isMobile ? 12 : 16,
+                    right: isMobile ? 12 : 16,
+                    width: isMobile ? 32 : 36,
+                    height: isMobile ? 32 : 36,
+                    borderRadius: "50%",
+                    backgroundColor: SECTION_BACKGROUND,
+                    border: "1px solid rgba(255,255,255,.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "rgba(255,255,255,0.85)",
+                    fontWeight: 700,
+                    fontSize: isMobile ? 12 : 14,
+                    opacity: 1,
+                    zIndex: 10,
+                    pointerEvents: "none",
+                  };
 
-                const handleMouseUp = () => {
-                  handleEnd();
-                };
+                  const nameStyle = {
+                    display: "flex",
+                    alignItems: "center",
+                    gap: isMobile ? 10 : 12,
+                    marginBottom: 8,
+                  };
 
-                const displayedReview = reviews[displayedReviewIndex];
+                  const avatarStyle = {
+                    width: isMobile ? 40 : 44,
+                    height: isMobile ? 40 : 44,
+                    borderRadius: "50%",
+                    backgroundColor: getAvatarColor(displayedReview.name),
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: isMobile ? 14 : 16,
+                    flexShrink: 0,
+                  };
 
-                const sliderContainerStyle = {
-                  position: "relative",
-                  width: "100%",
-                  overflow: "hidden",
-                  userSelect: "none",
-                  cursor: "grab",
-                };
+                  const nameInfoStyle = {
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    flex: 1,
+                  };
 
-                // Плитка - трясется вместе с содержимым
-                const cardStyle = {
-                  borderRadius: 16,
-                  background: SECTION_BACKGROUND,
-                  border: "1px solid rgba(255,255,255,.1)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,.4)",
-                  padding: isMobile
-                    ? "14px 20px 14px 18px"
-                    : "18px 26px 18px 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  position: "relative",
-                  animation: isShaking ? "shake 0.3s ease-in-out" : "none",
-                  touchAction: "pan-y",
-                  userSelect: "none",
-                  cursor: "grab",
-                };
+                  const nameTextStyle = {
+                    fontWeight: 800,
+                    fontSize: isMobile ? 16 : 18,
+                    color: "#fff",
+                  };
 
-                // Содержимое - трясется вместе с плиткой, затухает/появляется
-                const cardContentStyle = {
-                  opacity: contentOpacity,
-                  transition: "opacity 0.1s ease-in-out",
-                  position: "relative",
-                  zIndex: 1,
-                };
+                  const placeStyle = {
+                    color: "#FFD700",
+                    fontSize: isMobile ? 12 : 13,
+                    fontWeight: 600,
+                    opacity: 0.9,
+                  };
 
-                const indicatorStyle = {
-                  position: "absolute",
-                  top: isMobile ? 12 : 16,
-                  right: isMobile ? 12 : 16,
-                  width: isMobile ? 32 : 36,
-                  height: isMobile ? 32 : 36,
-                  borderRadius: "50%",
-                  backgroundColor: SECTION_BACKGROUND,
-                  border: "1px solid rgba(255,255,255,.1)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "rgba(255,255,255,0.85)",
-                  fontWeight: 700,
-                  fontSize: isMobile ? 12 : 14,
-                  opacity: 1,
-                  zIndex: 10,
-                  pointerEvents: "none",
-                };
+                  const starsStyle = {
+                    display: "flex",
+                    gap: 2,
+                    marginBottom: 8,
+                  };
 
-                const nameStyle = {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: isMobile ? 10 : 12,
-                  marginBottom: 8,
-                };
+                  const textStyle = {
+                    color: "rgba(255,255,255,.92)",
+                    fontSize: isMobile ? 14 : 15,
+                    lineHeight: 1.6,
+                  };
 
-                const avatarStyle = {
-                  width: isMobile ? 40 : 44,
-                  height: isMobile ? 40 : 44,
-                  borderRadius: "50%",
-                  backgroundColor: getAvatarColor(displayedReview.name),
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontWeight: 700,
-                  fontSize: isMobile ? 14 : 16,
-                  flexShrink: 0,
-                };
+                  // SVG для звезды
+                  const StarIcon = ({ filled = true, size = 14 }) => (
+                    <svg
+                      width={size}
+                      height={size}
+                      viewBox="0 0 24 24"
+                      fill={filled ? "#f2cb05" : "none"}
+                      stroke="#f2cb05"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  );
 
-                const nameInfoStyle = {
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 4,
-                  flex: 1,
-                };
-
-                const nameTextStyle = {
-                  fontWeight: 800,
-                  fontSize: isMobile ? 16 : 18,
-                  color: "#fff",
-                };
-
-                const placeStyle = {
-                  color: "#FFD700",
-                  fontSize: isMobile ? 12 : 13,
-                  fontWeight: 600,
-                  opacity: 0.9,
-                };
-
-                const starsStyle = {
-                  display: "flex",
-                  gap: 2,
-                  marginBottom: 8,
-                };
-
-                const textStyle = {
-                  color: "rgba(255,255,255,.92)",
-                  fontSize: isMobile ? 14 : 15,
-                  lineHeight: 1.6,
-                };
-
-                // SVG для звезды
-                const StarIcon = ({ filled = true, size = 14 }) => (
-                  <svg
-                    width={size}
-                    height={size}
-                    viewBox="0 0 24 24"
-                    fill={filled ? "#f2cb05" : "none"}
-                    stroke="#f2cb05"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                );
-
-                return (
-                  <>
-                    <style>
-                      {`
+                  return (
+                    <>
+                      <style>
+                        {`
                     @keyframes shake {
                       0%, 100% { transform: translateX(0); }
                       10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
                       20%, 40%, 60%, 80% { transform: translateX(4px); }
                     }
                   `}
-                    </style>
-                    <div
-                      ref={reviewsSliderRef}
-                      style={sliderContainerStyle}
-                      onTouchStart={handleTouchStart}
-                      onTouchMove={handleTouchMove}
-                      onTouchEnd={handleTouchEnd}
-                      onMouseDown={handleMouseDown}
-                      onMouseMove={handleMouseMove}
-                      onMouseUp={handleMouseUp}
-                      onMouseLeave={handleMouseUp}
-                    >
-                      {/* Плитка с содержимым - трясется */}
-                      <div style={cardStyle}>
-                        {/* Индикатор с номером карточки - всегда видим, не подвержен анимации */}
-                        <div style={indicatorStyle}>
-                          {currentReviewIndex + 1}/{reviews.length}
-                        </div>
-
-                        {/* Содержимое - трясется вместе с плиткой, затухает/появляется */}
-                        <div style={cardContentStyle}>
-                          <div style={nameStyle}>
-                            <div style={avatarStyle}>
-                              {getInitials(displayedReview.name)}
-                            </div>
-                            <div style={nameInfoStyle}>
-                              <div style={nameTextStyle}>
-                                {displayedReview.name}
-                              </div>
-                              <div style={starsStyle}>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <StarIcon
-                                    key={star}
-                                    filled={true}
-                                    size={isMobile ? 12 : 14}
-                                  />
-                                ))}
-                              </div>
-                              <div style={placeStyle}>
-                                {displayedReview.place}
-                              </div>
-                            </div>
+                      </style>
+                      <div
+                        ref={reviewsSliderRef}
+                        style={sliderContainerStyle}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {/* Плитка с содержимым - трясется */}
+                        <div style={cardStyle}>
+                          {/* Индикатор с номером карточки - всегда видим, не подвержен анимации */}
+                          <div style={indicatorStyle}>
+                            {currentReviewIndex + 1}/{reviews.length}
                           </div>
-                          <div style={textStyle}>{displayedReview.text}</div>
+
+                          {/* Содержимое - трясется вместе с плиткой, затухает/появляется */}
+                          <div style={cardContentStyle}>
+                            <div style={nameStyle}>
+                              <div style={avatarStyle}>
+                                {getInitials(displayedReview.name)}
+                              </div>
+                              <div style={nameInfoStyle}>
+                                <div style={nameTextStyle}>
+                                  {displayedReview.name}
+                                </div>
+                                <div style={starsStyle}>
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <StarIcon
+                                      key={star}
+                                      filled={true}
+                                      size={isMobile ? 12 : 14}
+                                    />
+                                  ))}
+                                </div>
+                                <div style={placeStyle}>
+                                  {displayedReview.place}
+                                </div>
+                              </div>
+                            </div>
+                            <div style={textStyle}>{displayedReview.text}</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                );
-              })()}
+                    </>
+                  );
+                })()}
               </section>
 
               {/* С заботой о вас / О нас */}
@@ -1395,112 +1424,112 @@ const Home = () => {
                   flex: isMobile ? "none" : "0 0 60%",
                 }}
               >
-              <div
-                style={{
-                  width: "100%",
-                  maxWidth: "1400px",
-                  margin: "0",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  boxSizing: "border-box",
-                }}
-              >
-                <div
-                  style={{
-                    textAlign: "left",
-                    width: "100%",
-                    paddingLeft: isMobile ? "20px" : "24px",
-                    paddingRight: isMobile ? "20px" : "24px",
-                    boxSizing: "border-box",
-                    marginBottom: isMobile
-                      ? TITLE_CONTENT_GAP.mobile
-                      : TITLE_CONTENT_GAP.desktop,
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontSize: isMobile
-                        ? TITLE_SIZES.mobile.main
-                        : TITLE_SIZES.desktop.main,
-                      fontWeight: "900",
-                      color: "#FFD700",
-                      margin: `0 0 ${
-                        isMobile
-                          ? TITLE_SUBTITLE_GAP.mobile
-                          : TITLE_SUBTITLE_GAP.desktop
-                      } 0`,
-                      lineHeight: isMobile ? 1.2 : 1.1,
-                      letterSpacing: "-0.5px",
-                      textShadow: "0 2px 8px rgba(255,215,0,0.2)",
-                    }}
-                  >
-                    С заботой о вас
-                  </h2>
-                  <p
-                    style={{
-                      fontSize: isMobile ? "18px" : "22px",
-                      color: "rgba(255,255,255,0.9)",
-                      margin: 0,
-                      lineHeight: 1.6,
-                      fontWeight: 500,
-                    }}
-                  >
-                    Внимание не только к деталям, но и к вашим соседям и другим
-                    жильцам дома
-                  </p>
-                </div>
-
-                <FullWidthViewportVideo
-                  videoSrc="/videos/care-about-you.MOV"
-                  sources={[
-                    {
-                      src: "/videos/care-about-you.MOV",
-                      type: "video/quicktime",
-                    },
-                    { src: "/videos/care-about-you.MOV", type: "video/mp4" },
-                  ]}
-                  aspectRatio="4 / 5"
-                  containerStyle={{
-                    width: "100%",
-                    marginLeft: 0,
-                    borderRadius: 0,
-                    overflow: "hidden",
-                    boxShadow: "0 24px 70px rgba(0,0,0,0.35)",
-                  }}
-                  videoStyle={{
-                    objectFit: "cover",
-                  }}
-                  showSoundToggle={!isMobile}
-                />
-
                 <div
                   style={{
                     width: "100%",
                     maxWidth: "1400px",
                     margin: "0",
-                    paddingTop: isMobile
-                      ? TITLE_CONTENT_GAP.mobile
-                      : TITLE_CONTENT_GAP.desktop,
-                    paddingLeft: isMobile ? "20px" : "24px",
-                    paddingRight: isMobile ? "20px" : "24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                     boxSizing: "border-box",
                   }}
                 >
-                  <p
+                  <div
                     style={{
-                      fontSize: isMobile ? "16px" : "20px",
-                      color: "rgba(255,255,255,0.9)",
-                      margin: 0,
-                      lineHeight: 1.6,
-                      fontWeight: 400,
+                      textAlign: "left",
+                      width: "100%",
+                      paddingLeft: isMobile ? "20px" : "24px",
+                      paddingRight: isMobile ? "20px" : "24px",
+                      boxSizing: "border-box",
+                      marginBottom: isMobile
+                        ? TITLE_CONTENT_GAP.mobile
+                        : TITLE_CONTENT_GAP.desktop,
                     }}
                   >
-                    Во время ремонта квартиры в жилом доме мы полностью
-                    упаковываем лифты, а также всю входную группу на этаже
-                  </p>
+                    <h2
+                      style={{
+                        fontSize: isMobile
+                          ? TITLE_SIZES.mobile.main
+                          : TITLE_SIZES.desktop.main,
+                        fontWeight: "900",
+                        color: "#FFD700",
+                        margin: `0 0 ${
+                          isMobile
+                            ? TITLE_SUBTITLE_GAP.mobile
+                            : TITLE_SUBTITLE_GAP.desktop
+                        } 0`,
+                        lineHeight: isMobile ? 1.2 : 1.1,
+                        letterSpacing: "-0.5px",
+                        textShadow: "0 2px 8px rgba(255,215,0,0.2)",
+                      }}
+                    >
+                      С заботой о вас
+                    </h2>
+                    <p
+                      style={{
+                        fontSize: isMobile ? "18px" : "22px",
+                        color: "rgba(255,255,255,0.9)",
+                        margin: 0,
+                        lineHeight: 1.6,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Внимание не только к деталям, но и к вашим соседям и
+                      другим жильцам дома
+                    </p>
+                  </div>
+
+                  <FullWidthViewportVideo
+                    videoSrc="/videos/care-about-you.MOV"
+                    sources={[
+                      {
+                        src: "/videos/care-about-you.MOV",
+                        type: "video/quicktime",
+                      },
+                      { src: "/videos/care-about-you.MOV", type: "video/mp4" },
+                    ]}
+                    aspectRatio="4 / 5"
+                    containerStyle={{
+                      width: "100%",
+                      marginLeft: 0,
+                      borderRadius: 0,
+                      overflow: "hidden",
+                      boxShadow: "0 24px 70px rgba(0,0,0,0.35)",
+                    }}
+                    videoStyle={{
+                      objectFit: "cover",
+                    }}
+                    showSoundToggle={!isMobile}
+                  />
+
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "1400px",
+                      margin: "0",
+                      paddingTop: isMobile
+                        ? TITLE_CONTENT_GAP.mobile
+                        : TITLE_CONTENT_GAP.desktop,
+                      paddingLeft: isMobile ? "20px" : "24px",
+                      paddingRight: isMobile ? "20px" : "24px",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: isMobile ? "16px" : "20px",
+                        color: "rgba(255,255,255,0.9)",
+                        margin: 0,
+                        lineHeight: 1.6,
+                        fontWeight: 400,
+                      }}
+                    >
+                      Во время ремонта квартиры в жилом доме мы полностью
+                      упаковываем лифты, а также всю входную группу на этаже
+                    </p>
+                  </div>
                 </div>
-              </div>
               </section>
             </div>
 
@@ -1508,7 +1537,9 @@ const Home = () => {
             <h2
               id="design-projects"
               style={{
-                fontSize: isMobile ? TITLE_SIZES.mobile.main : TITLE_SIZES.desktop.main,
+                fontSize: isMobile
+                  ? TITLE_SIZES.mobile.main
+                  : TITLE_SIZES.desktop.main,
                 fontWeight: 800,
                 margin: "0 0 20px 0",
                 color: "#fff",

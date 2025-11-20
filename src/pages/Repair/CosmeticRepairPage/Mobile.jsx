@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
-import { SECTION_BACKGROUND } from "../../../utils/spacing";
+import { SECTION_BACKGROUND, TITLE_SIZES, TITLE_COLOR } from "../../../utils/spacing";
 
 const Mobile = () => {
   const navigate = useNavigateWithMetrika();
@@ -85,40 +85,97 @@ const Mobile = () => {
           padding: "20px 20px 0",
         }}
       >
-        <p
+        <h2
           style={{
             color: "#fff",
-            fontSize: 16,
-            lineHeight: 1.6,
-            margin: 0,
-            textAlign: "left",
-            whiteSpace: "pre-line",
-          }}
-        >
-          {`Косметический ремонт обновляет интерьер без сложных перепланировок.
-Мы освежаем покрытия, меняем предполагаемые элементы декора и берём на себя закупку материалов.
-Работы выполняем бережно, поддерживая порядок в квартире на каждом этапе.`}
-        </p>
-        <p
-          style={{
-            color: "#fff",
-            fontSize: 16,
-            lineHeight: 1.6,
-            margin: "14px 0 0",
+            fontSize: TITLE_SIZES.mobile.service,
+            fontWeight: 700,
+            margin: "0 0 20px 0",
             textAlign: "left",
           }}
         >
-          В команде работают профильные мастера, соблюдаем строительные нормы и
-          фиксируем цену в смете. Закупаем материалы по корпоративным скидкам,
-          ведём ежедневный контроль и гарантируем отсутствие скрытых «допов».
-          После сдачи передаём гарантию и остаёмся на связи — можно сразу
-          заезжать и пользоваться обновлённым пространством.
-        </p>
+          Что входит?
+        </h2>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "14px",
+          }}
+        >
+          {[
+            "Демонтаж старых покрытий со стен, потолка, пола.",
+            "Шпатлевка, грунтовка, выравнивание стен, потолка и пола.",
+            "Оклейка стен обоями, обновление краски, напольного покрытия.",
+            "Монтаж сантехники без разводки коммуникаций.",
+            "Выполнение частичной разводки электросетей, установка розеток, светильников.",
+            "Замена плинтусов и наличников",
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <svg
+                width="18"
+                height="14"
+                viewBox="0 0 20 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  minWidth: "18px",
+                  flexShrink: 0,
+                }}
+              >
+                <path
+                  d="M2 8L7 13L18 2"
+                  stroke="#FFD700"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  lineHeight: 1.6,
+                  margin: 0,
+                  textAlign: "left",
+                }}
+              >
+                {item}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div
         style={{
           padding: "32px 20px 0",
+        }}
+      >
+        <h2
+          style={{
+            color: TITLE_COLOR,
+            fontSize: 32,
+            marginBottom: 20,
+            fontWeight: 800,
+            textAlign: "left",
+          }}
+        >
+          Примеры
+        </h2>
+      </div>
+
+      <div
+        style={{
+          padding: "0 20px",
         }}
       >
         <h2

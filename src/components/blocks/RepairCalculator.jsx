@@ -450,7 +450,15 @@ const RepairCalculator = ({ isMobile }) => {
           marginTop: "0",
           position: "relative",
           borderTop: "none",
+          borderRight: "none",
+          borderBottom: "none",
+          borderLeft: "none",
+          outline: "none",
+          boxShadow: "none",
           boxSizing: "border-box",
+          isolation: "isolate",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
       >
         <div

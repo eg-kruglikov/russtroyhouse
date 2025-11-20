@@ -10,7 +10,12 @@ import { ymGoal, ymNotBounce } from "../../utils/metrika";
 import CompanyName from "./CompanyName";
 import { useNotBounceOnce } from "../../hooks/useNotBounceOnce";
 import { useResponsiveShell } from "../../hooks/useResponsiveShell";
-import { createMenuItems, NAV_GOALS_MAP } from "../../utils/navigationConfig";
+import {
+  createMenuItems,
+  createRepairPageMenuItems,
+  NAV_GOALS_MAP,
+  filterMenuItemsByCurrentRepair,
+} from "../../utils/navigationConfig";
 import { SECTION_BACKGROUND } from "../../utils/spacing";
 
 const Header = ({
@@ -264,10 +269,16 @@ const Header = ({
   }, [menuOpen]);
 
   // Обработчики навигации
-  const menuItems = useMemo(
-    () => createMenuItems(scrollFunctions),
-    [scrollFunctions]
-  );
+  const menuItems = useMemo(() => {
+    // На страницах ремонта используем специальный порядок меню
+    const isRepairPage = location.pathname.startsWith("/repair/");
+    if (isRepairPage) {
+      return createRepairPageMenuItems(location.pathname);
+    }
+    // На остальных страницах используем стандартное меню с фильтрацией
+    const items = createMenuItems(scrollFunctions);
+    return filterMenuItemsByCurrentRepair(items, location.pathname);
+  }, [scrollFunctions, location.pathname]);
 
   const colorTextHeader = "#cdcdcd";
   const highlightColor = "#FFD700";
@@ -297,7 +308,7 @@ const Header = ({
         height: "60px",
         backgroundColor: SECTION_BACKGROUND,
         padding: "0",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
         zIndex: 1000,
       }}
     >
@@ -407,6 +418,7 @@ const Header = ({
               width: "28px",
               height: "28px",
               marginLeft: "auto",
+              marginRight: "18px",
               WebkitTapHighlightColor: "transparent",
             }}
             aria-label="Позвонить"
@@ -566,156 +578,105 @@ const Header = ({
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "4px",
+                  gap: "18px",
                 }}
               >
-                {menuItems.map((item, i) => {
-                  if (item.type === "submenu") {
-                    const isSubmenuActive =
-                      item.scrollKey && activeScrollKey === item.scrollKey;
-
-                    return (
+                {menuItems.flatMap((item, i) => {
+                  // Обработка separator
+                  if (item.type === "separator") {
+                    return [
                       <div
-                        key={i}
+                        key={`separator-${i}`}
                         style={{
-                          backgroundColor: "transparent",
-                          borderRadius: "16px",
-                          padding: "0",
-                          marginTop: "8px",
-                          marginBottom: "8px",
-                          border: "none",
-                          boxShadow: "none",
-                          position: "relative",
+                          height: "24px",
+                          width: "100%",
                         }}
-                      >
+                      />,
+                    ];
+                  }
+
+                  if (item.type === "submenu") {
+                    // Рендерим submenu items напрямую, без родительского элемента "Ремонты"
+                    return item.submenu.map((subItem, j) => {
+                      const isSubItemActive =
+                        subItem.scrollKey === activeScrollKey;
+
+                      return (
                         <button
                           {...press}
+                          key={`${subItem.name}-${j}`}
                           onClick={() => {
                             ensureNotBounce();
-                            ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+                            ymGoal(NAV_GOALS_MAP[subItem.name] || "nav_click");
                             setMenuOpen(false);
                             navigator.vibrate?.(30);
                             // Выполняем навигацию/скролл после закрытия меню
                             setTimeout(() => {
-                              triggerNavAction(item);
+                              triggerNavAction(subItem);
                             }, 300);
                           }}
                           style={{
                             all: "unset",
                             cursor: "pointer",
                             display: "block",
-                            color: isSubmenuActive
+                            color: isSubItemActive
                               ? highlightColor
-                              : "rgba(255,255,255,0.95)",
+                              : "rgba(255,255,255,0.92)",
                             fontFamily: "Arial, sans-serif",
-                            fontWeight: "800",
-                            fontSize: isMobile ? "16px" : "18px",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            letterSpacing: "0.6px",
                             textTransform: "uppercase",
-                            letterSpacing: "0.5px",
-                            marginBottom: "8px",
-                            textAlign: "left",
                             WebkitTapHighlightColor: "transparent",
-                            padding: "0",
-                            width: "100%",
+                            padding: "4px 0",
+                            textAlign: "left",
                             transition: "color 0.2s ease",
                           }}
                         >
-                          {item.name}
+                          {subItem.name}
                         </button>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "10px",
-                            paddingLeft: "12px",
-                          }}
-                        >
-                          {item.submenu.map((subItem, j) => {
-                            const isSubItemActive =
-                              subItem.scrollKey === activeScrollKey;
-
-                            return (
-                              <button
-                                {...press}
-                                key={j}
-                                onClick={() => {
-                                  ensureNotBounce();
-                                  ymGoal(
-                                    NAV_GOALS_MAP[subItem.name] || "nav_click"
-                                  );
-                                  setMenuOpen(false);
-                                  navigator.vibrate?.(30);
-                                  // Выполняем навигацию/скролл после закрытия меню
-                                  setTimeout(() => {
-                                    triggerNavAction(subItem);
-                                  }, 300);
-                                }}
-                                style={{
-                                  all: "unset",
-                                  cursor: "pointer",
-                                  display: "block",
-                                  color: isSubItemActive
-                                    ? highlightColor
-                                    : "rgba(255,255,255,0.92)",
-                                  fontFamily: "Arial, sans-serif",
-                                  textDecoration: "none",
-                                  fontWeight: isSubItemActive ? "600" : "500",
-                                  fontSize: isMobile ? "14px" : "15px",
-                                  textTransform: "none",
-                                  letterSpacing: "0.3px",
-                                  WebkitTapHighlightColor: "transparent",
-                                  padding: "0",
-                                  textAlign: "left",
-                                  lineHeight: 1.6,
-                                  transition: "color 0.2s ease",
-                                }}
-                              >
-                                {subItem.name}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
+                      );
+                    });
                   }
 
                   const isItemActive =
                     item.scrollKey && activeScrollKey === item.scrollKey;
 
                   return (
-                    <div key={i}>
-                      <button
-                        {...press}
-                        onClick={() => {
-                          ensureNotBounce();
-                          ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
-                          setMenuOpen(false);
-                          navigator.vibrate?.(30);
-                          // Выполняем навигацию/скролл после закрытия меню
-                          setTimeout(() => {
-                            triggerNavAction(item);
-                          }, 300);
-                        }}
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          display: "block",
-                          color: isItemActive ? highlightColor : "#fff",
-                          fontFamily: "Arial, sans-serif",
-                          textDecoration: "none",
-                          fontWeight: isItemActive ? "700" : "600",
-                          fontSize: "16px",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px",
-                          WebkitTapHighlightColor: "transparent",
-                          padding: "6px 0",
-                          textAlign: "left",
-                          transition: "color 0.2s ease",
-                        }}
-                      >
-                        {item.name}
-                      </button>
-                    </div>
+                    <button
+                      {...press}
+                      key={i}
+                      onClick={() => {
+                        ensureNotBounce();
+                        ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+                        setMenuOpen(false);
+                        navigator.vibrate?.(30);
+                        // Выполняем навигацию/скролл после закрытия меню
+                        setTimeout(() => {
+                          triggerNavAction(item);
+                        }, 300);
+                      }}
+                      style={{
+                        all: "unset",
+                        cursor: "pointer",
+                        display: "block",
+                        color: isItemActive
+                          ? highlightColor
+                          : "rgba(255,255,255,0.95)",
+                        fontFamily: "Arial, sans-serif",
+                        fontWeight: 500,
+                        fontSize: "16px",
+                        letterSpacing: "0.5px",
+                        textTransform: "uppercase",
+                        lineHeight: 1.5,
+                        WebkitTapHighlightColor: "transparent",
+                        padding: "4px 0",
+                        textAlign: "left",
+                        transition: "color 0.2s ease",
+                      }}
+                    >
+                      {item.name}
+                    </button>
                   );
                 })}
               </div>

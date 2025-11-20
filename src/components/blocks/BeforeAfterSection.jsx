@@ -124,8 +124,7 @@ const BeforeAfterSection = ({
         ref={sliderContainerRef}
         style={{
           width: "100%",
-          height: sliderHeightPx,
-          maxHeight: sliderHeightPx,
+          aspectRatio: "1 / 1",
           overflow: "hidden",
           boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
           position: "relative",
