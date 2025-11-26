@@ -101,7 +101,6 @@ const QuestionModal = ({ isOpen, onClose, isMobile }) => {
         justifyContent: "center",
         zIndex: 9999,
         padding: "16px",
-        fontFamily: "sans-serif",
         animation: "fadeIn 0.3s ease-out", // 👈 добавили fade-in
       }}
       onClick={onClose}

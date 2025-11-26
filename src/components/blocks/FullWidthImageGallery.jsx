@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
  */
 const FullWidthImageGallery = ({
   images,
-  aspectRatio = "1280 / 960",
+  aspectRatio,
   altPrefix = "Изображение",
   isMobile = false,
   onIndexChange,
@@ -29,6 +29,16 @@ const FullWidthImageGallery = ({
     touchEndX.current = e.touches[0].clientX;
   };
 
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + images.length) % images.length
+    );
+  };
+
   const handleTouchEnd = () => {
     if (!touchStartX.current || !touchEndX.current) return;
     const distance = touchStartX.current - touchEndX.current;
@@ -36,10 +46,10 @@ const FullWidthImageGallery = ({
 
     if (distance > minSwipeDistance) {
       // Свайп влево - следующее фото
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      handleNext();
     } else if (distance < -minSwipeDistance) {
       // Свайп вправо - предыдущее фото
-      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+      handlePrev();
     }
 
     touchStartX.current = 0;
@@ -66,6 +76,8 @@ const FullWidthImageGallery = ({
         marginBottom: isMobile ? 16 : 20,
         width: "100%",
         position: "relative",
+    ...(aspectRatio ? { aspectRatio } : {}),
+        overflow: "hidden",
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -101,12 +113,66 @@ const FullWidthImageGallery = ({
         </span>
       </div>
 
+      <button
+        type="button"
+        onClick={handlePrev}
+        aria-label="Предыдущее фото"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: isMobile ? 12 : 16,
+          transform: "translateY(-50%)",
+          background: "rgba(0, 0, 0, 0.6)",
+          border: "none",
+          borderRadius: "50%",
+          width: isMobile ? 40 : 48,
+          height: isMobile ? 40 : 48,
+          color: "#fff",
+          fontSize: isMobile ? 18 : 22,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          padding: 0,
+          zIndex: 12,
+        }}
+      >
+        ‹
+      </button>
+
+      <button
+        type="button"
+        onClick={handleNext}
+        aria-label="Следующее фото"
+        style={{
+          position: "absolute",
+          top: "50%",
+          right: isMobile ? 12 : 16,
+          transform: "translateY(-50%)",
+          background: "rgba(0, 0, 0, 0.6)",
+          border: "none",
+          borderRadius: "50%",
+          width: isMobile ? 40 : 48,
+          height: isMobile ? 40 : 48,
+          color: "#fff",
+          fontSize: isMobile ? 18 : 22,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          padding: 0,
+          zIndex: 12,
+        }}
+      >
+        ›
+      </button>
+
       <img
         src={images[currentImageIndex]}
         alt={`${altPrefix} ${currentImageIndex + 1}`}
         style={{
           width: "100%",
-          aspectRatio,
+          height: "auto",
           objectFit: "cover",
           display: "block",
           transition: "opacity 0.3s ease",

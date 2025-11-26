@@ -118,7 +118,6 @@ const AnimatedImage = ({ src, alt, projectId, isMobile, title }) => {
           padding: "4px 14px",
           paddingRight: "40px",
           clipPath: "polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%)",
-          fontFamily: "sans-serif",
           bottom: "2%",
         }}
       >

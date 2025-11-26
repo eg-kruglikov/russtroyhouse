@@ -688,7 +688,6 @@ const Home = () => {
                               color: isSubItemActive
                                 ? "#FFD700"
                                 : "rgba(255,255,255,0.92)",
-                              fontFamily: "Arial, sans-serif",
                               fontWeight: 500,
                               fontSize: "16px",
                               letterSpacing: "0.6px",
@@ -718,7 +717,6 @@ const Home = () => {
                       color: isItemActive
                         ? "#FFD700"
                         : "rgba(255,255,255,0.95)",
-                      fontFamily: "Arial, sans-serif",
                       fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.5px",
@@ -755,7 +753,6 @@ const Home = () => {
 
           <div
             style={{
-              fontFamily: "sans-serif",
               color: light,
               overflow: "hidden",
               display: "flex",
@@ -1005,6 +1002,7 @@ const Home = () => {
                         cursor: "pointer",
                         letterSpacing: "0.5px",
                         textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+                        fontFamily: "Arial, sans-serif",
                       }}
                     >
                       +7 (926) 408-18-11
@@ -1518,7 +1516,7 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: isMobile ? "16px" : "20px",
+                        fontSize: isMobile ? "17px" : "20px",
                         color: "rgba(255,255,255,0.9)",
                         margin: 0,
                         lineHeight: 1.6,

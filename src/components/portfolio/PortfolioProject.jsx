@@ -43,7 +43,6 @@ export default function PortfolioProject(props) {
         minHeight: "100vh",
         paddingTop: "60px",
         color: "#fff",
-        fontFamily: "sans-serif",
       }}
     >
       <div

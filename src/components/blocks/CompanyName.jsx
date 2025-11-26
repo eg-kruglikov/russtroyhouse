@@ -4,7 +4,6 @@ const CompanyName = ({ isMobile }) => {
   return (
     <div
       style={{
-        fontFamily: "Arial, sans-serif",
         fontWeight: 500,
         fontSize: isMobile ? "18px" : "19px",
         color: "rgba(255,255,255,0.85)",

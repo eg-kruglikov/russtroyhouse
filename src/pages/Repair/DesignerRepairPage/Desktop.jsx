@@ -88,7 +88,6 @@ const Desktop = () => {
     <div
       style={{
         color: "#fff",
-        fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 80,
         background: SECTION_BACKGROUND,
@@ -163,7 +162,6 @@ const Desktop = () => {
                       all: "unset",
                       cursor: "pointer",
                       color: "rgba(255,255,255,0.95)",
-                      fontFamily: "Arial, sans-serif",
                       fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.6px",
@@ -226,6 +224,7 @@ const Desktop = () => {
                   textShadow: "0 0 14px rgba(0,0,0,.75)",
                   fontWeight: 800,
                   letterSpacing: 0.4,
+                  fontFamily: "Arial, sans-serif",
                 }}
               >
                 Дизайнерский ремонт

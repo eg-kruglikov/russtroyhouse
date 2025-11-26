@@ -1,11 +1,8 @@
 import React, { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { projects } from "../../../data/portfolio";
 import { FALLBACK_IMAGE } from "../../../assets/fallbackImage";
 import { usePressEffect } from "../../../hooks/useSomething";
-import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
-import { useMetrikaActivity } from "../../../hooks/useMetrikaActivity";
-import { ymGoal } from "../../../utils/metrika";
 
 // Конфиг под типы ремонта
 const REPAIR_CONFIG = {
@@ -53,12 +50,12 @@ const REPAIR_CONFIG = {
 };
 
 const styles = `
-.repair-wrap{background:#0a1a26;color:#fff;font-family:Arial,sans-serif}
+.repair-wrap{background:#0a1a26;color:#fff}
 .repair-hero{position:relative;width:100%;height:35vh}
 @media (min-width:1024px){.repair-hero{height:480px}}
 .repair-hero img{width:100%;height:100%;object-fit:cover;border-bottom:3px solid #FFD700;filter:brightness(.9)}
 .repair-hero__inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:90%}
-.repair-title{font-size:28px;font-weight:700;margin:0 0 12px;text-shadow:0 0 8px rgba(0,0,0,.7)}
+.repair-title{font-size:28px;font-weight:700;margin:0 0 12px;text-shadow:0 0 8px rgba(0,0,0,.7);font-family:Arial,sans-serif}
 @media (min-width:1024px){.repair-title{font-size:48px;margin-bottom:20px;text-shadow:0 0 12px rgba(0,0,0,.8)}}
 .repair-btn{background:#FFD700;color:#0a1a26;border:none;border-radius:24px;padding:10px 28px;font-weight:800;font-size:16px;cursor:pointer}
 @media (min-width:1024px){.repair-btn{border-radius:30px;padding:14px 40px;font-size:20px}}
@@ -82,29 +79,13 @@ const styles = `
 export default function RepairPage() {
   const { type } = useParams();
   const cfg = REPAIR_CONFIG[type] ?? REPAIR_CONFIG.cosmetic;
-  const navigateWithMetrika = useNavigateWithMetrika();
+  const navigate = useNavigate();
   const press = usePressEffect();
-
-  useMetrikaActivity();
 
   const items = useMemo(
     () => projects.filter((p) => p.meta?.type === cfg.typeLabel),
     [cfg.typeLabel]
   );
-
-  const handleConsultationClick = () => {
-    ymGoal("repair_consult_click", { category: cfg.typeLabel });
-    navigateWithMetrika("/", {
-      scrollTo: "#contact",
-      hash: "#contact",
-    });
-  };
-
-  const handleProjectClick = (slug) => {
-    if (!slug) return;
-    ymGoal("repair_portfolio_click", { category: cfg.typeLabel, slug });
-    navigateWithMetrika(`/portfolio/${slug}`);
-  };
 
   return (
     <div className="repair-wrap">
@@ -119,7 +100,7 @@ export default function RepairPage() {
           <button
             {...press}
             className="repair-btn"
-            onClick={handleConsultationClick}
+            onClick={() => navigate("/#contact")}
             style={press.style}
           >
             Получить консультацию
@@ -159,7 +140,7 @@ export default function RepairPage() {
                 <button
                   {...press}
                   className="card__btn"
-                  onClick={() => handleProjectClick(p.slug)}
+                  onClick={() => navigate(`/portfolio/${p.slug}`)}
                   style={press.style}
                 >
                   Подробнее

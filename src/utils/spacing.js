@@ -96,7 +96,7 @@ export const SUBTITLE_SIZES = {
 export const SECTION_BACKGROUND = "var(--color-background-primary)";
 
 // Цвет основного заголовка
-export const TITLE_COLOR = "#FFD700";
+export const TITLE_COLOR = "#f2d14f";
 
 // Цвет подзаголовка
 export const SUBTITLE_COLOR = "rgba(255,255,255,0.9)";

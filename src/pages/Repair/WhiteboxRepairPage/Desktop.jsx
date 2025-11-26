@@ -19,6 +19,16 @@ import {
   TITLE_SUBTITLE_GAP,
   TITLE_CONTENT_GAP,
 } from "../../../utils/spacing";
+import { WHITEBOX_WORK_GALLERY_GROUPS } from "./galleryData";
+
+const WA_CONTACT_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
+  "Здравствуйте! Хочу получить точный расчёт черновой отделки. Источник: whitebox"
+)};`;
+const PHONE_CONTACT_LINK = "+7 (926) 408-18-11";
+const CONTACT_METHODS = [
+  { value: "call", label: "Позвонить" },
+  { value: "whatsapp", label: "Написать в WhatsApp" },
+];
 
 const Desktop = () => {
   const navigate = useNavigateWithMetrika();
@@ -48,10 +58,7 @@ const Desktop = () => {
     }
   };
 
-  const imagePreparation = "/images/repair/zelenyBor/2.webp";
   const imageGeometry = "/images/repair/zelenyBor/3.webp";
-  const imageEngineering = "/images/repair/Sevastopolsky22A/1.webp";
-  const imageFinal = "/images/repair/Sevastopolsky22A/2.webp";
 
   // Галерея фото для блока "Качество и практичность"
   const qualityBottomImages = [
@@ -71,6 +78,9 @@ const Desktop = () => {
   const reviewsSliderRef = useRef(null);
   const sliderContainerRef = useRef(null);
   const sliderHeightPx = fallbackContentWidth; // Квадратный формат
+  const [contactMethod, setContactMethod] = useState("call");
+  const [currentWorkGalleryIndex, setCurrentWorkGalleryIndex] = useState(0);
+  const [secondaryWorkGalleryIndex, setSecondaryWorkGalleryIndex] = useState(0);
 
   useEffect(() => {
     if (currentReviewIndex !== displayedReviewIndex) {
@@ -111,7 +121,6 @@ const Desktop = () => {
     <div
       style={{
         color: "#fff",
-        fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 80,
         background: SECTION_BACKGROUND,
@@ -186,7 +195,6 @@ const Desktop = () => {
                       all: "unset",
                       cursor: "pointer",
                       color: "rgba(255,255,255,0.95)",
-                      fontFamily: "Arial, sans-serif",
                       fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.6px",
@@ -249,11 +257,11 @@ const Desktop = () => {
                   textShadow: "0 0 12px rgba(0,0,0,.7)",
                   fontWeight: 800,
                   letterSpacing: 0.3,
+                  whiteSpace: "pre-line",
+                  fontFamily: "Arial, sans-serif",
                 }}
               >
-                <span style={{ whiteSpace: "nowrap" }}>Чистовая/черновая</span>
-                <br />
-                отделка
+                {`Черновой ремонт под ключ`}
               </h1>
             </div>
           </div>
@@ -276,31 +284,171 @@ const Desktop = () => {
                 whiteSpace: "pre-line",
               }}
             >
-              {`White box — это предчистовая отделка, тот самый «белый короб», где уже выполнены все сложные черновые работы.
-Мы выравниваем стены и потолки по лазерной геометрии, делаем стяжку и штукатурку, выводим электрику, сантехнику и вентиляцию, оставляя объект технически готовым под финиш.
-Работаем строго по СНиП и ГОСТ, используем проверенные материалы и фиксируем цену в договоре, поэтому смета не «плавает», а результат предсказуем.`}
-            </p>
-            <p
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
-                marginTop: 18,
-                textAlign: "left",
-              }}
-            >
-              После сдачи white box мы можем продолжить с чистовым ремонтом «под
-              ключ»: подобрать отделку, организовать поставки, вести авторский
-              надзор и собрать интерьер до последнего светильника. Один
-              подрядчик отвечает за оба этапа — это экономит время и гарантирует
-              качество.
+            {`Мы работаем в сфере строительства с 2014 года и выполняем комплексные ремонты с точным соблюдением СНиП и ГОСТ. В команде — только профильные мастера, а черновая отделка выполняется на уровне, который обеспечивает долговечность чистовой отделки.
+
+Черновой ремонт — это основа квартиры: стяжка пола, штукатурка, электрика, сантехника, выравнивание стен и монтаж перегородок. Качество этого этапа определяет долговечность всей последующей отделки.
+
+Мы фиксируем стоимость в договоре, работаем прозрачно и используем проверенные материалы. Заказывая черновой ремонт у нас, вы получаете надёжную базу для будущего интерьера и уверенность в результате.`}
             </p>
           </div>
 
           {/* Калькулятор White Box */}
           <WhiteboxCalculator isMobile={false} />
 
-          {/* Подготовка и чистота */}
+          {/* Блок «Получить точный расчёт» */}
+          <div
+            style={{
+              marginTop: 32,
+              padding: "28px 32px",
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(16, 21, 36, 0.95)",
+            }}
+          >
+            <h3
+              style={{
+                color: "#FFD700",
+                fontSize: 24,
+                margin: "0 0 14px",
+                fontWeight: 700,
+                letterSpacing: 0.5,
+                textTransform: "uppercase",
+              }}
+            >
+              Получить точный расчёт
+            </h3>
+            <p
+              style={{
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 16,
+                margin: "0 0 18px",
+                maxWidth: "560px",
+              }}
+            >
+              Выберите способ связи — звонок или WhatsApp. Сообщение помечается
+              как заявка с блока whitebox, чтобы менеджер сразу понял, откуда
+              пришёл запрос.
+            </p>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+              }}
+            >
+              <label
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.75)",
+                }}
+              >
+                Вариант связи
+                <select
+                  value={contactMethod}
+                  onChange={(event) => setContactMethod(event.target.value)}
+                  style={{
+                    width: 220,
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    background: "rgba(255,255,255,0.04)",
+                    color: "#fff",
+                    fontSize: 15,
+                    padding: "10px 14px",
+                    appearance: "none",
+                    cursor: "pointer",
+                    backgroundImage:
+                      'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'%3E%3Cpath d=\'M1 1 L5 5 L9 1\' stroke=\'%23ffffff\' stroke-width=\'1.5\' stroke-linecap=\'round\' fill=\'none\'/%3E%3C/svg%3E")',
+                    backgroundPosition: "calc(100% - 16px) 50%",
+                    backgroundRepeat: "no-repeat",
+                    paddingRight: 36,
+                  }}
+                >
+                  {CONTACT_METHODS.map((method) => (
+                    <option
+                      key={method.value}
+                      value={method.value}
+                      style={{ color: "#05060A" }}
+                    >
+                      {method.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {contactMethod === "whatsapp" ? (
+                <button
+                  type="button"
+                  onClick={() => window.open(WA_CONTACT_LINK, "_blank")}
+                  style={{
+                    borderRadius: 8,
+                    border: "none",
+                    background: "#FFD700",
+                    color: "#05060A",
+                    fontSize: 15,
+                    padding: "12px 18px",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    minHeight: 48,
+                    alignSelf: "flex-end",
+                  }}
+                >
+                  Написать в WhatsApp
+                </button>
+              ) : (
+                <div
+                  style={{
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    padding: "12px 16px",
+                    minWidth: 220,
+                    minHeight: 48,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    gap: 4,
+                    background: "rgba(255,255,255,0.01)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.65)",
+                    }}
+                  >
+                    Телефон для звонка
+                  </span>
+                  <a
+                    href={`tel:${PHONE_CONTACT_LINK.replace(/\D/g, "")}`}
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: "#FFD700",
+                      textDecoration: "none",
+                    }}
+                  >
+                    +7 (926) 408-18-11
+                  </a>
+                </div>
+              )}
+            </div>
+            <p
+              style={{
+                color: "rgba(255,255,255,0.55)",
+                fontSize: 12,
+                marginTop: 14,
+              }}
+            >
+              Уточните, что запрос пришёл со страницы whitebox, чтобы сохранить
+              связь с расчётом.
+            </p>
+          </div>
+
+          {/* Почему мы? */}
+
+          {/* Почему мы? */}
           <div
             style={{
               padding: "40px 24px 0",
@@ -308,31 +456,269 @@ const Desktop = () => {
               boxSizing: "border-box",
             }}
           >
-            <Title>Подготовка и чистота</Title>
+            <Title>Почему мы?</Title>
+            <h3
+              style={{
+                color: "#FFD700",
+                fontSize: 32,
+                marginBottom: 40,
+                fontWeight: 800,
+                textAlign: "left",
+                lineHeight: 1.3,
+              }}
+            >
+              Мы предлагаем надёжные и качественные услуги по ремонту квартир
+            </h3>
           </div>
 
+          {/* Два дочерних блока */}
           <div
             style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "24px",
               width: "100%",
-              marginBottom: 20,
+              padding: "0 24px",
+              boxSizing: "border-box",
+              marginBottom: 40,
             }}
           >
-            <img
-              src={imagePreparation}
-              alt="Подготовка white box"
+            {/* Левый блок - Гарантируем качество */}
+            <div
               style={{
-                width: "100%",
-                objectFit: "cover",
-                display: "block",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
               }}
-            />
+            >
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "3 / 2",
+                  overflow: "hidden",
+                  marginBottom: 20,
+                }}
+              >
+                <img
+                  src="/images/confirm.jpeg"
+                  alt="Гарантируем качество услуг"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </div>
+              <h4
+                style={{
+                  color: "#fff",
+                  fontSize: 24,
+                  fontWeight: 800,
+                  marginBottom: 16,
+                  textAlign: "left",
+                }}
+              >
+                Гарантируем качество услуг
+              </h4>
+              <ul
+                style={{
+                  color: "#fff",
+                  fontSize: 18,
+                  lineHeight: 1.8,
+                  margin: 0,
+                  paddingLeft: 20,
+                  listStyle: "none",
+                }}
+              >
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Даём гарантию на выполненные работы*.
+                </li>
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Исправляем недостатки в выполненных работах.
+                </li>
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Работаем строго по СНиП и ГОСТ, используем проверенные материалы и контролируем каждый этап ремонта.
+                </li>
+              </ul>
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                  marginTop: 12,
+                  fontStyle: "italic",
+                }}
+              >
+                * Условия гарантии зависят от вида работ. Подробнее уточняйте при
+                заключении договора.
+              </p>
+            </div>
+
+            {/* Правый блок - Фиксированные цены */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "3 / 2",
+                  overflow: "hidden",
+                  marginBottom: 20,
+                }}
+              >
+                <img
+                  src="/images/confirm1.jpeg"
+                  alt="Фиксированные цены на услуги"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </div>
+              <h4
+                style={{
+                  color: "#fff",
+                  fontSize: 24,
+                  fontWeight: 800,
+                  marginBottom: 16,
+                  textAlign: "left",
+                }}
+              >
+                Предлагаем фиксированные цены на услуги
+              </h4>
+              <ul
+                style={{
+                  color: "#fff",
+                  fontSize: 18,
+                  lineHeight: 1.8,
+                  margin: 0,
+                  paddingLeft: 20,
+                  listStyle: "none",
+                }}
+              >
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Гарантируем доступные цены на работы.
+                </li>
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Фиксируем цену каждой услуги и не меняем её в процессе выполнения заказа.
+                </li>
+                <li style={{ marginBottom: 12, position: "relative" }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: -20,
+                      color: "#FFD700",
+                    }}
+                  >
+                    •
+                  </span>
+                  Прораб согласует с вами изменение общей стоимости заказа, если в процессе его выполнения изменится набор услуг.
+                </li>
+              </ul>
+            </div>
           </div>
+
+          {/* Блок "Наши работы" */}
+          <div
+            style={{
+              padding: "40px 24px 0",
+              width: "100%",
+              boxSizing: "border-box",
+              marginBottom: 16,
+            }}
+          >
+            <h2
+              style={{
+                color: "#FFD700",
+                fontSize: TITLE_SIZES.desktop.main,
+                margin: 0,
+                fontWeight: 800,
+                textAlign: "left",
+              }}
+            >
+              Наши работы
+            </h2>
+            <h3
+              style={{
+                color: "#fff",
+                fontSize: TITLE_SIZES.desktop.main,
+                marginTop: 8,
+                marginBottom: 16,
+                fontWeight: 800,
+                textAlign: "left",
+              }}
+            >
+              Черновой отделки
+            </h3>
+          </div>
+
+          <FullWidthImageGallery
+            images={WHITEBOX_WORK_GALLERY_GROUPS.primary.map(
+              (item) => item.image
+            )}
+            altPrefix="Наши работы"
+            isMobile={false}
+            onIndexChange={setCurrentWorkGalleryIndex}
+          />
 
           <div
             style={{
               padding: "0 24px",
               width: "100%",
               boxSizing: "border-box",
+              marginBottom: 32,
             }}
           >
             <p
@@ -344,46 +730,30 @@ const Desktop = () => {
                 textAlign: "left",
               }}
             >
-              Снимаем строительную пыль, шлифуем и армируем стены, выставляем
-              маяки, чтобы получить идеально ровные плоскости и чистое
-              основание. Уже на этом этапе можно замерять мебель и встроенные
-              конструкции — сюрпризов при чистовой отделке не будет.
+              {
+                WHITEBOX_WORK_GALLERY_GROUPS.primary[
+                  currentWorkGalleryIndex %
+                    WHITEBOX_WORK_GALLERY_GROUPS.primary.length
+                ]?.description
+              }
             </p>
           </div>
 
-          {/* Геометрия и свет */}
-          <div
-            style={{
-              padding: "40px 24px 0",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          >
-            <Title>Геометрия и свет</Title>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              marginBottom: 20,
-            }}
-          >
-            <img
-              src={imageGeometry}
-              alt="Геометрия и свет"
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-          </div>
+          <FullWidthImageGallery
+            images={WHITEBOX_WORK_GALLERY_GROUPS.secondary.map(
+              (item) => item.image
+            )}
+            altPrefix="Наши работы"
+            isMobile={false}
+            onIndexChange={setSecondaryWorkGalleryIndex}
+          />
 
           <div
             style={{
               padding: "0 24px",
               width: "100%",
               boxSizing: "border-box",
+              marginBottom: 32,
             }}
           >
             <p
@@ -395,65 +765,16 @@ const Desktop = () => {
                 textAlign: "left",
               }}
             >
-              Проверяем геометрию, подготавливаем ниши и закладные под карнизы,
-              световые линии и скрытые двери. Финальные покрытия ложатся без
-              зазоров, а дизайнерские решения реализуются именно так, как
-              задумано.
+              {
+                WHITEBOX_WORK_GALLERY_GROUPS.secondary[
+                  secondaryWorkGalleryIndex %
+                    WHITEBOX_WORK_GALLERY_GROUPS.secondary.length
+                ]?.description
+              }
             </p>
           </div>
 
-          {/* Инженерные системы */}
-          <div
-            style={{
-              padding: "40px 24px 0",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          >
-            <Title>Инженерные системы</Title>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              marginBottom: 20,
-            }}
-          >
-            <img
-              src={imageEngineering}
-              alt="Инженерные системы"
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              padding: "0 24px",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          >
-            <p
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
-                margin: 0,
-                textAlign: "left",
-              }}
-            >
-              Разводим электрику, отопление, слаботочку и сантехнику с учётом
-              будущей техники и мебели. Все скрытые работы документируем актами
-              и фото, чтобы при чистовом ремонте не возникало вопросов у
-              дизайнеров и поставщиков.
-            </p>
-          </div>
-
-          {/* Блок "Качество и практичность" */}
+          {/* Блок "Как мы работаем" */}
           <div
             style={{
               padding: "40px 24px 0",
@@ -470,7 +791,7 @@ const Desktop = () => {
                 textAlign: "left",
               }}
             >
-              Качество и практичность
+              Как мы работаем
             </h2>
           </div>
 
@@ -496,55 +817,81 @@ const Desktop = () => {
                 lineHeight: 1.6,
                 margin: 0,
                 textAlign: "left",
+                marginBottom: 16,
               }}
             >
-              Мы делаем качественно и рационально: подбираем материалы с
-              оптимальным соотношением цена/качество, чтобы вы не переплачивали
-              — и получали ремонт на десятилетия.
+              Мы делаем ремонт рационально и качественно — так, чтобы он служил
+              десятилетиями без переделок.
             </p>
-          </div>
-
-          <FullWidthViewportVideo
-            videoSrc="/videos/1.mp4"
-            containerStyle={{ marginTop: 24 }}
-          />
-
-          {/* Сроки и стоимость */}
-          <div
-            style={{
-              padding: "40px 24px 0",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          >
-            <h2
+            <p
               style={{
-                color: "#FFD700",
-                fontSize: 44,
-                marginBottom: 24,
-                fontWeight: 800,
+                color: "#fff",
+                fontSize: 18,
+                lineHeight: 1.6,
+                margin: 0,
+                textAlign: "left",
+                marginBottom: 16,
+              }}
+            >
+              На черновом этапе готовим помещение под чистовую отделку: выполняем
+              демонтаж при необходимости, выравниваем стены, пол и потолок, делаем
+              стяжку, прокладываем электроточки, сантехнику, слаботочку и отопление.
+              Все работы идут строго по проекту, с учётом мебели, техники и будущего
+              интерьера.
+            </p>
+            <p
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                lineHeight: 1.6,
+                margin: 0,
+                textAlign: "left",
+                marginBottom: 16,
+              }}
+            >
+              Мы подбираем материалы с оптимальным балансом цена/качество, чтобы
+              вы не переплачивали, но получали результат уровня премиум.
+            </p>
+            <p
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                lineHeight: 1.6,
+                margin: 0,
+                textAlign: "left",
+                marginBottom: 16,
+              }}
+            >
+              Скрытые работы документируем: делаем фото, видео и акты, чтобы каждый
+              этап был прозрачен и понятен.
+            </p>
+            <p
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                lineHeight: 1.6,
+                margin: 0,
+                textAlign: "left",
+                marginBottom: 16,
+              }}
+            >
+              Заранее подготавливаем ниши, закладные, усиления и скрытые элементы
+              под свет, карнизы, кондиционеры и двери — это позволяет чистовой
+              отделке ложиться ровно, а всему проекту реализовываться без
+              доработок.
+            </p>
+            <p
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                lineHeight: 1.6,
+                margin: 0,
                 textAlign: "left",
               }}
             >
-              Сроки и стоимость
-            </h2>
-          </div>
-
-          <div
-            style={{
-              marginBottom: 20,
-              width: "100%",
-            }}
-          >
-            <img
-              src={imageFinal}
-              alt="Сроки и стоимость white box ремонта"
-              style={{
-                width: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-            />
+              В результате вы получаете ремонт, в котором каждая деталь продумана,
+              технически верна и готова к долгой эксплуатации.
+            </p>
           </div>
 
           <div
@@ -552,80 +899,26 @@ const Desktop = () => {
               padding: "0 24px",
               width: "100%",
               boxSizing: "border-box",
+              marginTop: 20,
             }}
           >
-            <p
+            <h3
               style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
+                color: "#FFD700",
+                fontSize: TITLE_SIZES.desktop.service,
                 margin: 0,
-                textAlign: "left",
-                marginBottom: 16,
-              }}
-            >
-              <span style={{ color: "#FFD700" }}>
-                Средняя цена white box — около 8 700 ₽ за м².
-              </span>{" "}
-              Это усреднённый ориентир: на итог влияет инженерия, масштаб и
-              выбранные материалы. Примерную стоимость ремонта можно рассчитать
-              в нашем калькуляторе на главной странице.
-            </p>
-            <p
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
-                margin: 0,
-                textAlign: "left",
-                marginBottom: 16,
-                borderLeft: "2px solid #FFD700",
-                paddingLeft: 18,
-              }}
-            >
-              Для точной сметы свяжитесь с нами любым удобным способом на
-              странице{" "}
-              <a
-                href="/contacts"
-                onClick={(event) => {
-                  event.preventDefault();
-                  navigate("/contacts");
-                }}
-                style={{
-                  color: "#FFD700",
-                  textDecoration: "none",
-                  fontWeight: 600,
-                }}
-              >
-                контактов
-              </a>
-              .
-            </p>
-            <p
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
-                margin: 0,
-                textAlign: "left",
-                marginBottom: 16,
-              }}
-            >
-              Сроки определяются после личной консультации и фиксируются в
-              смете.
-            </p>
-            <p
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                lineHeight: 1.6,
-                margin: 0,
+                fontWeight: 800,
                 textAlign: "left",
               }}
             >
-              Мы держим слово и остаёмся ответственными за результат.
-            </p>
+              Видео с объекта
+            </h3>
           </div>
+
+          <FullWidthViewportVideo
+            videoSrc="/videos/1.mp4"
+            containerStyle={{ marginTop: 24 }}
+          />
 
           {/* Блок с призывом к действию */}
           <div
@@ -637,14 +930,14 @@ const Desktop = () => {
             }}
           >
             <img
-              src={imageEngineering}
+              src={imageGeometry}
               alt="Получите расчет"
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
                 display: "block",
-                filter: "brightness(0.5)",
+                filter: "brightness(0.8)",
               }}
             />
             <div
@@ -668,7 +961,7 @@ const Desktop = () => {
                   fontSize: 40,
                   fontWeight: 800,
                   margin: 0,
-                  marginBottom: 20,
+                  marginBottom: 14,
                   lineHeight: 1.3,
                   textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
                 }}
@@ -680,18 +973,6 @@ const Desktop = () => {
                 <br />
                 дней после звонка
               </h2>
-              <p
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                  margin: 0,
-                  marginBottom: 24,
-                  textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
-                }}
-              >
-                Гарантируем выезд специалиста и смету{" "}
-                <span style={{ color: "#FFD700" }}>за наш счет</span>
-              </p>
               <a
                 href="tel:+79264081811"
                 style={{

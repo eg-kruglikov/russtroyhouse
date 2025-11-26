@@ -1,920 +1,1560 @@
-import React, { useState, useRef } from "react";
-import { ymGoal } from "../../utils/metrika";
-import { SECTION_BACKGROUND } from "../../utils/spacing";
+import React, { useState } from "react";
+import YellowBorderButton from "./YellowBorderButton";
 
-// CSS для кастомных checkbox и input
-const calculatorStyles = `
-  .whitebox-calculator input[type="checkbox"] {
-    outline: none;
+const ROOM_TYPES = [
+  {
+    value: "room",
+    label: "Комната / спальня / гостиная",
+    shortLabel: "Комната",
+    accent: "#70D6FF",
+  },
+  {
+    value: "kitchen",
+    label: "Кухня",
+    shortLabel: "Кухня",
+    accent: "#FFB347",
+  },
+  {
+    value: "combinedBathroom",
+    label: "Санузел совмещённый",
+    shortLabel: "Санузел",
+    accent: "#FF6B35",
+  },
+  {
+    value: "toilet",
+    label: "Туалет",
+    shortLabel: "Туалет",
+    accent: "#FFA84C",
+  },
+  {
+    value: "bathroom",
+    label: "Ванная комната",
+    shortLabel: "Ванная",
+    accent: "#C285FF",
+  },
+  {
+    value: "corridor",
+    label: "Коридор",
+    shortLabel: "Коридор",
+    accent: "#5DE5A4",
+  },
+  {
+    value: "wardrobe",
+    label: "Гардеробная",
+    shortLabel: "Гардероб",
+    accent: "#FFD700",
+  },
+  {
+    value: "commercial",
+    label: "Коммерческое помещение",
+    shortLabel: "Коммерция",
+    accent: "#FF6B35",
+  },
+];
+
+const MATERIAL_QUALITY_OPTIONS = [
+  { value: "standard", label: "Стандарт" },
+  { value: "comfort", label: "Комфорт" },
+  { value: "premium", label: "Премиум" },
+];
+
+const CEILING_OPTIONS = [
+  { value: "stretch", label: "Натяжные" },
+  { value: "drywall", label: "Гипсокартон" },
+  { value: "none", label: "Нет" },
+];
+
+const FLOOR_OPTIONS = [
+  { value: "screed", label: "Стяжка" },
+  { value: "insulation", label: "Утепление" },
+];
+
+const SANITARY_QUALITY_OPTIONS = [
+  { value: "budget", label: "Бюджет" },
+  { value: "average", label: "Средняя" },
+  { value: "premium", label: "Премиум" },
+];
+
+const BATH_OPTIONS = [
+  { value: "bathtub", label: "Ванна" },
+  { value: "shower", label: "Душевой уголок" },
+  { value: "jacuzzi", label: "Джакузи" },
+];
+
+const FIELD_LIBRARY = {
+  area: { label: "Площадь", type: "number", unit: "м²", min: 4, max: 200, step: 1 },
+  materialQuality: {
+    label: "Качество материалов",
+    type: "select",
+    options: MATERIAL_QUALITY_OPTIONS,
+  },
+  electricalPoints: {
+    label: "Количество розеток",
+    type: "number",
+    unit: "шт.",
+    min: 0,
+    max: 40,
+    step: 1,
+  },
+  ceiling: { label: "Потолки", type: "select", options: CEILING_OPTIONS },
+  wallLeveling: { label: "Выравнивание стен", type: "toggle" },
+  partitions: {
+    label: "Перегородки",
+    type: "number",
+    unit: "м²",
+    min: 0,
+    max: 150,
+    step: 1,
+  },
+  floorBase: { label: "Напольное покрытие", type: "select", options: FLOOR_OPTIONS },
+  wetPoints: { label: "Мокрые точки", type: "number", min: 0, max: 8, step: 1 },
+  hoodOutlet: { label: "Вывод под вытяжку", type: "toggle" },
+  condRoute: { label: "Трасса под кондиционер", type: "toggle" },
+  pipeReplacement: { label: "Замена труб", type: "toggle" },
+  pipeRelocation: { label: "Перенос труб", type: "toggle" },
+  waterproofing: { label: "Гидроизоляция", type: "toggle" },
+  sanitaryQuality: {
+    label: "Тип сантехники",
+    type: "select",
+    options: SANITARY_QUALITY_OPTIONS,
+  },
+  bathOption: {
+    label: "Душевая / ванна / джакузи",
+    type: "select",
+    options: BATH_OPTIONS,
+  },
+  lighting: { label: "Подсветка", type: "toggle" },
+  towelDryer: { label: "Полотенцесушитель", type: "toggle" },
+  electricSockets: {
+    label: "Розетки (электрика)",
+    type: "number",
+    unit: "шт.",
+    min: 0,
+    max: 12,
+    step: 1,
+  },
+  enhancedElectrical: { label: "Усиленная электрика", type: "toggle" },
+  fireAlarm: { label: "Пожарная сигнализация", type: "toggle" },
+  noiseIsolation: { label: "Шумоизоляция", type: "toggle" },
+  demolition: { label: "Демонтаж", type: "toggle" },
+  demolitionFloor: { label: "Демонтаж пола / покрытия", type: "toggle" },
+  demolitionWalls: { label: "Демонтаж стен / перегородок", type: "toggle" },
+  demolitionSanitary: { label: "Демонтаж сантехники", type: "toggle" },
+  demolitionToilet: { label: "Демонтаж унитаза / инсталляции", type: "toggle" },
+};
+
+const roomTypeFields = {
+  room: [
+    "area",
+    "materialQuality",
+    "electricalPoints",
+    "electricSockets",
+    "ceiling",
+    "wallLeveling",
+    "partitions",
+    "floorBase",
+    "demolition",
+    "demolitionFloor",
+    "demolitionWalls",
+  ],
+  kitchen: [
+    "area",
+    "materialQuality",
+    "electricalPoints",
+    "electricSockets",
+    "ceiling",
+    "wallLeveling",
+    "floorBase",
+    "wetPoints",
+    "hoodOutlet",
+    "condRoute",
+    "demolition",
+    "demolitionFloor",
+    "demolitionWalls",
+  ],
+  combinedBathroom: [
+    "area",
+    "materialQuality",
+    "wetPoints",
+    "waterproofing",
+    "pipeReplacement",
+    "sanitaryQuality",
+    "bathOption",
+    "lighting",
+    "towelDryer",
+    "electricSockets",
+    "demolition",
+    "demolitionSanitary",
+    "demolitionToilet",
+  ],
+  toilet: [
+    "area",
+    "materialQuality",
+    "wetPoints",
+    "waterproofing",
+    "pipeReplacement",
+    "demolition",
+    "demolitionSanitary",
+    "demolitionToilet",
+    "electricSockets",
+  ],
+  bathroom: [
+    "area",
+    "materialQuality",
+    "wetPoints",
+    "waterproofing",
+    "pipeReplacement",
+    "sanitaryQuality",
+    "bathOption",
+    "lighting",
+    "towelDryer",
+    "electricSockets",
+    "demolition",
+    "demolitionSanitary",
+    "demolitionToilet",
+  ],
+  corridor: [
+    "area",
+    "materialQuality",
+    "electricalPoints",
+    "electricSockets",
+    "ceiling",
+    "wallLeveling",
+    "floorBase",
+  ],
+  wardrobe: [
+    "area",
+    "materialQuality",
+    "electricSockets",
+    "floorBase",
+  ],
+  commercial: [
+    "area",
+    "materialQuality",
+    "electricalPoints",
+    "electricSockets",
+    "ceiling",
+    "wallLeveling",
+    "partitions",
+    "floorBase",
+    "wetPoints",
+    "waterproofing",
+    "hoodOutlet",
+    "condRoute",
+    "pipeReplacement",
+    "pipeRelocation",
+    "sanitaryQuality",
+    "bathOption",
+    "lighting",
+    "towelDryer",
+    "enhancedElectrical",
+    "fireAlarm",
+    "noiseIsolation",
+    "demolition",
+    "demolitionFloor",
+    "demolitionWalls",
+    "demolitionSanitary",
+    "demolitionToilet",
+  ],
+};
+
+const filterCalculationItems = (roomType, items) => {
+  const allowed = new Set(roomTypeFields[roomType] ?? []);
+  return items.filter((item) => !item.fieldKey || allowed.has(item.fieldKey));
+};
+
+const DEFAULT_CARD_VALUES = {
+  area: 18,
+  materialQuality: "standard",
+  electricalPoints: 6,
+  ceiling: "stretch",
+  wallLeveling: true,
+  partitions: 0,
+  floorBase: "screed",
+  wetPoints: 0,
+  hoodOutlet: false,
+  condRoute: false,
+  pipeReplacement: false,
+  pipeRelocation: false,
+  waterproofing: false,
+  sanitaryQuality: "budget",
+  bathOption: "bathtub",
+  lighting: false,
+  towelDryer: false,
+  electricSockets: 2,
+  enhancedElectrical: false,
+  fireAlarm: false,
+  noiseIsolation: false,
+  demolition: false,
+  demolitionFloor: false,
+  demolitionWalls: false,
+  demolitionSanitary: false,
+  demolitionToilet: false,
+};
+
+const TYPE_DEFAULT_OVERRIDES = {
+  room: {
+    wetPoints: 0,
+    hoodOutlet: false,
+    condRoute: false,
+    waterproofing: false,
+    lighting: false,
+    towelDryer: false,
+    sanitaryQuality: "budget",
+    electricSockets: 2,
+  },
+  kitchen: {
+    wetPoints: 1,
+    hoodOutlet: true,
+    condRoute: false,
+    waterproofing: false,
+    pipeReplacement: false,
+    pipeRelocation: false,
+    lighting: false,
+    towelDryer: false,
+    sanitaryQuality: "budget",
+    electricSockets: 2,
+  },
+  combinedBathroom: {
+    wetPoints: 1,
+    waterproofing: true,
+    pipeReplacement: true,
+    sanitaryQuality: "average",
+    bathOption: "bathtub",
+    lighting: true,
+    towelDryer: true,
+    electricSockets: 2,
+  },
+  bathroom: {
+    wetPoints: 1,
+    waterproofing: true,
+    pipeReplacement: true,
+    sanitaryQuality: "average",
+    bathOption: "bathtub",
+    lighting: true,
+    towelDryer: true,
+    electricSockets: 2,
+  },
+  toilet: {
+    wetPoints: 1,
+    waterproofing: true,
+    pipeReplacement: true,
+    sanitaryQuality: "budget",
+    lighting: false,
+    towelDryer: false,
+    electricSockets: 1,
+  },
+  corridor: {
+    electricSockets: 2,
+    wetPoints: 0,
+    hoodOutlet: false,
+    waterproofing: false,
+  },
+  wardrobe: {
+    electricSockets: 1,
+    wetPoints: 0,
+    hoodOutlet: false,
+    waterproofing: false,
+  },
+  commercial: {
+    wetPoints: 1,
+    hoodOutlet: true,
+    condRoute: false,
+    waterproofing: true,
+    pipeReplacement: true,
+    pipeRelocation: true,
+    sanitaryQuality: "average",
+    bathOption: "shower",
+    lighting: true,
+    towelDryer: false,
+    enhancedElectrical: false,
+    fireAlarm: false,
+    noiseIsolation: false,
+    electricSockets: 4,
+  },
+};
+
+const QUALITY_MULTIPLIERS = {
+  standard: 1,
+  comfort: 1.25,
+  premium: 1.55,
+};
+
+const TYPE_MULTIPLIERS = {
+  room: 1,
+  kitchen: 1.15,
+  combinedBathroom: 1.3,
+  toilet: 1.05,
+  bathroom: 1.35,
+  corridor: 0.9,
+  wardrobe: 0.85,
+  commercial: 1.25,
+};
+
+const COMMERCIAL_ADDITIONAL_RATES = {
+  enhancedElectrical: 7800,
+  fireAlarm: 5200,
+  noiseIsolation: 180,
+};
+
+const DEMOLITION_RATES = {
+  general: 220,
+  floor: 200,
+  walls: 250,
+  sanitary: 4500,
+  toilet: 3200,
+};
+
+const USAGE_STEPS = [
+  "Добавляйте помещения — каждая карточка отражает отдельный объект.",
+  "Для разных типов выбирайте нужные параметры (комната, кухня, санузел и т. п.).",
+  "Карточки дублируются, перемещаются и переименовываются, чтобы вы чувствовали контроль.",
+  "Внутренние расчёты выполняются автоматически — штукатурка, электрика, сантехника, гидроизоляция, демонтаж и кабели.",
+  "Внизу видна итоговая сумма по всем карточкам.",
+];
+
+const generateId = () => {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
   }
-  
-  .whitebox-calculator input[type="checkbox"]:focus,
-  .whitebox-calculator input[type="checkbox"]:active {
-    outline: none;
-    box-shadow: none;
+  return `room-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+};
+
+const getTypeEntry = (type) => ROOM_TYPES.find((entry) => entry.value === type) ?? ROOM_TYPES[0];
+
+const getTypeShortLabel = (type) => getTypeEntry(type).shortLabel || "Помещение";
+
+const getDefaultDraft = (type, existingCards = []) => {
+  const shortLabel = getTypeShortLabel(type);
+  const count = (existingCards.filter((card) => card.type === type).length || 0) + 1;
+  const typeOverrides = TYPE_DEFAULT_OVERRIDES[type] ?? {};
+  return {
+    ...DEFAULT_CARD_VALUES,
+    ...typeOverrides,
+    type,
+    name: `${shortLabel} ${count}`,
+  };
+};
+
+const createCardFromDraft = (draft) => ({
+  id: generateId(),
+  ...draft,
+});
+
+const formatNumber = (value) =>
+  typeof value === "number" && Number.isFinite(value) ? value.toLocaleString("ru-RU") : "0";
+
+const getOptionLabel = (fieldKey, value) => {
+  const config = FIELD_LIBRARY[fieldKey];
+  if (!config || !Array.isArray(config.options)) {
+    return value ?? "-";
   }
-  
-  .whitebox-calculator input[type="number"]:focus,
-  .whitebox-calculator input[type="number"]:active {
-    outline: none;
+  const match = config.options.find((option) => option.value === value);
+  return match ? match.label : value ?? "-";
+};
+
+const calculateCardPrice = (card) => {
+  const area = Math.max(Math.round(card.area) || 0, 0);
+  if (area <= 0) {
+    return { total: 0, perSquare: 0, breakdown: [] };
   }
-  
-  .whitebox-calculator label {
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    -webkit-user-select: none;
+
+  const breakdown = [];
+  const allowedFields = new Set(roomTypeFields[card.type] ?? []);
+  const hasField = (key) => allowedFields.has(key);
+  const addBreakdown = (label, amount, detail, fieldKey) => {
+    if (amount > 0) {
+      const entry = { label, value: Math.round(amount) };
+      if (detail) {
+        entry.detail = detail;
+      }
+      if (fieldKey) {
+        entry.fieldKey = fieldKey;
+      }
+      breakdown.push(entry);
+    }
+  };
+
+  const basePrice = 9500;
+  const quality = QUALITY_MULTIPLIERS[card.materialQuality] ?? 1;
+  const typeMultiplier = TYPE_MULTIPLIERS[card.type] ?? 1;
+  const typeEntry = getTypeEntry(card.type);
+  const baseCost = basePrice * area * quality * typeMultiplier;
+  let total = baseCost;
+  const qualityLabel = getOptionLabel("materialQuality", card.materialQuality);
+  const typeLabel = typeEntry.shortLabel || typeEntry.label;
+  const baseDetail = `${formatNumber(basePrice)} ₽ × ${formatNumber(area)} м² × ${qualityLabel} × ${typeLabel}`;
+  addBreakdown("Базовая ставка", baseCost, baseDetail);
+
+  if (hasField("ceiling")) {
+    const ceilingRates = {
+      stretch: 220,
+      drywall: 320,
+      none: 180,
+    };
+    const ceilingRate = ceilingRates[card.ceiling] ?? ceilingRates.stretch;
+    const ceilingCost = area * ceilingRate;
+    total += ceilingCost;
+    addBreakdown(
+      "Потолок",
+      ceilingCost,
+      `${formatNumber(ceilingRate)} ₽ × ${formatNumber(area)} м²`,
+      "ceiling"
+    );
   }
-  
-  .whitebox-calculator label:active {
-    background-color: transparent !important;
+
+  if (hasField("wallLeveling") && card.wallLeveling) {
+    const wallCost = area * 480;
+    total += wallCost;
+    addBreakdown(
+      "Выравнивание стен",
+      wallCost,
+      `480 ₽ × ${formatNumber(area)} м²`,
+      "wallLeveling"
+    );
   }
-`;
+
+  if (hasField("floorBase") && card.floorBase === "insulation") {
+    const floorInsulationCost = area * 260;
+    total += floorInsulationCost;
+    addBreakdown(
+      "Утепление пола",
+      floorInsulationCost,
+      `260 ₽ × ${formatNumber(area)} м²`,
+      "floorBase"
+    );
+  }
+
+  if (hasField("electricalPoints")) {
+    const electricalPoints = Math.max(0, card.electricalPoints || 0);
+    const electricalPointsCost = electricalPoints * 480;
+    total += electricalPointsCost;
+    if (electricalPoints > 0) {
+      addBreakdown(
+        "Электротехнические точки",
+        electricalPointsCost,
+        `${formatNumber(480)} ₽ × ${formatNumber(electricalPoints)} шт.`,
+        "electricalPoints"
+      );
+    }
+  }
+
+  if (hasField("electricSockets")) {
+    const sockets = Math.max(0, card.electricSockets || 0);
+    const socketsCost = sockets * 380;
+    total += socketsCost;
+    if (sockets > 0) {
+      addBreakdown(
+        "Розетки",
+        socketsCost,
+        `${formatNumber(380)} ₽ × ${formatNumber(sockets)} шт.`,
+        "electricSockets"
+      );
+    }
+  }
+
+  if (hasField("partitions")) {
+    const partitions = Math.max(0, card.partitions || 0);
+    const partitionsCost = partitions * 1300;
+    total += partitionsCost;
+    if (partitions > 0) {
+      addBreakdown(
+        "Перегородки",
+        partitionsCost,
+        `${formatNumber(1300)} ₽ × ${formatNumber(partitions)} м²`,
+        "partitions"
+      );
+    }
+  }
+
+  if (hasField("wetPoints")) {
+    const wetPoints = Math.max(0, card.wetPoints || 0);
+    const wetPointsCost = wetPoints * 5200;
+    total += wetPointsCost;
+    if (wetPoints > 0) {
+      addBreakdown(
+        "Мокрые точки / сантехника",
+        wetPointsCost,
+        `${formatNumber(5200)} ₽ × ${formatNumber(wetPoints)} шт.`,
+        "wetPoints"
+      );
+    }
+  }
+
+  if (hasField("hoodOutlet") && card.hoodOutlet) {
+    total += 4200;
+    addBreakdown("Вывод под вытяжку", 4200, "фиксированная сумма", "hoodOutlet");
+  }
+  if (hasField("condRoute") && card.condRoute) {
+    total += 7600;
+    addBreakdown("Трасса под кондиционер", 7600, "фиксированная сумма", "condRoute");
+  }
+  if (hasField("pipeReplacement") && card.pipeReplacement) {
+    total += 8800;
+    addBreakdown("Замена труб", 8800, "фиксированная сумма", "pipeReplacement");
+  }
+  if (hasField("pipeRelocation") && card.pipeRelocation) {
+    total += 6000;
+    addBreakdown("Перенос труб", 6000, "фиксированная сумма", "pipeRelocation");
+  }
+  if (hasField("waterproofing") && card.waterproofing) {
+    const waterproofingCost = area * 520;
+    total += waterproofingCost;
+    addBreakdown(
+      "Гидроизоляция",
+      waterproofingCost,
+      `${formatNumber(520)} ₽ × ${formatNumber(area)} м²`,
+      "waterproofing"
+    );
+  }
+
+  if (hasField("sanitaryQuality")) {
+    if (card.sanitaryQuality === "average") {
+      total += 9500;
+      addBreakdown("Сантехнический комплект: средний", 9500, "фиксированная сумма", "sanitaryQuality");
+    } else if (card.sanitaryQuality === "premium") {
+      total += 18000;
+      addBreakdown("Сантехнический комплект: премиум", 18000, "фиксированная сумма", "sanitaryQuality");
+    }
+  }
+
+  if (hasField("bathOption")) {
+    if (card.bathOption === "shower") {
+      total += 8200;
+      addBreakdown("Душевой уголок", 8200, "фиксированная сумма", "bathOption");
+    } else if (card.bathOption === "jacuzzi") {
+      total += 22000;
+      addBreakdown("Джакузи", 22000, "фиксированная сумма", "bathOption");
+    } else {
+      total += 14000;
+      addBreakdown("Установка ванны", 14000, "фиксированная сумма", "bathOption");
+    }
+  }
+
+  if (hasField("lighting") && card.lighting) {
+    total += 2600;
+    addBreakdown("Подсветка", 2600, null, "lighting");
+  }
+  if (hasField("towelDryer") && card.towelDryer) {
+    total += 2100;
+    addBreakdown("Полотенцесушитель", 2100, null, "towelDryer");
+  }
+
+  if (hasField("enhancedElectrical") && card.enhancedElectrical) {
+    total += COMMERCIAL_ADDITIONAL_RATES.enhancedElectrical;
+    addBreakdown(
+      "Усиленная электрика",
+      COMMERCIAL_ADDITIONAL_RATES.enhancedElectrical,
+      "фиксированная сумма",
+      "enhancedElectrical"
+    );
+  }
+  if (hasField("fireAlarm") && card.fireAlarm) {
+    total += COMMERCIAL_ADDITIONAL_RATES.fireAlarm;
+    addBreakdown(
+      "Пожарная сигнализация",
+      COMMERCIAL_ADDITIONAL_RATES.fireAlarm,
+      "фиксированная сумма",
+      "fireAlarm"
+    );
+  }
+  if (hasField("noiseIsolation") && card.noiseIsolation) {
+    const noiseCost = COMMERCIAL_ADDITIONAL_RATES.noiseIsolation * area;
+    total += noiseCost;
+    addBreakdown(
+      "Шумоизоляция",
+      noiseCost,
+      `${formatNumber(COMMERCIAL_ADDITIONAL_RATES.noiseIsolation)} ₽ × ${formatNumber(area)} м²`,
+      "noiseIsolation"
+    );
+  }
+
+  if (hasField("demolition") && card.demolition) {
+    const demolitionCost = area * DEMOLITION_RATES.general;
+    total += demolitionCost;
+    addBreakdown("Демонтаж", demolitionCost, null, "demolition");
+  }
+  if (hasField("demolitionFloor") && card.demolitionFloor) {
+    const demolitionFloorCost = area * DEMOLITION_RATES.floor;
+    total += demolitionFloorCost;
+    addBreakdown(
+      "Демонтаж напольного покрытия",
+      demolitionFloorCost,
+      null,
+      "demolitionFloor"
+    );
+  }
+  if (hasField("demolitionWalls") && card.demolitionWalls) {
+    const demolitionWallsCost = area * DEMOLITION_RATES.walls;
+    total += demolitionWallsCost;
+    addBreakdown(
+      "Демонтаж стен / перегородок",
+      demolitionWallsCost,
+      null,
+      "demolitionWalls"
+    );
+  }
+  if (hasField("demolitionSanitary") && card.demolitionSanitary) {
+    total += DEMOLITION_RATES.sanitary;
+    addBreakdown(
+      "Демонтаж сантехники",
+      DEMOLITION_RATES.sanitary,
+      "фиксированная сумма",
+      "demolitionSanitary"
+    );
+  }
+  if (hasField("demolitionToilet") && card.demolitionToilet) {
+    total += DEMOLITION_RATES.toilet;
+    addBreakdown(
+      "Демонтаж унитаза / инсталляции",
+      DEMOLITION_RATES.toilet,
+      "фиксированная сумма",
+      "demolitionToilet"
+    );
+  }
+
+  const roundedTotal = Math.round(total);
+  return {
+    total: roundedTotal,
+    perSquare: Math.round(roundedTotal / Math.max(area, 1)),
+    breakdown: filterCalculationItems(card.type, breakdown),
+  };
+};
+
+const DuplicateIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="none">
+    <rect
+      x="5"
+      y="4"
+      width="8"
+      height="9"
+      rx="2"
+      stroke="#FFD700"
+      strokeWidth="1.5"
+      fill="none"
+    />
+    <rect
+      x="3"
+      y="2"
+      width="8"
+      height="9"
+      rx="2"
+      stroke="#FFD700"
+      strokeWidth="1.5"
+      fill="none"
+    />
+  </svg>
+);
+
+const DeleteIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="none">
+    <path d="M5 6h8" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M6 6V4h6v2M5 6c-.55 0-1 .45-1 1v7c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1"
+      stroke="#FF6B35"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path d="M8 9v5" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M10 9v5" stroke="#FF6B35" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const ArrowIcon = ({ direction }) => (
+  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" fill="none">
+    {direction === "up" ? (
+      <path d="M6 3L10 9H2L6 3Z" fill="#FFD700" />
+    ) : (
+      <path d="M6 9L10 3H2L6 9Z" fill="#FFD700" />
+    )}
+  </svg>
+);
+
+const IconButton = ({ label, onClick, disabled, children, style }) => (
+  <button
+    type="button"
+    aria-label={label}
+    onClick={onClick}
+    disabled={disabled}
+    style={{
+      all: "unset",
+      width: 36,
+      height: 36,
+      borderRadius: 4,
+      border: "1px solid rgba(255,255,255,0.2)",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: disabled ? "not-allowed" : "pointer",
+      background: disabled ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.08)",
+      transition: "transform 0.15s ease",
+      ...style,
+    }}
+  >
+    {children}
+  </button>
+);
 
 const WhiteboxCalculator = ({ isMobile }) => {
-  const AREA_MIN = 30;
-  const AREA_MAX = 350;
+  const [roomCards, setRoomCards] = useState(() => [
+    createCardFromDraft(getDefaultDraft("room", [])),
+  ]);
+  const [constructorDraft, setConstructorDraft] = useState(() => getDefaultDraft("room", []));
+  const [expandedCardIds, setExpandedCardIds] = useState(() => []);
+  const totalBudget = roomCards.reduce(
+    (acc, card) => acc + calculateCardPrice(card).total,
+    0
+  );
 
-  const areaInputRef = useRef(null);
-  const toNumber = (value) => {
-    const num =
-      typeof value === "number" ? value : Number.parseFloat(value || "0");
-    if (Number.isNaN(num)) {
-      return AREA_MIN;
-    }
-    return Math.min(Math.max(num, AREA_MIN), AREA_MAX);
+  const handleCardNameChange = (id, value) => {
+    setRoomCards((prev) =>
+      prev.map((card) => (card.id === id ? { ...card, name: value } : card))
+    );
   };
 
-  const handleAreaChange = (value) => {
-    setArea(toNumber(value));
-  };
-
-  // Состояние калькулятора
-  const [area, setArea] = useState(50);
-  const [materialQuality, setMaterialQuality] = useState("standard");
-  const [electricalPoints, setElectricalPoints] = useState(10);
-  const [electricalPanel, setElectricalPanel] = useState("12");
-  const [plumbingPoints, setPlumbingPoints] = useState(3);
-  const [warmFloor, setWarmFloor] = useState(false);
-  const [warmFloorArea, setWarmFloorArea] = useState(0);
-  const [designerRepair, setDesignerRepair] = useState(false);
-  const [heatingSystem, setHeatingSystem] = useState(false);
-  const [ventilation, setVentilation] = useState(false);
-  const [kitchenPoints, setKitchenPoints] = useState(3);
-
-  // Состояние формы
-  const [phone, setPhone] = useState("");
-  const [contactMethod, setContactMethod] = useState("call");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const materialOptions = [
-    { value: "standard", label: "Стандарт" },
-    { value: "comfort", label: "Комфорт" },
-    { value: "premium", label: "Премиум" },
-  ];
-
-  const electricalPanelOptions = [
-    { value: "12", label: "12 модулей" },
-    { value: "24", label: "24 модуля" },
-    { value: "36", label: "36 модулей" },
-  ];
-
-  // Расчет стоимости
-  const calculatePrice = () => {
-    if (!area || area <= 0) return { total: 0, perSquare: 0 };
-
-    // Базовая цена white box (руб/м²)
-    const basePrice = 8700;
-
-    // Множители качества материалов
-    const qualityMultipliers = {
-      standard: 1,
-      comfort: 1.25,
-      premium: 1.5,
-    };
-
-    // Стоимость дополнительных опций
-    let additionalCost = 0;
-
-    // Электрика: базовая стоимость + дополнительные точки
-    const baseElectricalPoints = 8; // базовое количество точек
-    if (electricalPoints > baseElectricalPoints) {
-      const extraPoints = electricalPoints - baseElectricalPoints;
-      additionalCost += extraPoints * 350; // 350₽ за дополнительную точку
-    }
-
-    // Электрощит
-    const panelCosts = {
-      "12": 0, // базовый
-      "24": 1000,
-      "36": 2000,
-    };
-    additionalCost += panelCosts[electricalPanel] || 0;
-
-    // Сантехника: базовая стоимость + дополнительные точки
-    const basePlumbingPoints = 2; // базовое количество точек
-    if (plumbingPoints > basePlumbingPoints) {
-      const extraPoints = plumbingPoints - basePlumbingPoints;
-      additionalCost += extraPoints * 4500; // 4500₽ за дополнительную точку
-    }
-
-    // Теплый пол
-    if (warmFloor && warmFloorArea > 0) {
-      additionalCost += warmFloorArea * 800; // 800₽/м² за теплый пол
-    }
-
-    // Под дизайнерский ремонт (+15% к базе)
-    if (designerRepair) {
-      additionalCost += basePrice * area * 0.15;
-    }
-
-    // Система отопления
-    if (heatingSystem) {
-      additionalCost += 15000; // фиксированная стоимость
-    }
-
-    // Вентиляция
-    if (ventilation) {
-      additionalCost += 20000; // фиксированная стоимость
-    }
-
-    // Кухня: дополнительные точки
-    const baseKitchenPoints = 2;
-    if (kitchenPoints > baseKitchenPoints) {
-      const extraPoints = kitchenPoints - baseKitchenPoints;
-      additionalCost += extraPoints * 2000; // 2000₽ за дополнительную точку на кухне
-    }
-
-    const qualityMultiplier = qualityMultipliers[materialQuality];
-    const baseTotal = Math.round(basePrice * area * qualityMultiplier);
-    const totalPrice = Math.round(baseTotal + additionalCost);
-    const pricePerSquare = Math.round(totalPrice / area);
-
-    // Расчет сроков ремонта (дни)
-    const baseTimePerSquare = 1.5; // 1.5 дня за м² для white box
-    let totalDays = Math.round(baseTimePerSquare * area);
-
-    // Добавляем время на дополнительные работы
-    if (warmFloor) totalDays += 3;
-    if (heatingSystem) totalDays += 5;
-    if (ventilation) totalDays += 4;
-    if (designerRepair) totalDays += Math.round(area * 0.2);
-
-    const minDays = Math.max(totalDays * 0.8, 7);
-    const maxDays = Math.max(totalDays * 1.2, minDays + 3);
-
-    return {
-      total: totalPrice,
-      perSquare: pricePerSquare,
-      timeRange: { min: Math.round(minDays), max: Math.round(maxDays) },
-    };
-  };
-
-  const { total, perSquare, timeRange } = calculatePrice();
-
-  // Отправка формы
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const phoneDigitsOnly = phone.replace(/\D/g, "");
-    if (phoneDigitsOnly.length < 10) {
-      setError("Введите корректный номер телефона");
-      return;
-    }
-
-    setError("");
-    setIsLoading(true);
-
-    const token = import.meta.env.VITE_TELEGRAM_TOKEN;
-    const chatIds = [
-      import.meta.env.VITE_TELEGRAM_CHAT_ID_EGOR,
-      import.meta.env.VITE_TELEGRAM_CHAT_ID_ANTON,
-    ];
-
-    const qualityNames = {
-      standard: "Стандарт",
-      comfort: "Комфорт",
-      premium: "Премиум",
-    };
-
-    const panelNames = {
-      "12": "12 модулей",
-      "24": "24 модуля",
-      "36": "36 модулей",
-    };
-
-    const contactMethodNames = {
-      call: "Перезвоните",
-      whatsapp: "Пришлите в WhatsApp",
-      telegram: "Пришлите в Telegram",
-    };
-
-    const additionalOptions = [];
-    if (warmFloor) {
-      additionalOptions.push(`Теплый пол: ${warmFloorArea} м²`);
-    }
-    if (designerRepair) {
-      additionalOptions.push("Под дизайнерский ремонт: Да");
-    }
-    if (heatingSystem) {
-      additionalOptions.push("Система отопления: Да");
-    }
-    if (ventilation) {
-      additionalOptions.push("Вентиляция: Да");
-    }
-
-    const additionalText =
-      additionalOptions.length > 0
-        ? `\n📋 Дополнительно:\n${additionalOptions.join("\n")}`
-        : "";
-
-    const now = new Date().toLocaleString("ru-RU");
-    const message = `🧮 Новая заявка с калькулятора White Box:\n\n📱 Телефон: ${phone}\n📐 Площадь: ${area} м²\n⭐ Качество материалов: ${
-      qualityNames[materialQuality]
-    }\n⚡ Электрика: ${electricalPoints} точек, щит ${panelNames[electricalPanel]}\n🚿 Сантехника: ${plumbingPoints} точек\n🍳 Кухня: ${kitchenPoints} точек${additionalText}\n💰 Расчетная стоимость: ${total.toLocaleString()} ₽ (${perSquare.toLocaleString()} ₽/м²)\n⏱️ Сроки: ${
-      timeRange.min
-    }-${timeRange.max} дней\n📞 Способ связи: ${
-      contactMethodNames[contactMethod]
-    }\n⏰ Время: ${now}`;
-
-    try {
-      for (const id of chatIds) {
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chat_id: id,
-            text: message,
-          }),
-        });
+  const handleDuplicateCard = (id) => {
+    setRoomCards((prev) => {
+      const index = prev.findIndex((card) => card.id === id);
+      if (index === -1) {
+        return prev;
       }
+      const original = prev[index];
+      const duplicate = createCardFromDraft({
+        ...original,
+        name: `${original.name} (копия)`,
+      });
+      const next = [...prev];
+      next.splice(index + 1, 0, duplicate);
+      return next;
+    });
+  };
 
-      ymGoal("whitebox_calculator_form_sent");
-      setIsSubmitted(true);
-      setPhone("");
-    } catch (err) {
-      setError("Ошибка при отправке. Попробуйте позже.");
-    } finally {
-      setIsLoading(false);
+  const handleDeleteCard = (id) => {
+    setRoomCards((prev) => prev.filter((card) => card.id !== id));
+  };
+
+  const moveCard = (id, direction) => {
+    setRoomCards((prev) => {
+      const index = prev.findIndex((card) => card.id === id);
+      if (index === -1) {
+        return prev;
+      }
+      const target = index + direction;
+      if (target < 0 || target >= prev.length) {
+        return prev;
+      }
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  };
+
+  const handleConstructorFieldChange = (key, rawValue) => {
+    setConstructorDraft((prev) => {
+      const config = FIELD_LIBRARY[key];
+      if (!config) {
+        return prev;
+      }
+      const next = { ...prev };
+      if (config.type === "number") {
+        const parsed = Number(rawValue);
+        if (Number.isNaN(parsed)) {
+          return prev;
+        }
+        const min = config.min ?? -Infinity;
+        const max = config.max ?? Infinity;
+        next[key] = Math.max(min, Math.min(max, parsed));
+      } else if (config.type === "toggle") {
+        next[key] = Boolean(rawValue);
+      } else {
+        next[key] = rawValue;
+      }
+      return next;
+    });
+  };
+
+  const handleCreateCard = () => {
+    const newCard = createCardFromDraft(constructorDraft);
+    const updatedCards = [...roomCards, newCard];
+    setRoomCards(updatedCards);
+    setConstructorDraft((prev) => ({
+      ...prev,
+      name: getDefaultDraft(prev.type, updatedCards).name,
+    }));
+  };
+
+  const handleTypeSelect = (type) => {
+    setConstructorDraft(getDefaultDraft(type, roomCards));
+  };
+
+  const currentFields = roomTypeFields[constructorDraft.type] ?? [];
+  const canCreate =
+    Number(constructorDraft.area) > 0 && constructorDraft.name?.trim().length > 0;
+
+  const renderFieldValue = (fieldKey, value) => {
+    const config = FIELD_LIBRARY[fieldKey];
+    if (!config) {
+      return value ?? "-";
     }
+    if (config.type === "toggle") {
+      return value ? "Да" : "Нет";
+    }
+    if (config.type === "select") {
+      return getOptionLabel(fieldKey, value);
+    }
+    const numeric = typeof value === "number" ? value : Number(value);
+    const formatted = Number.isNaN(numeric) ? value ?? "-" : formatNumber(numeric);
+    return config.unit ? `${formatted} ${config.unit}` : formatted;
   };
 
-  // Форматирование числа с пробелами
-  const formatNumber = (num) => {
-    return num.toLocaleString("ru-RU");
-  };
+  const renderConstructorInput = (fieldKey) => {
+    const config = FIELD_LIBRARY[fieldKey];
+    if (!config) {
+      return null;
+    }
+    const value = constructorDraft[fieldKey];
+    const label = config.label;
+    const sharedInputStyle = {
+      width: "100%",
+      border: "1px solid rgba(255,255,255,0.2)",
+      borderRadius: 4,
+      background: "rgba(255,255,255,0.03)",
+      color: "#fff",
+      padding: "8px 12px",
+      fontSize: isMobile ? 14 : 16,
+    };
 
-  const headerStyle = {
-    fontSize: isMobile ? "18px" : "22px",
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.9)",
-    display: "flex",
-    alignItems: "flex-end",
-    minHeight: isMobile ? "44px" : "58px",
-    margin: 0,
-  };
+    if (config.type === "number") {
+      return (
+        <label
+          key={fieldKey}
+          style={{ display: "flex", flexDirection: "column", gap: 6, color: "#fff" }}
+        >
+          <span style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>{label}</span>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <input
+              type="number"
+              min={config.min}
+              max={config.max}
+              step={config.step}
+              value={typeof value === "number" ? value : value ?? ""}
+              onChange={(event) => handleConstructorFieldChange(fieldKey, event.target.value)}
+              style={sharedInputStyle}
+            />
+            {config.unit && (
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>
+                {config.unit}
+              </span>
+            )}
+          </div>
+        </label>
+      );
+    }
 
-  const separatorStyle = {
-    height: "1px",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    margin: "8px 0 12px",
-  };
-
-  const rowGridStyle = {
-    display: "grid",
-    gridTemplateColumns: `${isMobile ? 18 : 20}px 1fr`,
-    alignItems: "center",
-    columnGap: isMobile ? "10px" : "12px",
-    padding: "4px 0",
-  };
-
-  const renderOptionColumn = (
-    title,
-    options,
-    selectedValue,
-    onSelect,
-    totalRows
-  ) => (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateRows: `auto auto repeat(${totalRows}, auto)`,
-        rowGap: "8px",
-        alignContent: "start",
-      }}
-    >
-      <div style={headerStyle}>{title}</div>
-      <div style={separatorStyle} />
-      {options.map((option) => (
-        <label key={option.value} style={rowGridStyle}>
-          <input
-            type="checkbox"
-            checked={selectedValue === option.value}
-            onChange={(e) => {
-              if (e.target.checked) {
-                onSelect(option.value);
-              }
-            }}
+    if (config.type === "select") {
+      return (
+        <label
+          key={fieldKey}
+          style={{ display: "flex", flexDirection: "column", gap: 6, color: "#fff" }}
+        >
+          <span style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>{label}</span>
+          <select
+            value={value ?? config.options[0]?.value}
+            onChange={(event) => handleConstructorFieldChange(fieldKey, event.target.value)}
             style={{
-              accentColor: "#FF6B35",
-              width: isMobile ? "18px" : "20px",
-              height: isMobile ? "18px" : "20px",
-            }}
-          />
-          <span
-            style={{
-              fontSize: isMobile ? "14px" : "16px",
-              color:
-                selectedValue === option.value
-                  ? "#FFD700"
-                  : "rgba(255,255,255,0.75)",
-              fontWeight: selectedValue === option.value ? "600" : "400",
+              ...sharedInputStyle,
+              appearance: "none",
+              cursor: "pointer",
+              backgroundImage:
+                "linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.6) 50%), linear-gradient(135deg, rgba(255,255,255,0.6) 50%, transparent 50%)",
+              backgroundPosition:
+                "calc(100% - 18px) calc(50% + 2px), calc(100% - 13px) calc(50% + 2px)",
+              backgroundSize: "6px 6px, 6px 6px",
+              backgroundRepeat: "no-repeat",
             }}
           >
-            {option.label}
-          </span>
+            {config.options.map((option) => (
+              <option key={option.value} value={option.value} style={{ color: "#05060A" }}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </label>
-      ))}
-      {Array.from({ length: totalRows - options.length }).map((_, idx) => (
-        <div key={`${title}-spacer-${idx}`} style={{ height: "30px" }} />
-      ))}
-    </div>
-  );
+      );
+    }
 
-  const renderNumberInput = (label, value, onChange, min = 0, max = 100) => (
+    if (config.type === "toggle") {
+      return (
+        <label
+          key={fieldKey}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "10px 12px",
+            borderRadius: 4,
+            border: "1px solid rgba(255,255,255,0.2)",
+            background: "rgba(255,255,255,0.03)",
+            color: "#fff",
+            fontSize: 14,
+          }}
+        >
+          <span>{label}</span>
+          <input
+            type="checkbox"
+            checked={Boolean(value)}
+            onChange={(event) => handleConstructorFieldChange(fieldKey, event.target.checked)}
+            style={{
+              accentColor: "#FFD700",
+              width: 20,
+              height: 20,
+            }}
+          />
+        </label>
+      );
+    }
+
+    return null;
+  };
+
+  const containerPadding = isMobile ? "20px" : "30px";
+  const fieldGridColumns = isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))";
+
+  return (
     <div
+      className="whitebox-calculator"
       style={{
+        marginTop: "20px",
+        background: "rgba(8, 12, 22, 0.95)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 12,
+        padding: containerPadding,
         display: "flex",
         flexDirection: "column",
-        gap: "8px",
+        gap: isMobile ? "18px" : "24px",
+        boxShadow: "0 30px 70px rgba(0,0,0,0.6)",
       }}
     >
-      <label
+      <div
         style={{
-          fontSize: isMobile ? "14px" : "16px",
-          fontWeight: "600",
-          color: "rgba(255,255,255,0.9)",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: "space-between",
+          gap: "12px",
         }}
       >
-        {label}
-      </label>
-      <input
-        type="number"
-        value={value}
-        onChange={(e) => {
-          const num = parseInt(e.target.value) || 0;
-          onChange(Math.min(Math.max(num, min), max));
-        }}
-        min={min}
-        max={max}
-        style={{
-          width: "100%",
-          padding: isMobile ? "8px 12px" : "10px 16px",
-          fontSize: isMobile ? "16px" : "18px",
-          fontWeight: "600",
-          backgroundColor: "rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.2)",
-          borderRadius: "8px",
-          color: "#FFFFFF",
-          textAlign: "center",
-          boxSizing: "border-box",
-        }}
-      />
-    </div>
-  );
+        <div>
+          <p
+            style={{
+              fontSize: isMobile ? 16 : 18,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              color: "#FFD700",
+              margin: "0 0 6px",
+            }}
+          >
+            Калькулятор черновой отделки
+          </p>
+          <h3
+            style={{
+              fontSize: isMobile ? 24 : 30,
+              margin: 0,
+              color: "#fff",
+              fontWeight: 700,
+            }}
+          >
+            Сформируйте прозрачный расчёт
+          </h3>
+        </div>
+        <p
+          style={{
+            color: "rgba(255,255,255,0.75)",
+            fontSize: 15,
+            lineHeight: 1.5,
+            margin: 0,
+            maxWidth: isMobile ? "100%" : "360px",
+          }}
+        >
+          Добавляйте помещения, подбирайте параметры и следите за итогом по каждому объекту.
+        </p>
+      </div>
 
-  const renderCheckbox = (label, checked, onChange, description) => (
-    <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        cursor: "pointer",
-        padding: isMobile ? "12px 14px" : "14px 16px",
-        borderRadius: "10px",
-        backgroundColor: "transparent",
-        border: checked
-          ? "1px solid #FF6B35"
-          : "1px solid rgba(255,255,255,0.25)",
-        transition: "all 0.2s ease",
-      }}
-      onMouseDown={(e) => {
-        e.preventDefault();
-        e.currentTarget.style.backgroundColor = "transparent";
-      }}
-      onMouseEnter={(e) => {
-        if (!checked) {
-          e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)";
-        } else {
-          e.currentTarget.style.backgroundColor = "transparent";
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = "transparent";
-      }}
-    >
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        style={{
-          accentColor: "#FF6B35",
-          transform: "scale(1.1)",
-        }}
-      />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "2px",
-          flex: 1,
-        }}
-      >
-        <span
-          style={{
-            fontSize: isMobile ? "14px" : "16px",
-            color: checked ? "#FFD700" : "rgba(255,255,255,0.9)",
-            fontWeight: checked ? "600" : "400",
-          }}
-        >
-          {label}
-        </span>
-        {description && (
-          <span
-            style={{
-              fontSize: isMobile ? "12px" : "13px",
-              color: "rgba(255,255,255,0.6)",
-            }}
-          >
-            {description}
-          </span>
-        )}
-      </div>
-    </label>
-  );
-
-  const maxOptionRows = Math.max(
-    materialOptions.length,
-    electricalPanelOptions.length
-  );
-
-  return (
-    <>
-      <style>{calculatorStyles}</style>
-      <section
-        className="whitebox-calculator"
-        style={{
-          width: "100%",
-          backgroundColor: SECTION_BACKGROUND,
-          paddingTop: isMobile ? "20px" : "40px",
-          paddingBottom: isMobile ? "10px" : "20px",
-          marginTop: "0",
-          position: "relative",
+          gap: "12px",
         }}
       >
         <div
           style={{
-            width: "100%",
-            maxWidth: "1000px",
-            margin: "0 auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: isMobile ? "24px" : "32px",
+            height: 1,
+            background: "rgba(255,255,255,0.14)",
+            borderRadius: 1,
           }}
-        >
-          {/* Заголовок */}
-          <div
+        />
+        <div>
+          <h4
             style={{
-              textAlign: "left",
-              paddingLeft: isMobile ? "20px" : "24px",
-              paddingRight: isMobile ? "20px" : "24px",
-              boxSizing: "border-box",
+              margin: "0 0 6px",
+              fontSize: isMobile ? 20 : 22,
+              color: "#fff",
+              fontWeight: 600,
             }}
           >
-            <h2
-              style={{
-                fontSize: isMobile ? "28px" : "48px",
-                fontWeight: "800",
-                color: "#FFD700",
-                margin: "0 0 16px 0",
-                lineHeight: isMobile ? 1.3 : 1.2,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              Калькулятор White Box
-            </h2>
-            <p
-              style={{
-                fontSize: isMobile ? "16px" : "22px",
-                fontWeight: "400",
-                color: "rgba(255,255,255,0.85)",
-                margin: "0",
-                lineHeight: 1.5,
-              }}
-            >
-              Рассчитайте стоимость черновой отделки с учетом всех параметров
-            </p>
-          </div>
-
-          {/* Основной контейнер калькулятора */}
-          <div
+            Помещения
+          </h4>
+          <p
             style={{
-              backgroundColor: "transparent",
-              borderRadius: "20px",
-              paddingTop: isMobile ? "24px" : "32px",
-              paddingBottom: isMobile ? "24px" : "32px",
-              paddingLeft: isMobile ? "20px" : "24px",
-              paddingRight: isMobile ? "20px" : "24px",
-              border: "none",
-              boxSizing: "border-box",
+              margin: 0,
+              color: "rgba(255,255,255,0.75)",
+              fontSize: 14,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: isMobile ? "24px" : "32px",
-              }}
-            >
-              {/* Площадь и качество материалов */}
+            Каждая карточка — отдельное помещение с собственным расчётом.
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {roomCards.map((card, index) => {
+            const { total: cardTotal, perSquare, breakdown } = calculateCardPrice(card);
+            const typeEntry = getTypeEntry(card.type);
+            const cardFields = roomTypeFields[card.type] ?? [];
+            return (
               <div
+                key={card.id}
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1fr"
-                    : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? "0" : "24px",
-                  rowGap: isMobile ? "20px" : "28px",
-                  alignItems: "start",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 8,
+                  padding: "18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "14px",
                 }}
               >
-                {renderOptionColumn(
-                  "Качество материалов",
-                  materialOptions,
-                  materialQuality,
-                  setMaterialQuality,
-                  maxOptionRows
-                )}
-
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                    alignItems: "center",
+                    flexWrap: "wrap",
                   }}
                 >
-                  <label
-                    style={{
-                      display: "block",
-                      fontSize: isMobile ? "14px" : "16px",
-                      fontWeight: "600",
-                      color: "rgba(255,255,255,0.9)",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Площадь (м²)
-                  </label>
-                  <div
-                    style={{
-                      width: "100%",
-                      padding: isMobile ? "8px 12px" : "10px 16px",
-                      fontSize: isMobile ? "24px" : "32px",
-                      fontWeight: "700",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      borderRadius: "12px",
-                      color: "#FFFFFF",
-                      textAlign: "center",
-                      marginBottom: "16px",
-                      boxSizing: "border-box",
-                    }}
-                  >
-                    {formatNumber(area)}
-                  </div>
-                  <input
-                    ref={areaInputRef}
-                    type="range"
-                    value={area}
-                    min={AREA_MIN}
-                    max={AREA_MAX}
-                    step={1}
-                    onInput={(e) => handleAreaChange(e.target.valueAsNumber)}
-                    onChange={(e) => handleAreaChange(e.target.valueAsNumber)}
-                    style={{
-                      width: "100%",
-                      accentColor: "#FF6B35",
-                      touchAction: "none",
-                      WebkitTapHighlightColor: "transparent",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Электрика */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1fr"
-                    : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? "0" : "24px",
-                  rowGap: isMobile ? "16px" : "20px",
-                }}
-              >
-                {renderNumberInput(
-                  "Количество точек электрики",
-                  electricalPoints,
-                  setElectricalPoints,
-                  5,
-                  50
-                )}
-                {renderOptionColumn(
-                  "Электрощит",
-                  electricalPanelOptions,
-                  electricalPanel,
-                  setElectricalPanel,
-                  maxOptionRows
-                )}
-              </div>
-
-              {/* Сантехника и кухня */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1fr"
-                    : "repeat(2, minmax(0, 1fr))",
-                  columnGap: isMobile ? "0" : "24px",
-                  rowGap: isMobile ? "16px" : "20px",
-                }}
-              >
-                {renderNumberInput(
-                  "Количество точек сантехники",
-                  plumbingPoints,
-                  setPlumbingPoints,
-                  1,
-                  20
-                )}
-                {renderNumberInput(
-                  "Точки на кухне",
-                  kitchenPoints,
-                  setKitchenPoints,
-                  1,
-                  15
-                )}
-              </div>
-
-              {/* Дополнительные опции */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: isMobile ? "16px" : "20px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile
-                      ? "1fr"
-                      : "repeat(2, minmax(0, 1fr))",
-                    columnGap: isMobile ? "0" : "24px",
-                    rowGap: isMobile ? "16px" : "20px",
-                  }}
-                >
-                  {renderCheckbox(
-                    "Теплый пол",
-                    warmFloor,
-                    setWarmFloor,
-                    "800₽/м²"
-                  )}
-                  {renderCheckbox(
-                    "Под дизайнерский ремонт",
-                    designerRepair,
-                    setDesignerRepair,
-                    "+15% к стоимости"
-                  )}
-                  {renderCheckbox(
-                    "Система отопления",
-                    heatingSystem,
-                    setHeatingSystem,
-                    "+15 000₽"
-                  )}
-                  {renderCheckbox(
-                    "Вентиляция",
-                    ventilation,
-                    setVentilation,
-                    "+20 000₽"
-                  )}
-                </div>
-                {warmFloor && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: isMobile
-                        ? "1fr"
-                        : "repeat(2, minmax(0, 1fr))",
-                      columnGap: isMobile ? "0" : "24px",
-                    }}
-                  >
-                    {renderNumberInput(
-                      "Площадь теплого пола (м²)",
-                      warmFloorArea,
-                      (val) => setWarmFloorArea(Math.min(val, area)),
-                      0,
-                      area
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Результат расчета */}
-              <div
-                style={{
-                  marginTop: isMobile ? "24px" : "36px",
-                  backgroundColor: "transparent",
-                  textAlign: "left",
-                  padding: isMobile ? "0" : "0 4px",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: isMobile ? "18px" : "22px",
-                    fontWeight: "700",
-                    color: "#FFFFFF",
-                    margin: "0 0 14px 0",
-                  }}
-                >
-                  Примерная стоимость
-                </h3>
-
-                {total > 0 ? (
-                  <>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <input
+                      value={card.name}
+                      onChange={(event) => handleCardNameChange(card.id, event.target.value)}
+                      style={{
+                        width: "100%",
+                        background: "transparent",
+                        border: "none",
+                        color: "#fff",
+                        fontSize: isMobile ? 20 : 24,
+                        fontWeight: 700,
+                        padding: 0,
+                      }}
+                    />
                     <div
                       style={{
-                        fontSize: isMobile ? "32px" : "48px",
-                        fontWeight: "800",
-                        color: "#ffffff",
-                        margin: "0 0 10px 0",
+                        display: "flex",
+                        flexWrap: "wrap",
+                        alignItems: "baseline",
+                        gap: "10px",
+                        marginTop: "6px",
                       }}
                     >
-                      {formatNumber(total)}{" "}
-                      <span style={{ color: "#FFD700" }}>₽</span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: typeEntry.accent,
+                          border: `1px solid ${typeEntry.accent}`,
+                          borderRadius: 999,
+                          padding: "2px 10px",
+                          background: "rgba(255,255,255,0.05)",
+                        }}
+                      >
+                        {typeEntry.shortLabel}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.7)",
+                        }}
+                      >
+                        ≈{formatNumber(perSquare)} ₽/м²
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#FFD700",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {formatNumber(cardTotal)} ₽
+                      </span>
                     </div>
-                    <div
-                      style={{
-                        fontSize: isMobile ? "16px" : "20px",
-                        color: "rgba(255,255,255,0.85)",
-                        margin: "0",
-                      }}
-                    >
-                      (≈ {formatNumber(perSquare)} ₽ за м²)
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      fontSize: isMobile ? "18px" : "20px",
-                      color: "rgba(255,255,255,0.7)",
-                      margin: "0",
-                    }}
-                  >
-                    Введите площадь для расчета
                   </div>
-                )}
-
-                <p
-                  style={{
-                    fontSize: isMobile ? "13px" : "16px",
-                    color: "rgba(255,255,255,0.75)",
-                    margin: "14px 0 0 0",
-                    fontStyle: "italic",
-                    maxWidth: isMobile ? "100%" : "520px",
-                  }}
-                >
-                  Цена предварительная, точный расчёт уточнит специалист.
-                </p>
-              </div>
-
-              {/* Форма обратной связи */}
-              {!isSubmitted ? (
-                <form onSubmit={handleSubmit}>
                   <div
                     style={{
                       display: "flex",
                       flexDirection: "column",
-                      gap: "16px",
+                      gap: "10px",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: isMobile ? "column" : "row",
-                        gap: "16px",
-                      }}
-                    >
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+7 (___) ___-__-__"
-                        required
-                        style={{
-                          flex: 1,
-                          padding: isMobile ? "12px 16px" : "14px 18px",
-                          fontSize: isMobile ? "16px" : "18px",
-                          backgroundColor: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.2)",
-                          borderRadius: "12px",
-                          color: "#FFFFFF",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                      <select
-                        value={contactMethod}
-                        onChange={(e) => setContactMethod(e.target.value)}
-                        style={{
-                          padding: isMobile ? "12px 16px" : "14px 18px",
-                          fontSize: isMobile ? "16px" : "18px",
-                          backgroundColor: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.2)",
-                          borderRadius: "12px",
-                          color: "#FFFFFF",
-                          boxSizing: "border-box",
-                        }}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <IconButton
+                        label="Переместить вверх"
+                        onClick={() => moveCard(card.id, -1)}
+                        disabled={index === 0}
                       >
-                        <option value="call">Перезвоните</option>
-                        <option value="whatsapp">Пришлите в WhatsApp</option>
-                        <option value="telegram">Пришлите в Telegram</option>
-                      </select>
+                        <ArrowIcon direction="up" />
+                      </IconButton>
+                      <IconButton
+                        label="Переместить вниз"
+                        onClick={() => moveCard(card.id, 1)}
+                        disabled={index === roomCards.length - 1}
+                      >
+                        <ArrowIcon direction="down" />
+                      </IconButton>
                     </div>
-                    {error && (
-                      <div
-                        style={{
-                          color: "#ff4444",
-                          fontSize: isMobile ? "14px" : "16px",
-                        }}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <IconButton
+                        label="Дублировать карточку"
+                        onClick={() => handleDuplicateCard(card.id)}
                       >
-                        {error}
-                      </div>
-                    )}
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      style={{
-                        padding: isMobile ? "14px 24px" : "16px 32px",
-                        fontSize: isMobile ? "16px" : "18px",
-                        fontWeight: "700",
-                        backgroundColor: "#FF6B35",
-                        color: "#FFFFFF",
-                        border: "none",
-                        borderRadius: "12px",
-                        cursor: isLoading ? "not-allowed" : "pointer",
-                        opacity: isLoading ? 0.6 : 1,
-                        transition: "opacity 0.2s ease",
-                      }}
-                    >
-                      {isLoading ? "Отправка..." : "Получить расчет"}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div
-                  style={{
-                    padding: isMobile ? "20px" : "24px",
-                    backgroundColor: "rgba(255,215,0,0.1)",
-                    border: "1px solid rgba(255,215,0,0.3)",
-                    borderRadius: "12px",
-                    textAlign: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: isMobile ? "18px" : "20px",
-                      fontWeight: "600",
-                      color: "#FFD700",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Спасибо!
-                  </div>
-                  <div
-                    style={{
-                      fontSize: isMobile ? "14px" : "16px",
-                      color: "rgba(255,255,255,0.85)",
-                    }}
-                  >
-                    Мы свяжемся с вами в ближайшее время
+                        <DuplicateIcon />
+                      </IconButton>
+                      <IconButton
+                        label="Удалить карточку"
+                        onClick={() => handleDeleteCard(card.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                    gap: "10px",
+                    paddingTop: "12px",
+                  }}
+                >
+                  {cardFields.map((fieldKey) => (
+                    <div
+                      key={`${card.id}-${fieldKey}`}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 13,
+                          color: "rgba(255,255,255,0.65)",
+                          flex: 1,
+                        }}
+                      >
+                        {FIELD_LIBRARY[fieldKey]?.label ?? fieldKey}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 15,
+                          color: "#fff",
+                          fontWeight: 600,
+                          textAlign: "right",
+                          minWidth: "fit-content",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {renderFieldValue(fieldKey, card[fieldKey])}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div
+                  style={{
+                    borderTop: "1px solid rgba(255,255,255,0.12)",
+                    paddingTop: "12px",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpandedCardIds((prev) =>
+                        prev.includes(card.id)
+                          ? prev.filter((entry) => entry !== card.id)
+                          : [...prev, card.id]
+                      )
+                    }
+                    style={{
+                      all: "unset",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                      cursor: "pointer",
+                      fontSize: 14,
+                      color: "#FFD700",
+                      fontWeight: 600,
+                    }}
+                  >
+                    <span>Подробнее о составе расчета</span>
+                    <span style={{ fontSize: 18 }}>
+                      {expandedCardIds.includes(card.id) ? "▾" : "▸"}
+                    </span>
+                  </button>
+                  {expandedCardIds.includes(card.id) && breakdown.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: 10,
+                        display: "grid",
+                        gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                        gap: "8px",
+                      }}
+                    >
+                      {breakdown.map((item) => (
+                        <div
+                          key={`${card.id}-breakdown-${item.label}`}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 2,
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: 13,
+                                color: "rgba(255,255,255,0.65)",
+                              }}
+                            >
+                              {item.label}
+                            </span>
+                            {item.detail && (
+                              <span
+                                style={{
+                                  fontSize: 12,
+                                  color: "rgba(255,255,255,0.45)",
+                                }}
+                              >
+                                {item.detail}
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              color: "#FFD700",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {formatNumber(item.value)} ₽
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </section>
-    </>
+      </div>
+
+      <div
+        style={{
+          borderTop: "1px solid rgba(255,255,255,0.12)",
+          paddingTop: containerPadding,
+          marginTop: "6px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+        }}
+      >
+        <div>
+          <h4
+            style={{
+              margin: "0 0 6px",
+              fontSize: isMobile ? 20 : 24,
+              color: "#fff",
+              fontWeight: 600,
+            }}
+          >
+            Конструктор комнаты
+          </h4>
+          <p style={{ margin: 0, color: "rgba(255,255,255,0.75)", fontSize: 14 }}>
+            Выберите тип помещения и заполните поля — здесь настраиваются свойства карточки.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))",
+            gap: "10px",
+          }}
+        >
+          {ROOM_TYPES.map((option) => {
+            const selected = option.value === constructorDraft.type;
+            return (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() => handleTypeSelect(option.value)}
+                style={{
+                  borderRadius: 6,
+                  border: `1px solid ${selected ? "#FFD700" : "rgba(255,255,255,0.4)"}`,
+                  background: selected ? option.accent : "rgba(255,255,255,0.04)",
+                  color: selected ? "#0B0B0B" : "#fff",
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  minHeight: "52px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: "2px",
+                }}
+              >
+                <span>{option.shortLabel}</span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: selected ? "#1E1E1E" : "rgba(255,255,255,0.6)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {option.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+              fontSize: 14,
+              color: "rgba(255,255,255,0.85)",
+            }}
+          >
+            Название карточки
+            <input
+              value={constructorDraft.name}
+              onChange={(event) =>
+                setConstructorDraft((prev) => ({ ...prev, name: event.target.value }))
+              }
+              style={{
+                borderRadius: 4,
+                border: "1px solid rgba(255,255,255,0.2)",
+                padding: "10px 14px",
+                background: "rgba(255,255,255,0.03)",
+                color: "#fff",
+                fontSize: 16,
+              }}
+            />
+          </label>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: fieldGridColumns,
+            gap: "12px",
+          }}
+        >
+          {currentFields.map((fieldKey) => renderConstructorInput(fieldKey))}
+        </div>
+
+        <YellowBorderButton
+          onClick={handleCreateCard}
+          disabled={!canCreate}
+          style={{ borderRadius: 6, fontSize: 16 }}
+        >
+          Создать
+        </YellowBorderButton>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {USAGE_STEPS.map((step) => (
+            <div
+              key={step}
+              style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}
+            >
+              <span style={{ color: "#FFD700", fontSize: 18, lineHeight: 1 }}>▹</span>
+              <p
+                style={{
+                  margin: 0,
+                  color: "rgba(255,255,255,0.7)",
+                  fontSize: 13,
+                  lineHeight: 1.4,
+                }}
+              >
+                {step}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p
+          style={{
+            color: "rgba(255,255,255,0.65)",
+            fontSize: 13,
+            margin: 0,
+          }}
+        >
+          🧮 Под капотом считается штукатурка (площадь × коэффициент), электрика (точка × цена),
+          сантехника (мокрые точки × базовая цена), гидроизоляция (площадь × ставка), демонтаж,
+          выравнивание полов и прокладка кабеля.
+        </p>
+
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.12)",
+            paddingTop: "12px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "8px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 14,
+              color: "#FFD700",
+              fontWeight: 600,
+              letterSpacing: 0.5,
+            }}
+          >
+            ✔ Общая сумма
+          </span>
+          <strong
+            style={{
+              fontSize: isMobile ? 22 : 26,
+              color: "#fff",
+              fontWeight: 700,
+            }}
+          >
+            {formatNumber(totalBudget)} ₽
+          </strong>
+        </div>
+      </div>
+    </div>
   );
 };
 

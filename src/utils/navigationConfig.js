@@ -58,7 +58,7 @@ export const createMenuItems = (scrollFunctions = {}) => [
         route: "/#designer",
       },
       {
-        name: "Чистовая/черновая отделка",
+        name: "ЧЕРНОВОЙ РЕМОНТ",
         scrollKey: "scrollToWhitebox",
         href: scrollFunctions.scrollToWhitebox,
         route: "/#whitebox",
@@ -93,7 +93,7 @@ const REPAIR_PATH_TO_NAME_MAP = {
   "/repair/cosmetic": "Косметический ремонт",
   "/repair/capital": "Капитальный ремонт",
   "/repair/designer": "Дизайнерский ремонт",
-  "/repair/whitebox": "Чистовая/черновая отделка",
+  "/repair/whitebox": "ЧЕРНОВОЙ РЕМОНТ",
 };
 
 // Маппинг названий пунктов ремонта на пути страниц
@@ -101,7 +101,7 @@ const REPAIR_NAME_TO_PATH_MAP = {
   "Косметический ремонт": "/repair/cosmetic",
   "Капитальный ремонт": "/repair/capital",
   "Дизайнерский ремонт": "/repair/designer",
-  "Чистовая/черновая отделка": "/repair/whitebox",
+  "ЧЕРНОВОЙ РЕМОНТ": "/repair/whitebox",
 };
 
 /**

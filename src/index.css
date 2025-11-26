@@ -1,5 +1,5 @@
 :root {
-  --color-background-primary: #041723;
+  --color-background-primary: #121c28;
 }
 @keyframes fadeInUp {
   from {
@@ -17,17 +17,19 @@
   animation: fadeInUp 0.1s ease-out 3s forwards;
 }
 
+html,
 body {
   margin: 0;
   background-color: var(--color-background-primary);
-  overflow-x: visible !important;
+  overflow-x: hidden;
   position: relative;
+  font-family: "Nunito", Arial, sans-serif;
+  /* scroll-behavior: smooth; */
 }
 
-html,
-body {
-  overflow-x: hidden;
-  /* scroll-behavior: smooth; */
+/* Глобальный шрифт для всех заголовков */
+h1, h2, h3, h4, h5, h6 {
+  font-family: Arial, sans-serif;
 }
 
 @keyframes dash-move-left {
@@ -61,11 +63,11 @@ body {
 
 @keyframes glow {
   0% {
-    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 20px #ffa500,
+    text-shadow: 0 0 5px #f2d14f, 0 0 10px #f2d14f, 0 0 20px #ffa500,
       0 0 30px #ffa500, 0 0 40px #ff8c00;
   }
   100% {
-    text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffa500,
+    text-shadow: 0 0 10px #f2d14f, 0 0 20px #f2d14f, 0 0 30px #ffa500,
       0 0 40px #ffa500, 0 0 60px #ff8c00;
   }
 }
@@ -83,7 +85,7 @@ body {
   background: linear-gradient(
     90deg,
     #ffffff 0%,
-    #ffd700 40%,
+    #f2d14f 40%,
     #ff8c00 60%,
     #ffffff 100%
   );
@@ -112,7 +114,7 @@ body {
   display: block;
   width: 60%;
   height: 4px;
-  background: linear-gradient(to right, #ffd700, #ffb400);
+  background: linear-gradient(to right, #f2d14f, #ffb400);
   margin: 6px auto 0;
   border-radius: 2px;
 }

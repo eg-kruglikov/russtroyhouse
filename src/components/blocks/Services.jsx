@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ymNavigate } from "../../utils/metrika";
 import { TITLE_SIZES } from "../../utils/spacing";
+import YellowBorderButton from "./YellowBorderButton";
 
 const Services = ({ isMobile, servicesRef }) => {
   const navigate = useNavigate();
@@ -40,9 +41,9 @@ const Services = ({ isMobile, servicesRef }) => {
       route: "designer",
     },
     {
-      title: "Чистовая/черновая отделка",
+      title: "Черновой ремонт под ключ",
       description:
-        "Полный цикл ремонта — от черновых до чистовых работ.\n\nДелаем всё: разводку коммуникаций, штукатурку, гипсокартон, стяжку, поклейку обоев, укладку напольных покрытий, установку сантехники и освещения.\n\nМожно заказать как полный ремонт, так и отдельные этапы — чистовую или черновую отделку.",
+        "Мы предоставляем услуги по черновому ремонту в Москве и области. Делаем полный цикл ремонта — от черновых до чистовых работ.\nДелаем всё: разводку коммуникаций, штукатурку, гипсокартон, стяжку, поклейку обоев, укладку напольных покрытий, установку сантехники и освещения.\nМожно заказать как полный ремонт, так и отдельные этапы — чистовую или черновую отделку.",
       price: "5000",
       image: "/images/repair/zelenyBor/1.webp",
       route: "whitebox",
@@ -173,35 +174,15 @@ const Services = ({ isMobile, servicesRef }) => {
                   {service.description}
                 </p>
 
-                <a
+                <YellowBorderButton
                   onClick={(e) => {
                     e.preventDefault();
                     handleClick(service.route);
                   }}
-                  href={`/repair/${service.route}`}
-                  style={{
-                    color: "#FFD700",
-                    fontSize: isMobile ? "4.5vw" : "24px",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.gap = "14px";
-                    e.currentTarget.style.opacity = "0.8";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.gap = "10px";
-                    e.currentTarget.style.opacity = "1";
-                  }}
+                  isMobile={isMobile}
                 >
                   Подробнее
-                  <span style={{ fontSize: isMobile ? "5vw" : "28px" }}>→</span>
-                </a>
+                </YellowBorderButton>
               </div>
             </div>
           );

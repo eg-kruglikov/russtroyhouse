@@ -158,7 +158,7 @@ const BeforeAfterSection = ({
         >
           <p
             style={{
-              fontSize: isMobile ? "16px" : "20px",
+              fontSize: isMobile ? "17px" : "20px",
               color: "rgba(255,255,255,0.85)",
               margin: 0,
               lineHeight: 1.6,

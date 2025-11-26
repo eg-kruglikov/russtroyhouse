@@ -39,7 +39,6 @@ const Mobile = () => {
     <div
       style={{
         color: "#fff",
-        fontFamily: "'Arial', sans-serif",
         paddingTop: "60px",
         paddingBottom: 60,
         background: SECTION_BACKGROUND,
@@ -81,6 +80,7 @@ const Mobile = () => {
               textShadow: "0 0 14px rgba(0,0,0,.75)",
               fontWeight: 800,
               letterSpacing: 0.4,
+              fontFamily: "Arial, sans-serif",
             }}
           >
             Дизайнерский ремонт
@@ -96,7 +96,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -141,7 +141,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -185,7 +185,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -228,7 +228,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -271,7 +271,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -332,7 +332,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -349,7 +349,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -362,7 +362,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -391,7 +391,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",
@@ -403,7 +403,7 @@ const Mobile = () => {
         <p
           style={{
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             lineHeight: 1.6,
             margin: 0,
             textAlign: "left",

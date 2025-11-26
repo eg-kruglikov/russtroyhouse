@@ -29,7 +29,6 @@ const Page = {
   paddingTop: "60px",
   background: deep,
   color: "#fff",
-  fontFamily: "'Arial', sans-serif",
 };
 
 // удалён локальный Header — используется глобальный Header из приложения
@@ -279,7 +278,6 @@ const ContactsPage = () => {
                               color: isSubItemActive
                                 ? "#FFD700"
                                 : "rgba(255,255,255,0.92)",
-                              fontFamily: "Arial, sans-serif",
                               fontWeight: 500,
                               fontSize: "16px",
                               letterSpacing: "0.6px",
@@ -309,7 +307,6 @@ const ContactsPage = () => {
                       color: isItemActive
                         ? "#FFD700"
                         : "rgba(255,255,255,0.95)",
-                      fontFamily: "Arial, sans-serif",
                       fontWeight: 500,
                       fontSize: "16px",
                       letterSpacing: "0.5px",
