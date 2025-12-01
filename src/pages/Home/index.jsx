@@ -16,9 +16,10 @@ import BeforeAfterSection from "../../components/blocks/BeforeAfterSection";
 
 import Services from "../../components/blocks/Services";
 import PhotoGrid from "../../components/blocks/PhotoGrid";
-import RepairCalculator from "../../components/blocks/RepairCalculator";
+import WhiteboxCalculator from "../../components/blocks/WhiteboxCalculator";
 import FullWidthViewportVideo from "../../components/blocks/FullWidthViewportVideo";
 import FullWidthImageGallery from "../../components/blocks/FullWidthImageGallery";
+import CallbackForm from "../../components/blocks/CallbackForm";
 
 import { usePressEffect } from "../../hooks/useSomething";
 import { useMetrikaActivity } from "../../hooks/useMetrikaActivity";
@@ -50,6 +51,7 @@ const Home = () => {
     layoutPadding,
     showSidebar,
     sidebarWidth,
+    viewportWidth,
   } = useResponsiveShell();
   const sidebarGap = 0;
   const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
@@ -66,6 +68,12 @@ const Home = () => {
   const [activeScrollKey, setActiveScrollKey] = useState("scrollToHero");
   const activeScrollKeyRef = useRef("scrollToHero");
   const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
+  const totalNavWidth = fallbackContentWidth + sidebarWidth + sidebarGap;
+  const sidebarLeft =
+    viewportWidth > 0
+      ? viewportWidth / 2 - totalNavWidth / 2 + containerShift
+      : 0;
+  const fixedSidebarLeft = Math.max(sidebarLeft - layoutPadding - 10, 0);
   const sliderHeightValue = isMobile
     ? Math.round(fallbackContentWidth * 0.66)
     : 400;
@@ -633,105 +641,15 @@ const Home = () => {
         }}
       >
         {showSidebar && (
-          <aside
+          <div
+            aria-hidden="true"
             style={{
               flex: `0 0 ${sidebarWidth}px`,
               maxWidth: `${sidebarWidth}px`,
               width: `${sidebarWidth}px`,
-              background: "transparent",
-              border: "none",
-              borderRadius: "0px",
-              padding: "28px 22px 28px",
-              position: "sticky",
-              top: "60px",
-              height: "auto",
-              maxHeight: "calc(100vh - 108px)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-              overflowY: "auto",
-              alignSelf: "flex-start",
-              WebkitBackdropFilter: "blur(12px)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "none",
+              pointerEvents: "none",
             }}
-          >
-            <nav
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "18px",
-              }}
-            >
-              {menuItems.map((item, index) => {
-                if (item.type === "submenu") {
-                  return (
-                    <div
-                      key={`${item.name}-${index}`}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "10px",
-                      }}
-                    >
-                      {item.submenu?.map((subItem, subIndex) => {
-                        const isSubItemActive =
-                          subItem.scrollKey === activeScrollKey;
-                        return (
-                          <button
-                            {...press}
-                            key={`${subItem.name}-${subIndex}`}
-                            onClick={() => handleSidebarSelection(subItem)}
-                            style={{
-                              all: "unset",
-                              cursor: "pointer",
-                              color: isSubItemActive
-                                ? "#FFD700"
-                                : "rgba(255,255,255,0.92)",
-                              fontWeight: 500,
-                              fontSize: "16px",
-                              letterSpacing: "0.6px",
-                              textTransform: "uppercase",
-                              padding: "4px 0",
-                              transition: "color 0.2s ease",
-                            }}
-                          >
-                            {subItem.name}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  );
-                }
-
-                const isItemActive = item.scrollKey === activeScrollKey;
-
-                return (
-                  <button
-                    {...press}
-                    key={`${item.name}-${index}`}
-                    onClick={() => handleSidebarSelection(item)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      color: isItemActive
-                        ? "#FFD700"
-                        : "rgba(255,255,255,0.95)",
-                      fontWeight: 500,
-                      fontSize: "16px",
-                      letterSpacing: "0.5px",
-                      textTransform: "uppercase",
-                      lineHeight: 1.5,
-                      padding: "2px 0",
-                      transition: "color 0.2s ease",
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </aside>
+          />
         )}
         <main
           style={{
@@ -890,126 +808,17 @@ const Home = () => {
                 isolation: "isolate",
               }}
             >
-              <RepairCalculator isMobile={isMobile} />
+              <WhiteboxCalculator isMobile={isMobile} />
             </section>
 
-            {/* Hero-блок с контактами и изображением */}
+            {/* Форма обратного звонка */}
             <section
               style={{
-                width: "100%",
-                backgroundColor: SECTION_BACKGROUND,
-                padding: "0",
-                marginTop: "0",
-                position: "relative",
-                borderTop: "none",
+                padding: isMobile ? "20px 0" : "32px 0",
                 boxSizing: "border-box",
               }}
             >
-              {/* Изображение на всю ширину */}
-              <div
-                style={{
-                  width: "100%",
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                <img
-                  src="/images/background_blok_number.webp"
-                  alt="Интерьер"
-                  loading="lazy"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    display: "block",
-                    objectFit: "cover",
-                  }}
-                />
-
-                {/* Контентная часть поверх изображения */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "100%",
-                    paddingLeft: isMobile ? "20px" : "24px",
-                    paddingRight: isMobile ? "20px" : "48px",
-                    paddingTop: isMobile ? "40px" : "40px",
-                    paddingBottom: isMobile ? "40px" : "40px",
-                    boxSizing: "border-box",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    gap: isMobile ? "20px" : "32px",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {/* Заголовок */}
-                  <h2
-                    style={{
-                      fontSize: isMobile
-                        ? TITLE_SIZES.mobile.service
-                        : TITLE_SIZES.desktop.service,
-                      fontWeight: "800",
-                      color: "#ffffff",
-                      margin: "0",
-                      lineHeight: isMobile ? 1.3 : 1.25,
-                      width: "100%",
-                      textAlign: "left",
-                      letterSpacing: "0",
-                      wordSpacing: "0",
-                      textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
-                    }}
-                  >
-                    {
-                      "Получите точный расчет за наш счет в течение 1-2 дней после звонка"
-                    }
-                  </h2>
-
-                  {/* Подзаголовок */}
-                  <p
-                    style={{
-                      fontSize: isMobile ? "14px" : "24px",
-                      fontWeight: "400",
-                      color: "rgba(255,255,255,0.9)",
-                      margin: "0",
-                      lineHeight: 1.6,
-                      width: "100%",
-                      textAlign: "left",
-                      letterSpacing: "0",
-                      wordSpacing: "0",
-                      textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
-                    }}
-                  >
-                    Гарантируем выезд специалиста и смету за наш счет
-                  </p>
-
-                  {/* Телефон */}
-                  <div>
-                    <a
-                      href="tel:+79264081811"
-                      onClick={() => {
-                        ymGoal("phone_click");
-                      }}
-                      style={{
-                        textDecoration: "none",
-                        display: "inline-block",
-                        color: "#ffffff",
-                        fontSize: isMobile ? "28px" : "42px",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        letterSpacing: "0.5px",
-                        textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
-                        fontFamily: "Arial, sans-serif",
-                      }}
-                    >
-                      +7 (926) 408-18-11
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <CallbackForm isMobile={isMobile} source="home" />
             </section>
 
             {/* Наши услуги */}
@@ -1565,6 +1374,106 @@ const Home = () => {
           </div>
         </main>
       </div>
+      {showSidebar && (
+        <aside
+          style={{
+            flex: `0 0 ${sidebarWidth}px`,
+            maxWidth: `${sidebarWidth}px`,
+            width: `${sidebarWidth}px`,
+            background: "transparent",
+            border: "none",
+            borderRadius: "0px",
+            padding: "28px 22px 28px",
+            position: "fixed",
+            top: "60px",
+            left: `${fixedSidebarLeft}px`,
+            height: "auto",
+            maxHeight: "calc(100vh - 108px)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+            overflowY: "auto",
+            boxShadow: "none",
+            zIndex: 100,
+          }}
+        >
+          <nav
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+          >
+            {menuItems.map((item, index) => {
+              if (item.type === "submenu") {
+                return (
+                  <div
+                    key={`${item.name}-${index}`}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px",
+                    }}
+                  >
+                    {item.submenu?.map((subItem, subIndex) => {
+                      const isSubItemActive =
+                        subItem.scrollKey === activeScrollKey;
+                      return (
+                        <button
+                          {...press}
+                          key={`${subItem.name}-${subIndex}`}
+                          onClick={() => handleSidebarSelection(subItem)}
+                          style={{
+                            all: "unset",
+                            cursor: "pointer",
+                            color: isSubItemActive
+                              ? "#FFD700"
+                              : "rgba(255,255,255,0.92)",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            letterSpacing: "0.6px",
+                            textTransform: "uppercase",
+                            padding: "4px 0",
+                            transition: "color 0.2s ease",
+                          }}
+                        >
+                          {subItem.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              }
+
+              const isItemActive = item.scrollKey === activeScrollKey;
+
+              return (
+                <button
+                  {...press}
+                  key={`${item.name}-${index}`}
+                  onClick={() => handleSidebarSelection(item)}
+                  style={{
+                    all: "unset",
+                    cursor: "pointer",
+                    color: isItemActive
+                      ? "#FFD700"
+                      : "rgba(255,255,255,0.95)",
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    lineHeight: 1.5,
+                    padding: "2px 0",
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
+      )}
     </div>
   );
 };

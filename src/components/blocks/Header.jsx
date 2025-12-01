@@ -15,6 +15,7 @@ import {
   createRepairPageMenuItems,
   NAV_GOALS_MAP,
   filterMenuItemsByCurrentRepair,
+  reorderMenuSections,
 } from "../../utils/navigationConfig";
 import { SECTION_BACKGROUND } from "../../utils/spacing";
 
@@ -135,7 +136,7 @@ const Header = ({
     const fallbackFn = typeof item.href === "function" ? item.href : undefined;
     const scrollFn = scrollFnFromContext || fallbackFn;
 
-    if (isHomePage && typeof scrollFn === "function") {
+    if (typeof scrollFn === "function") {
       scrollFn(behavior);
       return;
     }
@@ -269,16 +270,18 @@ const Header = ({
   }, [menuOpen]);
 
   // Обработчики навигации
-  const menuItems = useMemo(() => {
-    // На страницах ремонта используем специальный порядок меню
+  const rawMenuItems = useMemo(() => {
     const isRepairPage = location.pathname.startsWith("/repair/");
     if (isRepairPage) {
       return createRepairPageMenuItems(location.pathname);
     }
-    // На остальных страницах используем стандартное меню с фильтрацией
     const items = createMenuItems(scrollFunctions);
     return filterMenuItemsByCurrentRepair(items, location.pathname);
   }, [scrollFunctions, location.pathname]);
+  const menuItems = useMemo(
+    () => reorderMenuSections(rawMenuItems),
+    [rawMenuItems]
+  );
 
   const colorTextHeader = "#cdcdcd";
   const highlightColor = "#FFD700";
@@ -358,6 +361,7 @@ const Header = ({
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+              marginLeft: "-16px",
             }}
             aria-label="На главную"
           >
@@ -376,27 +380,31 @@ const Header = ({
           >
             {menuItems
               .filter((item) => item.type === "link" || item.type === "submenu")
-              .map((item, i) => (
-                <button
-                  {...press}
-                  onClick={() => handleMenuSelection(item)}
-                  key={i}
-                  style={{
-                    all: "unset",
-                    cursor: "pointer",
-                    color: colorTextHeader,
-                    fontFamily: "Arial, sans-serif",
-                    fontSize: "15px",
-                    fontWeight: "600",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    textDecoration: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {item.name}
-                </button>
-              ))}
+              .map((item, i) => {
+                const isItemActive =
+                  item.scrollKey && activeScrollKey === item.scrollKey;
+                return (
+                  <button
+                    {...press}
+                    onClick={() => handleMenuSelection(item)}
+                    key={i}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      color: isItemActive ? highlightColor : colorTextHeader,
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: "15px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
           </nav>
         )}
 
@@ -418,7 +426,7 @@ const Header = ({
               width: "28px",
               height: "28px",
               marginLeft: "auto",
-              marginRight: "18px",
+              marginRight: !isMobile ? "40px" : "0x",
               WebkitTapHighlightColor: "transparent",
             }}
             aria-label="Позвонить"
@@ -579,6 +587,7 @@ const Header = ({
                   display: "flex",
                   flexDirection: "column",
                   gap: "18px",
+                  marginTop: "24px",
                 }}
               >
                 {menuItems.flatMap((item, i) => {

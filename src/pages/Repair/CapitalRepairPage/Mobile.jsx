@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
 import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Mobile = () => {
@@ -120,6 +122,16 @@ const Mobile = () => {
 Если требуется, поможем оптимизировать смету: подберём материалы с лучшим соотношением цена/качество.
 В результате вы получаете надёжный ремонт "под ключ", рассчитанный на годы эксплуатации.`}
         </p>
+      </div>
+
+      {/* Калькулятор */}
+      <div style={{ marginTop: 24 }}>
+        <WhiteboxCalculator isMobile={true} />
+      </div>
+
+      {/* Блок «Получить точный расчёт» */}
+      <div style={{ marginTop: 24 }}>
+        <CallbackForm isMobile={true} source="capital" />
       </div>
 
       {/* Блок "Эстетика и стиль" */}

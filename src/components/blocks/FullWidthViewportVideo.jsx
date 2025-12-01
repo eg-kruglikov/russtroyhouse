@@ -4,7 +4,7 @@ import {
   enableGlobalVideoSound,
   disableGlobalVideoSound,
 } from "../../hooks/useGlobalVideoSound";
-import { ymGoal, ymNotBounce } from "../../utils/metrika";
+import { ymGoal, ymNotBounce, ymTrackEvent } from "../../utils/metrika";
 
 /**
  * FullWidthViewportVideo — видео-блок на всю ширину экрана
@@ -21,6 +21,7 @@ const FullWidthViewportVideo = ({
   autoPlayInView = true,
   autoPlayThreshold = 0.5,
   showSoundToggle = true,
+  trackingLabel = "",
 }) => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -28,11 +29,17 @@ const FullWidthViewportVideo = ({
   const soundInteractionTrackedRef = useRef(false);
   const [soundEnabled] = useGlobalVideoSound();
 
+  const trackVideoEvent = (action) => {
+    if (!trackingLabel) return;
+    ymTrackEvent("whitebox_video", action, trackingLabel);
+  };
+
   const trackSoundInteraction = () => {
     ymNotBounce();
     if (soundInteractionTrackedRef.current) return;
     soundInteractionTrackedRef.current = true;
     ymGoal("video_sound_on");
+    trackVideoEvent("sound_enable");
   };
 
   // Автовоспроизведение при попадании в зону видимости
@@ -107,6 +114,7 @@ const FullWidthViewportVideo = ({
 
     enableGlobalVideoSound();
     trackSoundInteraction();
+    trackVideoEvent("play_click");
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
@@ -121,7 +129,9 @@ const FullWidthViewportVideo = ({
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
-    if (soundEnabled && userUnmutedRef.current) {
+    const isCurrentlyUnmuted = soundEnabled && userUnmutedRef.current;
+    if (isCurrentlyUnmuted) {
+      trackVideoEvent("sound_disable");
       userUnmutedRef.current = false;
       videoEl.muted = true;
       disableGlobalVideoSound();

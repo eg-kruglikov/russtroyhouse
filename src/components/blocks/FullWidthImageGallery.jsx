@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ymTrackEvent } from "../../utils/metrika";
 
 /**
  * FullWidthImageGallery - Галерея изображений на всю ширину экрана со свайпом и счетчиком
@@ -16,6 +17,7 @@ const FullWidthImageGallery = ({
   counterFormatter,
   counterStyle,
   counterTextStyle,
+  interactionLabel = "",
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const touchStartX = useRef(0);
@@ -29,14 +31,35 @@ const FullWidthImageGallery = ({
     touchEndX.current = e.touches[0].clientX;
   };
 
-  const handleNext = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  const trackGalleryInteraction = (action, index, source) => {
+    if (!interactionLabel) return;
+    const actionKey = source ? `${action}_${source}` : action;
+    const labelParts = [interactionLabel];
+    if (typeof index === "number") {
+      labelParts.push(`img-${index + 1}`);
+    }
+    if (source) {
+      labelParts.push(source);
+    }
+    ymTrackEvent("whitebox_gallery", actionKey, labelParts.join("|"));
   };
 
-  const handlePrev = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + images.length) % images.length
-    );
+  const handleNext = (source = "button") => {
+    if (!images?.length) {
+      return;
+    }
+    const nextIndex = (currentImageIndex + 1) % images.length;
+    setCurrentImageIndex(nextIndex);
+    trackGalleryInteraction("next", nextIndex, source);
+  };
+
+  const handlePrev = (source = "button") => {
+    if (!images?.length) {
+      return;
+    }
+    const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
+    setCurrentImageIndex(prevIndex);
+    trackGalleryInteraction("prev", prevIndex, source);
   };
 
   const handleTouchEnd = () => {
@@ -46,10 +69,10 @@ const FullWidthImageGallery = ({
 
     if (distance > minSwipeDistance) {
       // Свайп влево - следующее фото
-      handleNext();
+      handleNext("swipe");
     } else if (distance < -minSwipeDistance) {
       // Свайп вправо - предыдущее фото
-      handlePrev();
+      handlePrev("swipe");
     }
 
     touchStartX.current = 0;

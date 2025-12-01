@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
+import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import { SECTION_BACKGROUND, TITLE_SIZES, TITLE_COLOR } from "../../../utils/spacing";
 
 const Mobile = () => {
@@ -153,6 +155,16 @@ const Mobile = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Калькулятор */}
+      <div style={{ marginTop: 24 }}>
+        <WhiteboxCalculator isMobile={true} />
+      </div>
+
+      {/* Блок «Получить точный расчёт» */}
+      <div style={{ marginTop: 24 }}>
+        <CallbackForm isMobile={true} source="cosmetic" />
       </div>
 
       <div

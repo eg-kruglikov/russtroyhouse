@@ -9,12 +9,15 @@ export const NAV_GOALS_MAP = {
   Вайтбокс: "nav_whitebox_click", // для обратной совместимости
   "Наши последние работы": "nav_portfolio_click",
   Отзывы: "nav_reviews_click",
+  "Отзывы + видео": "nav_reviews_click",
   "Больше наших работ": "nav_more_works_click",
   "Дизайн проекты": "nav_design_click",
   "← На главную": "nav_back_to_home_click",
-  Старт: "nav_hero_click",
+  "Начало страницы": "nav_hero_click",
   "Цены и услуги": "nav_services_click",
   "Почему мы?": "nav_about_click",
+  "Как мы работаем + видео с объекта": "nav_services_click",
+  "Еще наши работы": "nav_more_works_click",
 };
 
 export const createMenuItems = (scrollFunctions = {}) => [
@@ -156,7 +159,7 @@ export const createRepairPageMenuItems = (currentPath) => {
 
   return [
     {
-      name: "Старт",
+      name: "Начало страницы",
       scrollKey: "scrollToHero",
       route: "/#hero",
       type: "link",
@@ -168,25 +171,31 @@ export const createRepairPageMenuItems = (currentPath) => {
       type: "link",
     },
     {
-      name: "Цены и услуги",
-      scrollKey: "scrollToServices",
-      route: "/#nashi-uslugi",
-      type: "link",
-    },
-    {
       name: "Почему мы?",
       scrollKey: "scrollToAbout",
       route: "/#about",
       type: "link",
     },
     {
-      name: "Наши последние работы",
+      name: "Наши работы",
       scrollKey: "scrollToportfolio",
       route: "/#portfolio",
       type: "link",
     },
     {
-      name: "Отзывы",
+      name: "Как мы работаем + видео с объекта",
+      scrollKey: "scrollToNashiUslugi",
+      route: "/#nashi-uslugi",
+      type: "link",
+    },
+    {
+      name: "Еще наши работы",
+      scrollKey: "scrollToDesignProjects",
+      route: "/#design-projects",
+      type: "link",
+    },
+    {
+      name: "Отзывы + видео",
       scrollKey: "scrollToReviews",
       route: "/#reviews",
       type: "link",
@@ -201,5 +210,15 @@ export const createRepairPageMenuItems = (currentPath) => {
       type: "link",
     },
     ...repairItemsWithRoutes,
+  ];
+};
+
+export const reorderMenuSections = (items) => {
+  const separatorIndex = items.findIndex((item) => item.type === "separator");
+  if (separatorIndex === -1) return items;
+  return [
+    ...items.slice(separatorIndex + 1),
+    items[separatorIndex],
+    ...items.slice(0, separatorIndex),
   ];
 };

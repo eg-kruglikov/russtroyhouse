@@ -1,6 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { ymTrackEvent } from "../../utils/metrika";
 
-const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
+const BeforeAfterSlider = ({
+  firstImage,
+  secondImage,
+  isMobile,
+  interactionLabel = "",
+}) => {
   const containerRef = useRef(null);
   const delimiterRef = useRef(null);
   const [position, setPosition] = useState(50); // начальная позиция 50%
@@ -9,6 +15,7 @@ const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
   const startXRef = useRef(0);
   const startPositionRef = useRef(50);
   const scrollPositionRef = useRef(0);
+  const latestPositionRef = useRef(position);
 
   const handleStart = useCallback(
     (clientX) => {
@@ -58,9 +65,31 @@ const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
     [isMobile]
   );
 
+  const trackSliderInteraction = useCallback(
+    (value) => {
+      if (!interactionLabel) return;
+      ymTrackEvent(
+        "whitebox_before_after",
+        "slider_drag",
+        `${interactionLabel}|pos-${Math.round(value)}`
+      );
+    },
+    [interactionLabel]
+  );
+
+  useEffect(() => {
+    latestPositionRef.current = position;
+  }, [position]);
+
   const handleEnd = useCallback(() => {
+    const wasDragging = isDraggingRef.current;
     setIsDragging(false);
     isDraggingRef.current = false;
+
+    const finalPosition = latestPositionRef.current;
+    if (wasDragging && typeof finalPosition === "number") {
+      trackSliderInteraction(finalPosition);
+    }
 
     // Разблокируем скролл страницы только если блокировали (на мобильных)
     if (isMobile) {
@@ -80,7 +109,7 @@ const BeforeAfterSlider = ({ firstImage, secondImage, isMobile }) => {
         });
       }
     }
-  }, [isMobile]);
+  }, [isMobile, trackSliderInteraction]);
 
   // Обработчики мыши - используются только для локальных событий
   const handleMouseDown = (e) => {

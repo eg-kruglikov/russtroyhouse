@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
 import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Mobile = () => {
@@ -107,6 +109,16 @@ const Mobile = () => {
 Мы создаём проект, подбираем материалы и ведём авторский надзор до финальной сдачи.
 Каждый этап контролируем, чтобы результат совпал с визуализациями.`}
         </p>
+      </div>
+
+      {/* Калькулятор */}
+      <div style={{ marginTop: 24 }}>
+        <WhiteboxCalculator isMobile={true} />
+      </div>
+
+      {/* Блок «Получить точный расчёт» */}
+      <div style={{ marginTop: 24 }}>
+        <CallbackForm isMobile={true} source="designer" />
       </div>
 
       <div

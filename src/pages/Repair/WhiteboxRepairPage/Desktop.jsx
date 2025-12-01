@@ -7,12 +7,15 @@ import { usePressEffect } from "../../../hooks/useSomething";
 import {
   createRepairPageMenuItems,
   NAV_GOALS_MAP,
+  reorderMenuSections,
 } from "../../../utils/navigationConfig";
-import { ymGoal } from "../../../utils/metrika";
+import { useScrollContext } from "../../../contexts/ScrollContext";
+import { ymGoal, ymTrackEvent } from "../../../utils/metrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
 import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
 import BeforeAfterSection from "../../../components/blocks/BeforeAfterSection";
 import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import {
   SECTION_BACKGROUND,
   TITLE_SIZES,
@@ -35,24 +38,48 @@ const Desktop = () => {
   const press = usePressEffect();
   const ensureNotBounce = useNotBounceOnce();
   const {
+    scrollFunctions,
+    setScrollFunctions,
+    setActiveScrollKey,
+    activeScrollKey,
+  } = useScrollContext();
+  const {
     contentWidth: shellContentWidth,
     layoutPadding,
     showSidebar,
     sidebarWidth,
+    viewportWidth,
   } = useResponsiveShell();
   const sidebarGap = 0;
   const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
   const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
+  const totalNavWidth = fallbackContentWidth + sidebarWidth + sidebarGap;
+  const sidebarLeft =
+    viewportWidth > 0
+      ? viewportWidth / 2 - totalNavWidth / 2 + containerShift
+      : 0;
+  const fixedSidebarLeft = Math.max(sidebarLeft - layoutPadding - 10, 0);
 
   const location = useLocation();
-  const menuItems = useMemo(() => {
+  const baseMenuItems = useMemo(() => {
     return createRepairPageMenuItems(location.pathname);
   }, [location.pathname]);
+  const menuItems = useMemo(
+    () => reorderMenuSections(baseMenuItems),
+    [baseMenuItems]
+  );
 
   const handleSidebarSelection = (item) => {
     if (!item) return;
     ensureNotBounce();
     ymGoal(NAV_GOALS_MAP[item.name] || "nav_click");
+
+    const scrollFn = item.scrollKey && scrollFunctions?.[item.scrollKey];
+    if (typeof scrollFn === "function") {
+      scrollFn();
+      return;
+    }
+
     if (item.route) {
       navigate(item.route);
     }
@@ -103,6 +130,81 @@ const Desktop = () => {
     }
   }, [currentReviewIndex, displayedReviewIndex]);
 
+  const heroSectionRef = useRef(null);
+  const calculatorSectionRef = useRef(null);
+  const aboutSectionRef = useRef(null);
+  const worksSectionRef = useRef(null);
+  const howWeWorkSectionRef = useRef(null);
+  const designProjectsSectionRef = useRef(null);
+  const reviewsSectionRef = useRef(null);
+
+  const sections = useMemo(
+    () => [
+      { key: "scrollToHero", ref: heroSectionRef },
+      { key: "scrollToCalculator", ref: calculatorSectionRef },
+      { key: "scrollToAbout", ref: aboutSectionRef },
+      { key: "scrollToportfolio", ref: worksSectionRef },
+      { key: "scrollToNashiUslugi", ref: howWeWorkSectionRef },
+      { key: "scrollToDesignProjects", ref: designProjectsSectionRef },
+      { key: "scrollToReviews", ref: reviewsSectionRef },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    if (!setScrollFunctions) {
+      return;
+    }
+
+    const scrollFns = sections.reduce((acc, section) => {
+      acc[section.key] = () => {
+        section.ref.current?.scrollIntoView({ behavior: "smooth" });
+      };
+      return acc;
+    }, {});
+
+    setScrollFunctions(scrollFns);
+
+    return () => {
+      setScrollFunctions(null);
+    };
+  }, [sections, setScrollFunctions]);
+
+  useEffect(() => {
+    if (!setActiveScrollKey) return;
+
+    const handleScroll = () => {
+      if (typeof window === "undefined") return;
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      let nextKey = sections[0]?.key;
+      for (const section of sections) {
+        const elem = section.ref.current;
+        if (!elem) continue;
+        const top = elem.getBoundingClientRect().top + window.scrollY;
+        if (scrollPosition >= top) {
+          nextKey = section.key;
+        } else {
+          break;
+        }
+      }
+      setActiveScrollKey(nextKey);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [sections, setActiveScrollKey]);
+
+  useEffect(() => {
+    return () => {
+      setActiveScrollKey?.(null);
+      setScrollFunctions?.(null);
+    };
+  }, [setActiveScrollKey, setScrollFunctions]);
+
   const Title = ({ children }) => (
     <h2
       style={{
@@ -142,74 +244,15 @@ const Desktop = () => {
         }}
       >
         {showSidebar && (
-          <aside
+          <div
+            aria-hidden="true"
             style={{
               flex: `0 0 ${sidebarWidth}px`,
               maxWidth: `${sidebarWidth}px`,
               width: `${sidebarWidth}px`,
-              background: "transparent",
-              border: "none",
-              borderRadius: "0px",
-              padding: "28px 22px 28px",
-              position: "sticky",
-              top: "60px",
-              height: "auto",
-              maxHeight: "calc(100vh - 108px)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-              overflowY: "auto",
-              alignSelf: "flex-start",
-              WebkitBackdropFilter: "blur(12px)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "none",
+              pointerEvents: "none",
             }}
-          >
-            <nav
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "18px",
-              }}
-            >
-              {menuItems.map((item, index) => {
-                // Обработка separator
-                if (item.type === "separator") {
-                  return (
-                    <div
-                      key={`separator-${index}`}
-                      style={{
-                        height: "24px",
-                        width: "100%",
-                      }}
-                    />
-                  );
-                }
-
-                return (
-                  <button
-                    {...press}
-                    key={`${item.name}-${index}`}
-                    onClick={() => handleSidebarSelection(item)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      color: "rgba(255,255,255,0.95)",
-                      fontWeight: 500,
-                      fontSize: "16px",
-                      letterSpacing: "0.6px",
-                      textTransform: "uppercase",
-                      lineHeight: 1.5,
-                      padding: "4px 0",
-                      transition: "color 0.2s ease",
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </aside>
+          />
         )}
         <main
           style={{
@@ -222,6 +265,7 @@ const Desktop = () => {
         >
           {/* Hero */}
           <div
+            ref={heroSectionRef}
             style={{
               position: "relative",
               width: "100%",
@@ -284,7 +328,7 @@ const Desktop = () => {
                 whiteSpace: "pre-line",
               }}
             >
-            {`Мы работаем в сфере строительства с 2014 года и выполняем комплексные ремонты с точным соблюдением СНиП и ГОСТ. В команде — только профильные мастера, а черновая отделка выполняется на уровне, который обеспечивает долговечность чистовой отделки.
+              {`Мы работаем в сфере строительства с 2014 года и выполняем комплексные ремонты с точным соблюдением СНиП и ГОСТ. В команде — только профильные мастера, а черновая отделка выполняется на уровне, который обеспечивает долговечность чистовой отделки.
 
 Черновой ремонт — это основа квартиры: стяжка пола, штукатурка, электрика, сантехника, выравнивание стен и монтаж перегородок. Качество этого этапа определяет долговечность всей последующей отделки.
 
@@ -293,163 +337,20 @@ const Desktop = () => {
           </div>
 
           {/* Калькулятор White Box */}
-          <WhiteboxCalculator isMobile={false} />
+          <div ref={calculatorSectionRef}>
+            <WhiteboxCalculator isMobile={false} />
+          </div>
 
           {/* Блок «Получить точный расчёт» */}
-          <div
-            style={{
-              marginTop: 32,
-              padding: "28px 32px",
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "rgba(16, 21, 36, 0.95)",
-            }}
-          >
-            <h3
-              style={{
-                color: "#FFD700",
-                fontSize: 24,
-                margin: "0 0 14px",
-                fontWeight: 700,
-                letterSpacing: 0.5,
-                textTransform: "uppercase",
-              }}
-            >
-              Получить точный расчёт
-            </h3>
-            <p
-              style={{
-                color: "rgba(255,255,255,0.75)",
-                fontSize: 16,
-                margin: "0 0 18px",
-                maxWidth: "560px",
-              }}
-            >
-              Выберите способ связи — звонок или WhatsApp. Сообщение помечается
-              как заявка с блока whitebox, чтобы менеджер сразу понял, откуда
-              пришёл запрос.
-            </p>
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                alignItems: "flex-start",
-                flexWrap: "wrap",
-              }}
-            >
-              <label
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "rgba(255,255,255,0.75)",
-                }}
-              >
-                Вариант связи
-                <select
-                  value={contactMethod}
-                  onChange={(event) => setContactMethod(event.target.value)}
-                  style={{
-                    width: 220,
-                    borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.4)",
-                    background: "rgba(255,255,255,0.04)",
-                    color: "#fff",
-                    fontSize: 15,
-                    padding: "10px 14px",
-                    appearance: "none",
-                    cursor: "pointer",
-                    backgroundImage:
-                      'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'%3E%3Cpath d=\'M1 1 L5 5 L9 1\' stroke=\'%23ffffff\' stroke-width=\'1.5\' stroke-linecap=\'round\' fill=\'none\'/%3E%3C/svg%3E")',
-                    backgroundPosition: "calc(100% - 16px) 50%",
-                    backgroundRepeat: "no-repeat",
-                    paddingRight: 36,
-                  }}
-                >
-                  {CONTACT_METHODS.map((method) => (
-                    <option
-                      key={method.value}
-                      value={method.value}
-                      style={{ color: "#05060A" }}
-                    >
-                      {method.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              {contactMethod === "whatsapp" ? (
-                <button
-                  type="button"
-                  onClick={() => window.open(WA_CONTACT_LINK, "_blank")}
-                  style={{
-                    borderRadius: 8,
-                    border: "none",
-                    background: "#FFD700",
-                    color: "#05060A",
-                    fontSize: 15,
-                    padding: "12px 18px",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    minHeight: 48,
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  Написать в WhatsApp
-                </button>
-              ) : (
-                <div
-                  style={{
-                    borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.4)",
-                    padding: "12px 16px",
-                    minWidth: 220,
-                    minHeight: 48,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    gap: 4,
-                    background: "rgba(255,255,255,0.01)",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "rgba(255,255,255,0.65)",
-                    }}
-                  >
-                    Телефон для звонка
-                  </span>
-                  <a
-                    href={`tel:${PHONE_CONTACT_LINK.replace(/\D/g, "")}`}
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: "#FFD700",
-                      textDecoration: "none",
-                    }}
-                  >
-                    +7 (926) 408-18-11
-                  </a>
-                </div>
-              )}
-            </div>
-            <p
-              style={{
-                color: "rgba(255,255,255,0.55)",
-                fontSize: 12,
-                marginTop: 14,
-              }}
-            >
-              Уточните, что запрос пришёл со страницы whitebox, чтобы сохранить
-              связь с расчётом.
-            </p>
+          <div style={{ marginTop: 32 }}>
+            <CallbackForm isMobile={false} source="whitebox" />
           </div>
 
           {/* Почему мы? */}
 
           {/* Почему мы? */}
           <div
+            ref={aboutSectionRef}
             style={{
               padding: "40px 24px 0",
               width: "100%",
@@ -553,19 +454,8 @@ const Desktop = () => {
                   >
                     •
                   </span>
-                  Исправляем недостатки в выполненных работах.
-                </li>
-                <li style={{ marginBottom: 12, position: "relative" }}>
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: -20,
-                      color: "#FFD700",
-                    }}
-                  >
-                    •
-                  </span>
-                  Работаем строго по СНиП и ГОСТ, используем проверенные материалы и контролируем каждый этап ремонта.
+                  Работаем строго по СНиП и ГОСТ, используем проверенные
+                  материалы и контролируем каждый этап ремонта.
                 </li>
               </ul>
               <p
@@ -577,8 +467,8 @@ const Desktop = () => {
                   fontStyle: "italic",
                 }}
               >
-                * Условия гарантии зависят от вида работ. Подробнее уточняйте при
-                заключении договора.
+                * Условия гарантии зависят от вида работ. Подробнее уточняйте
+                при заключении договора.
               </p>
             </div>
 
@@ -652,7 +542,8 @@ const Desktop = () => {
                   >
                     •
                   </span>
-                  Фиксируем цену каждой услуги и не меняем её в процессе выполнения заказа.
+                  Фиксируем цену каждой услуги и не меняем её в процессе
+                  выполнения заказа.
                 </li>
                 <li style={{ marginBottom: 12, position: "relative" }}>
                   <span
@@ -664,7 +555,8 @@ const Desktop = () => {
                   >
                     •
                   </span>
-                  Прораб согласует с вами изменение общей стоимости заказа, если в процессе его выполнения изменится набор услуг.
+                  Прораб согласует с вами изменение общей стоимости заказа, если
+                  в процессе его выполнения изменится набор услуг.
                 </li>
               </ul>
             </div>
@@ -672,6 +564,7 @@ const Desktop = () => {
 
           {/* Блок "Наши работы" */}
           <div
+            ref={worksSectionRef}
             style={{
               padding: "40px 24px 0",
               width: "100%",
@@ -711,6 +604,7 @@ const Desktop = () => {
             altPrefix="Наши работы"
             isMobile={false}
             onIndexChange={setCurrentWorkGalleryIndex}
+            interactionLabel="gallery_whitebox_primary_desktop"
           />
 
           <div
@@ -746,6 +640,7 @@ const Desktop = () => {
             altPrefix="Наши работы"
             isMobile={false}
             onIndexChange={setSecondaryWorkGalleryIndex}
+            interactionLabel="gallery_whitebox_secondary_desktop"
           />
 
           <div
@@ -776,6 +671,7 @@ const Desktop = () => {
 
           {/* Блок "Как мы работаем" */}
           <div
+            ref={howWeWorkSectionRef}
             style={{
               padding: "40px 24px 0",
               width: "100%",
@@ -800,6 +696,7 @@ const Desktop = () => {
             images={qualityBottomImages}
             altPrefix="Качество и практичность"
             isMobile={false}
+            interactionLabel="gallery_whitebox_quality_desktop"
           />
 
           {/* Описание */}
@@ -833,11 +730,11 @@ const Desktop = () => {
                 marginBottom: 16,
               }}
             >
-              На черновом этапе готовим помещение под чистовую отделку: выполняем
-              демонтаж при необходимости, выравниваем стены, пол и потолок, делаем
-              стяжку, прокладываем электроточки, сантехнику, слаботочку и отопление.
-              Все работы идут строго по проекту, с учётом мебели, техники и будущего
-              интерьера.
+              На черновом этапе готовим помещение под чистовую отделку:
+              выполняем демонтаж при необходимости, выравниваем стены, пол и
+              потолок, делаем стяжку, прокладываем электроточки, сантехнику,
+              слаботочку и отопление. Все работы идут строго по проекту, с
+              учётом мебели, техники и будущего интерьера.
             </p>
             <p
               style={{
@@ -862,8 +759,8 @@ const Desktop = () => {
                 marginBottom: 16,
               }}
             >
-              Скрытые работы документируем: делаем фото, видео и акты, чтобы каждый
-              этап был прозрачен и понятен.
+              Скрытые работы документируем: делаем фото, видео и акты, чтобы
+              каждый этап был прозрачен и понятен.
             </p>
             <p
               style={{
@@ -875,10 +772,10 @@ const Desktop = () => {
                 marginBottom: 16,
               }}
             >
-              Заранее подготавливаем ниши, закладные, усиления и скрытые элементы
-              под свет, карнизы, кондиционеры и двери — это позволяет чистовой
-              отделке ложиться ровно, а всему проекту реализовываться без
-              доработок.
+              Заранее подготавливаем ниши, закладные, усиления и скрытые
+              элементы под свет, карнизы, кондиционеры и двери — это позволяет
+              чистовой отделке ложиться ровно, а всему проекту реализовываться
+              без доработок.
             </p>
             <p
               style={{
@@ -889,8 +786,8 @@ const Desktop = () => {
                 textAlign: "left",
               }}
             >
-              В результате вы получаете ремонт, в котором каждая деталь продумана,
-              технически верна и готова к долгой эксплуатации.
+              В результате вы получаете ремонт, в котором каждая деталь
+              продумана, технически верна и готова к долгой эксплуатации.
             </p>
           </div>
 
@@ -918,6 +815,7 @@ const Desktop = () => {
           <FullWidthViewportVideo
             videoSrc="/videos/1.mp4"
             containerStyle={{ marginTop: 24 }}
+            trackingLabel="video_object_desktop"
           />
 
           {/* Блок с призывом к действию */}
@@ -930,14 +828,14 @@ const Desktop = () => {
             }}
           >
             <img
-              src={imageGeometry}
+              src="/images/repair/zelenyBor/1.webp"
               alt="Получите расчет"
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
                 display: "block",
-                filter: "brightness(0.8)",
+                filter: "brightness(0.85)",
               }}
             />
             <div
@@ -963,24 +861,38 @@ const Desktop = () => {
                   margin: 0,
                   marginBottom: 14,
                   lineHeight: 1.3,
-                  textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+                  textShadow:
+                    "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)",
                 }}
               >
                 Получите точный расчет
                 <br />
-                <span style={{ color: "#FFD700" }}>за наш счет</span> в течение
-                1-2
+                <span
+                  style={{
+                    color: "#FFD700",
+                    textShadow:
+                      "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)",
+                  }}
+                >
+                  за наш счет
+                </span>{" "}
+                в течение 1-2
                 <br />
                 дней после звонка
               </h2>
               <a
                 href="tel:+79264081811"
+                onClick={() => {
+                  ymGoal("call_confirmed");
+                }}
                 style={{
                   color: "#fff",
                   fontSize: 48,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   textDecoration: "none",
-                  textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+                  textShadow:
+                    "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)",
+                  fontFamily: "Arial, sans-serif",
                 }}
               >
                 +7 (926) 408-18-11
@@ -989,38 +901,42 @@ const Desktop = () => {
           </div>
 
           {/* Блок "Последние работы" */}
-          <BeforeAfterSection
-            isMobile={false}
-            sectionId="portfolio"
-            sliderContainerRef={sliderContainerRef}
-            firstImage="/images/photolibrary/portfolio/designer/1/1.jpg"
-            secondImage="/images/photolibrary/portfolio/designer/1/2.jpg"
-            title="Последние работы"
-            subtitle="Дизайнерский ремонт в Москве на Большой Спасской"
-            footerDescription="Полная перепланировка, отделка стен и потолка, замена окон и дверей, укладка паркетной доски, установка современного освещения"
-            sliderHeightPx={sliderHeightPx}
-            marginTop="20px"
-            headerTitleStyle={{
-              fontSize: TITLE_SIZES.desktop.main,
-              whiteSpace: "nowrap",
-            }}
-            headerSubtitleStyle={{
-              fontSize: "22px",
-            }}
-          />
+          <div ref={designProjectsSectionRef}>
+            <BeforeAfterSection
+              isMobile={false}
+              sectionId="portfolio"
+              sliderContainerRef={sliderContainerRef}
+              firstImage="/images/photolibrary/portfolio/designer/1/1.jpg"
+              secondImage="/images/photolibrary/portfolio/designer/1/2.jpg"
+              title="Последние работы"
+              subtitle="Дизайнерский ремонт в Москве на Большой Спасской"
+              footerDescription="Полная перепланировка, отделка стен и потолка, замена окон и дверей, укладка паркетной доски, установка современного освещения"
+              sliderHeightPx={sliderHeightPx}
+              marginTop="20px"
+              headerTitleStyle={{
+                fontSize: TITLE_SIZES.desktop.main,
+                whiteSpace: "nowrap",
+              }}
+              headerSubtitleStyle={{
+                fontSize: "22px",
+              }}
+              interactionLabel="before_after_portfolio_designer_desktop"
+            />
 
-          <BeforeAfterSection
-            isMobile={false}
-            firstImage="/images/photolibrary/portfolio/capital/2/1.jpg"
-            secondImage="/images/photolibrary/portfolio/capital/2/7.jpg"
-            subtitle="Комплексный ремонт квартиры с акцентом на современный минимализм, Москва, ЖК «Символ»"
-            footerDescription="Демонтаж старых покрытий и коммуникаций, полная замена электрики и сантехники, выравнивание стен и устройство скрытых дверей, монтаж потолков с освещением, укладка напольного покрытия, облицовка санузла плиткой под мрамор с декоративными элементами"
-            sliderHeightPx={sliderHeightPx}
-            marginTop="8px"
-            headerSubtitleStyle={{
-              fontSize: "22px",
-            }}
-          />
+            <BeforeAfterSection
+              isMobile={false}
+              firstImage="/images/photolibrary/portfolio/capital/2/1.jpg"
+              secondImage="/images/photolibrary/portfolio/capital/2/7.jpg"
+              subtitle="Комплексный ремонт квартиры с акцентом на современный минимализм, Москва, ЖК «Символ»"
+              footerDescription="Демонтаж старых покрытий и коммуникаций, полная замена электрики и сантехники, выравнивание стен и устройство скрытых дверей, монтаж потолков с освещением, укладка напольного покрытия, облицовка санузла плиткой под мрамор с декоративными элементами"
+              sliderHeightPx={sliderHeightPx}
+              marginTop="8px"
+              headerSubtitleStyle={{
+                fontSize: "22px",
+              }}
+              interactionLabel="before_after_portfolio_capital_desktop"
+            />
+          </div>
 
           {/* Обертка для Отзывов и "С заботой о вас" */}
           <div
@@ -1034,6 +950,7 @@ const Desktop = () => {
           >
             {/* Отзывы */}
             <section
+              ref={reviewsSectionRef}
               style={{
                 width: "40%",
                 margin: "0",
@@ -1114,6 +1031,30 @@ const Desktop = () => {
                   return "#5a6b78";
                 };
 
+                const trackReviewInteraction = (direction, targetIndex) => {
+                  ymTrackEvent(
+                    "whitebox_reviews",
+                    `${direction}_swipe`,
+                    `review_${targetIndex + 1}`
+                  );
+                };
+
+                const goToNextReview = () => {
+                  setCurrentReviewIndex((prev) => {
+                    const next = prev < reviews.length - 1 ? prev + 1 : 0;
+                    trackReviewInteraction("next", next);
+                    return next;
+                  });
+                };
+
+                const goToPrevReview = () => {
+                  setCurrentReviewIndex((prev) => {
+                    const next = prev > 0 ? prev - 1 : reviews.length - 1;
+                    trackReviewInteraction("prev", next);
+                    return next;
+                  });
+                };
+
                 const handleStart = (clientX) => {
                   touchStartX.current = clientX;
                 };
@@ -1138,16 +1079,12 @@ const Desktop = () => {
                     if (navigator.vibrate) {
                       navigator.vibrate(50);
                     }
-                    setCurrentReviewIndex((prev) =>
-                      prev < reviews.length - 1 ? prev + 1 : 0
-                    );
+                    goToNextReview();
                   } else if (distance < -minSwipeDistance) {
                     if (navigator.vibrate) {
                       navigator.vibrate(50);
                     }
-                    setCurrentReviewIndex((prev) =>
-                      prev > 0 ? prev - 1 : reviews.length - 1
-                    );
+                    goToPrevReview();
                   }
 
                   touchStartX.current = 0;
@@ -1443,6 +1380,7 @@ const Desktop = () => {
                     objectFit: "cover",
                   }}
                   showSoundToggle={true}
+                  trackingLabel="video_care_desktop"
                 />
 
                 <div
@@ -1474,6 +1412,78 @@ const Desktop = () => {
           </div>
         </main>
       </div>
+      {showSidebar && (
+        <aside
+          style={{
+            flex: `0 0 ${sidebarWidth}px`,
+            width: `${sidebarWidth}px`,
+            maxWidth: `${sidebarWidth}px`,
+            background: "transparent",
+            border: "none",
+            borderRadius: "0px",
+            padding: "28px 22px 28px",
+            position: "fixed",
+            top: "60px",
+            left: `${fixedSidebarLeft}px`,
+            maxHeight: "calc(100vh - 108px)",
+            height: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+            overflowY: "auto",
+            boxShadow: "none",
+            zIndex: 100,
+          }}
+        >
+          <nav
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+          >
+            {menuItems.map((item, index) => {
+              if (item.type === "separator") {
+                return (
+                  <div
+                    key={`separator-${index}`}
+                    style={{
+                      height: "24px",
+                      width: "100%",
+                    }}
+                  />
+                );
+              }
+
+              const isItemActive =
+                item.scrollKey && activeScrollKey === item.scrollKey;
+              const color = isItemActive ? "#FFD700" : "rgba(255,255,255,0.95)";
+
+              return (
+                <button
+                  {...press}
+                  key={`${item.name}-${index}`}
+                  onClick={() => handleSidebarSelection(item)}
+                  style={{
+                    all: "unset",
+                    cursor: "pointer",
+                    color,
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    letterSpacing: "0.6px",
+                    textTransform: "uppercase",
+                    lineHeight: 1.5,
+                    padding: "4px 0",
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
+      )}
     </div>
   );
 };

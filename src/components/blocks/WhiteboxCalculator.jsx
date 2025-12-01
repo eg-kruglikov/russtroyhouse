@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import YellowBorderButton from "./YellowBorderButton";
+import { ymTrackEvent } from "../../utils/metrika";
 
 const ROOM_TYPES = [
   {
@@ -12,44 +13,50 @@ const ROOM_TYPES = [
     value: "kitchen",
     label: "Кухня",
     shortLabel: "Кухня",
-    accent: "#FFB347",
+    accent: "#FFD670",
   },
   {
     value: "combinedBathroom",
-    label: "Санузел совмещённый",
-    shortLabel: "Санузел",
-    accent: "#FF6B35",
+    label: "Совмещённый санузел",
+    shortLabel: "С/У совмещённый",
+    accent: "#FF9770",
   },
   {
     value: "toilet",
     label: "Туалет",
     shortLabel: "Туалет",
-    accent: "#FFA84C",
+    accent: "#A0CED9",
   },
   {
     value: "bathroom",
-    label: "Ванная комната",
+    label: "Ванная",
     shortLabel: "Ванная",
-    accent: "#C285FF",
+    accent: "#B8F2E6",
   },
   {
     value: "corridor",
     label: "Коридор",
     shortLabel: "Коридор",
-    accent: "#5DE5A4",
+    accent: "#C7CEEA",
   },
   {
     value: "wardrobe",
     label: "Гардеробная",
-    shortLabel: "Гардероб",
-    accent: "#FFD700",
+    shortLabel: "Гардеробная",
+    accent: "#FFBFA3",
   },
   {
     value: "commercial",
     label: "Коммерческое помещение",
-    shortLabel: "Коммерция",
-    accent: "#FF6B35",
+    shortLabel: "Коммерческое",
+    accent: "#F7A072",
   },
+];
+
+const REPAIR_TYPE_OPTIONS = [
+  { value: "cosmetic", label: "Косметический" },
+  { value: "capital", label: "Капитальный" },
+  { value: "whitebox", label: "Черновая отделка" },
 ];
 
 const MATERIAL_QUALITY_OPTIONS = [
@@ -65,8 +72,15 @@ const CEILING_OPTIONS = [
 ];
 
 const FLOOR_OPTIONS = [
+  { value: "none", label: "Нет" },
   { value: "screed", label: "Стяжка" },
   { value: "insulation", label: "Утепление" },
+];
+
+const FLOOR_HEATING_OPTIONS = [
+  { value: "none", label: "Нет" },
+  { value: "water", label: "Водяной" },
+  { value: "electric", label: "Электрический" },
 ];
 
 const SANITARY_QUALITY_OPTIONS = [
@@ -76,13 +90,31 @@ const SANITARY_QUALITY_OPTIONS = [
 ];
 
 const BATH_OPTIONS = [
-  { value: "bathtub", label: "Ванна" },
+  { value: "bath", label: "Ванна" },
   { value: "shower", label: "Душевой уголок" },
   { value: "jacuzzi", label: "Джакузи" },
 ];
 
+const WALL_FINISH_OPTIONS = [
+  { value: "wallpaper", label: "Обои" },
+  { value: "paint", label: "Покраска" },
+];
+
+const FLOOR_COVERING_OPTIONS = [
+  { value: "laminate", label: "Ламинат" },
+  { value: "parquet", label: "Паркет" },
+  { value: "tile", label: "Плитка" },
+  { value: "linoleum", label: "Линолеум" },
+  { value: "quartzVinyl", label: "Кварцвинил" },
+];
+
 const FIELD_LIBRARY = {
   area: { label: "Площадь", type: "number", unit: "м²", min: 4, max: 200, step: 1 },
+  repairType: {
+    label: "Вид ремонта",
+    type: "select",
+    options: REPAIR_TYPE_OPTIONS,
+  },
   materialQuality: {
     label: "Качество материалов",
     type: "select",
@@ -107,6 +139,7 @@ const FIELD_LIBRARY = {
     step: 1,
   },
   floorBase: { label: "Напольное покрытие", type: "select", options: FLOOR_OPTIONS },
+  floorHeating: { label: "Тёплый пол", type: "select", options: FLOOR_HEATING_OPTIONS },
   wetPoints: { label: "Мокрые точки", type: "number", min: 0, max: 8, step: 1 },
   hoodOutlet: { label: "Вывод под вытяжку", type: "toggle" },
   condRoute: { label: "Трасса под кондиционер", type: "toggle" },
@@ -133,110 +166,164 @@ const FIELD_LIBRARY = {
     max: 12,
     step: 1,
   },
+  cableLaying: {
+    label: "Прокладка кабеля",
+    type: "number",
+    unit: "м",
+    min: 0,
+    max: 500,
+    step: 1,
+  },
   enhancedElectrical: { label: "Усиленная электрика", type: "toggle" },
   fireAlarm: { label: "Пожарная сигнализация", type: "toggle" },
   noiseIsolation: { label: "Шумоизоляция", type: "toggle" },
-  demolition: { label: "Демонтаж", type: "toggle" },
+  demolition: { label: "Демонтаж (пол, стены, электрика и т.д.)", type: "toggle" },
   demolitionFloor: { label: "Демонтаж пола / покрытия", type: "toggle" },
   demolitionWalls: { label: "Демонтаж стен / перегородок", type: "toggle" },
   demolitionSanitary: { label: "Демонтаж сантехники", type: "toggle" },
   demolitionToilet: { label: "Демонтаж унитаза / инсталляции", type: "toggle" },
+  demolitionElectrical: { label: "Демонтаж электрики", type: "toggle" },
+  wallFinish: { label: "Финишная отделка стен", type: "select", options: WALL_FINISH_OPTIONS },
+  floorCovering: { label: "Покрытие пола", type: "select", options: FLOOR_COVERING_OPTIONS },
+  lightSwitches: {
+    label: "Выключатели",
+    type: "number",
+    unit: "шт.",
+    min: 0,
+    max: 20,
+    step: 1,
+  },
+  hiddenLighting: { label: "LED подсветка", type: "toggle" },
+  chandelierPoints: {
+    label: "Точки под люстру",
+    type: "number",
+    unit: "шт.",
+    min: 0,
+    max: 10,
+    step: 1,
+  },
+  spotLights: {
+    label: "Точечные светильники",
+    type: "number",
+    unit: "шт.",
+    min: 0,
+    max: 50,
+    step: 1,
+  },
+  doorOpeningChange: { label: "Изменение дверных проемов", type: "toggle" },
 };
 
 const roomTypeFields = {
   room: [
     "area",
+    "repairType",
     "materialQuality",
-    "electricalPoints",
-    "electricSockets",
     "ceiling",
     "wallLeveling",
+    "wallFinish",
+    "floorBase",
+    "floorHeating",
+    "floorCovering",
     "partitions",
-    "floorBase",
-    "demolition",
-    "demolitionFloor",
-    "demolitionWalls",
-  ],
-  kitchen: [
-    "area",
-    "materialQuality",
     "electricalPoints",
     "electricSockets",
-    "ceiling",
-    "wallLeveling",
-    "floorBase",
-    "wetPoints",
-    "hoodOutlet",
+    "lightSwitches",
+    "lighting",
+    "spotLights",
+    "hiddenLighting",
     "condRoute",
     "demolition",
     "demolitionFloor",
     "demolitionWalls",
+    "demolitionElectrical",
+  ],
+  kitchen: [
+    "area",
+    "repairType",
+    "materialQuality",
+    "ceiling",
+    "wallLeveling",
+    "electricalPoints",
+    "electricSockets",
+    "wetPoints",
+    "hoodOutlet",
+    "lighting",
   ],
   combinedBathroom: [
     "area",
-    "materialQuality",
+    "repairType",
+    "wallLeveling",
+    "floorBase",
     "wetPoints",
     "waterproofing",
-    "pipeReplacement",
     "sanitaryQuality",
     "bathOption",
-    "lighting",
     "towelDryer",
-    "electricSockets",
-    "demolition",
-    "demolitionSanitary",
-    "demolitionToilet",
+    "lighting",
   ],
   toilet: [
     "area",
-    "materialQuality",
+    "repairType",
+    "wallLeveling",
+    "floorBase",
     "wetPoints",
-    "waterproofing",
-    "pipeReplacement",
-    "demolition",
-    "demolitionSanitary",
-    "demolitionToilet",
-    "electricSockets",
+    "lighting",
   ],
   bathroom: [
     "area",
-    "materialQuality",
+    "repairType",
+    "wallLeveling",
+    "floorBase",
     "wetPoints",
     "waterproofing",
-    "pipeReplacement",
-    "sanitaryQuality",
     "bathOption",
-    "lighting",
+    "sanitaryQuality",
     "towelDryer",
-    "electricSockets",
-    "demolition",
-    "demolitionSanitary",
-    "demolitionToilet",
+    "lighting",
   ],
   corridor: [
     "area",
+    "repairType",
     "materialQuality",
-    "electricalPoints",
-    "electricSockets",
     "ceiling",
     "wallLeveling",
+    "wallFinish",
     "floorBase",
+    "floorHeating",
+    "floorCovering",
+    "electricalPoints",
+    "electricSockets",
+    "lightSwitches",
+    "lighting",
+    "hiddenLighting",
+    "chandelierPoints",
+    "spotLights",
+    "noiseIsolation",
+    "partitions",
+    "doorOpeningChange",
+    "demolition",
+    "demolitionFloor",
+    "demolitionWalls",
+    "demolitionElectrical",
   ],
   wardrobe: [
     "area",
-    "materialQuality",
-    "electricSockets",
-    "floorBase",
+    "repairType",
+    "ceiling",
+    "lighting",
   ],
   commercial: [
     "area",
+    "repairType",
     "materialQuality",
-    "electricalPoints",
-    "electricSockets",
     "ceiling",
     "wallLeveling",
+    "electricalPoints",
+    "electricSockets",
+    "cableLaying",
     "partitions",
     "floorBase",
+    "floorHeating",
     "wetPoints",
     "waterproofing",
     "hoodOutlet",
@@ -258,27 +345,128 @@ const roomTypeFields = {
   ],
 };
 
-const filterCalculationItems = (roomType, items) => {
-  const allowed = new Set(roomTypeFields[roomType] ?? []);
-  return items.filter((item) => !item.fieldKey || allowed.has(item.fieldKey));
+// Правила для типов ремонта
+const REPAIR_TYPE_FIELD_RULES = {
+  cosmetic: {
+    allowed: [
+      "area",
+      "materialQuality",
+      "ceiling",
+      "lighting",
+      // Дополнительные поля для коридора
+      "wallFinish",
+      "hiddenLighting",
+      "spotLights",
+      "electricalPoints",
+      "lightSwitches",
+      // Дополнительные поля для комнаты
+      "floorCovering",
+    ],
+  },
+  capital: {
+    allowed: "all", // оставить строку
+    forbidden: [
+      "demolitionFloor",
+      "demolitionWalls",
+      "demolitionSanitary",
+      "demolitionToilet",
+      "demolitionElectrical",
+    ], // скрываем отдельные поля демонтажа, оставляем только общий "demolition"
+  },
+  whitebox: {
+    allowed: [
+      "area",
+      "wallLeveling",
+      "floorBase",
+      "demolition",
+      "demolitionFloor",
+      "demolitionWalls",
+      "demolitionSanitary",
+      "demolitionToilet",
+      // Дополнительные поля для коридора
+      "demolitionElectrical",
+      "partitions",
+    ],
+  },
+};
+
+// Единая функция фильтрации полей по типу ремонта и типу помещения
+const filterFieldsByRepairType = (fieldKeys, repairType, roomType) => {
+  if (!fieldKeys || !Array.isArray(fieldKeys)) {
+    return [];
+  }
+
+  const rules = REPAIR_TYPE_FIELD_RULES[repairType];
+  if (!rules) {
+    return fieldKeys;
+  }
+
+  let fields = [...fieldKeys];
+
+  // если есть forbidden убрать их (даже для "all")
+  if (rules.forbidden?.length) {
+    fields = fields.filter((key) => !rules.forbidden.includes(key));
+  }
+
+  // если allowed === 'all' → вернуть исходный список (после фильтрации forbidden)
+  if (rules.allowed === "all") {
+    return fields;
+  }
+
+  // если есть allowed вернуть только их
+  if (rules.allowed?.length) {
+    fields = fields.filter((key) => rules.allowed.includes(key));
+  }
+
+  // repairType всегда должен быть в результате
+  if (!fields.includes("repairType")) {
+    fields.push("repairType");
+  }
+
+  return fields;
+};
+
+const filterCalculationItems = (roomType, items, repairType = "capital") => {
+  if (!items || !Array.isArray(items)) {
+    return [];
+  }
+
+  // Получаем все возможные поля для данного типа помещения
+  const allRoomFields = roomTypeFields[roomType] ?? [];
+  
+  // Фильтруем поля по типу ремонта и типу помещения
+  const allowedFields = filterFieldsByRepairType(allRoomFields, repairType, roomType);
+  const allowedFieldsSet = new Set(allowedFields);
+
+  // Фильтруем breakdown, оставляя только элементы с разрешёнными fieldKey
+  return items.filter((item) => {
+    // Элементы без fieldKey (например, "Базовая ставка") всегда показываем
+    if (!item.fieldKey) {
+      return true;
+    }
+    // Элементы с fieldKey показываем только если поле разрешено
+    return allowedFieldsSet.has(item.fieldKey);
+  });
 };
 
 const DEFAULT_CARD_VALUES = {
   area: 18,
+  repairType: "cosmetic",
   materialQuality: "standard",
   electricalPoints: 6,
   ceiling: "stretch",
   wallLeveling: true,
   partitions: 0,
-  floorBase: "screed",
+  floorBase: "none",
+  floorHeating: "none",
   wetPoints: 0,
   hoodOutlet: false,
   condRoute: false,
   pipeReplacement: false,
   pipeRelocation: false,
   waterproofing: false,
-  sanitaryQuality: "budget",
-  bathOption: "bathtub",
+  sanitaryQuality: "standard",
+  bathOption: "bath",
   lighting: false,
   towelDryer: false,
   electricSockets: 2,
@@ -290,20 +478,30 @@ const DEFAULT_CARD_VALUES = {
   demolitionWalls: false,
   demolitionSanitary: false,
   demolitionToilet: false,
+  demolitionElectrical: false,
+  wallFinish: "wallpaper",
+  floorCovering: "laminate",
+  lightSwitches: 2,
+  hiddenLighting: false,
+  chandelierPoints: 0,
+  spotLights: 0,
+  doorOpeningChange: false,
 };
 
 const TYPE_DEFAULT_OVERRIDES = {
   room: {
+    repairType: "cosmetic",
     wetPoints: 0,
     hoodOutlet: false,
     condRoute: false,
     waterproofing: false,
     lighting: false,
     towelDryer: false,
-    sanitaryQuality: "budget",
+    sanitaryQuality: "standard",
     electricSockets: 2,
   },
   kitchen: {
+    repairType: "cosmetic",
     wetPoints: 1,
     hoodOutlet: true,
     condRoute: false,
@@ -312,51 +510,57 @@ const TYPE_DEFAULT_OVERRIDES = {
     pipeRelocation: false,
     lighting: false,
     towelDryer: false,
-    sanitaryQuality: "budget",
+    sanitaryQuality: "standard",
     electricSockets: 2,
   },
   combinedBathroom: {
-    wetPoints: 1,
+    repairType: "cosmetic",
+    wetPoints: 3,
     waterproofing: true,
     pipeReplacement: true,
-    sanitaryQuality: "average",
-    bathOption: "bathtub",
+    sanitaryQuality: "standard",
+    bathOption: "bath",
     lighting: true,
     towelDryer: true,
     electricSockets: 2,
   },
   bathroom: {
+    repairType: "cosmetic",
     wetPoints: 1,
     waterproofing: true,
     pipeReplacement: true,
-    sanitaryQuality: "average",
-    bathOption: "bathtub",
+    sanitaryQuality: "standard",
+    bathOption: "bath",
     lighting: true,
     towelDryer: true,
     electricSockets: 2,
   },
   toilet: {
+    repairType: "cosmetic",
     wetPoints: 1,
     waterproofing: true,
     pipeReplacement: true,
-    sanitaryQuality: "budget",
+    sanitaryQuality: "standard",
     lighting: false,
     towelDryer: false,
     electricSockets: 1,
   },
   corridor: {
+    repairType: "cosmetic",
     electricSockets: 2,
     wetPoints: 0,
     hoodOutlet: false,
     waterproofing: false,
   },
   wardrobe: {
+    repairType: "cosmetic",
     electricSockets: 1,
     wetPoints: 0,
     hoodOutlet: false,
     waterproofing: false,
   },
   commercial: {
+    repairType: "cosmetic",
     wetPoints: 1,
     hoodOutlet: true,
     condRoute: false,
@@ -460,7 +664,18 @@ const calculateCardPrice = (card) => {
   }
 
   const breakdown = [];
-  const allowedFields = new Set(roomTypeFields[card.type] ?? []);
+  
+  // Получаем все возможные поля для данного типа помещения
+  const allRoomFields = roomTypeFields[card.type] ?? [];
+  
+  // Фильтруем поля по типу ремонта и типу помещения
+  const allowedFieldsList = filterFieldsByRepairType(
+    allRoomFields,
+    card.repairType || "cosmetic",
+    card.type
+  );
+  const allowedFields = new Set(allowedFieldsList);
+  
   const hasField = (key) => allowedFields.has(key);
   const addBreakdown = (label, amount, detail, fieldKey) => {
     if (amount > 0) {
@@ -514,15 +729,48 @@ const calculateCardPrice = (card) => {
     );
   }
 
-  if (hasField("floorBase") && card.floorBase === "insulation") {
-    const floorInsulationCost = area * 260;
-    total += floorInsulationCost;
-    addBreakdown(
-      "Утепление пола",
-      floorInsulationCost,
-      `260 ₽ × ${formatNumber(area)} м²`,
-      "floorBase"
-    );
+  if (hasField("floorBase")) {
+    if (card.floorBase === "screed") {
+      const screedCost = area * 320;
+      total += screedCost;
+      addBreakdown(
+        "Стяжка пола",
+        screedCost,
+        `320 ₽ × ${formatNumber(area)} м²`,
+        "floorBase"
+      );
+    } else if (card.floorBase === "insulation") {
+      const floorInsulationCost = area * 260;
+      total += floorInsulationCost;
+      addBreakdown(
+        "Утепление пола",
+        floorInsulationCost,
+        `260 ₽ × ${formatNumber(area)} м²`,
+        "floorBase"
+      );
+    }
+  }
+
+  if (hasField("floorHeating")) {
+    if (card.floorHeating === "water") {
+      const floorHeatingCost = area * 850;
+      total += floorHeatingCost;
+      addBreakdown(
+        "Тёплый пол (водяной)",
+        floorHeatingCost,
+        `850 ₽ × ${formatNumber(area)} м²`,
+        "floorHeating"
+      );
+    } else if (card.floorHeating === "electric") {
+      const floorHeatingCost = area * 650;
+      total += floorHeatingCost;
+      addBreakdown(
+        "Тёплый пол (электрический)",
+        floorHeatingCost,
+        `650 ₽ × ${formatNumber(area)} м²`,
+        "floorHeating"
+      );
+    }
   }
 
   if (hasField("electricalPoints")) {
@@ -549,6 +797,20 @@ const calculateCardPrice = (card) => {
         socketsCost,
         `${formatNumber(380)} ₽ × ${formatNumber(sockets)} шт.`,
         "electricSockets"
+      );
+    }
+  }
+
+  if (hasField("cableLaying")) {
+    const cableMeters = Math.max(0, card.cableLaying || 0);
+    const cableCost = cableMeters * 85;
+    total += cableCost;
+    if (cableMeters > 0) {
+      addBreakdown(
+        "Прокладка кабеля",
+        cableCost,
+        `${formatNumber(85)} ₽ × ${formatNumber(cableMeters)} м`,
+        "cableLaying"
       );
     }
   }
@@ -713,11 +975,18 @@ const calculateCardPrice = (card) => {
     );
   }
 
+  // Применяем множитель типа ремонта
+  let repairTypeMultiplier = 1;
+  if (card.repairType === "cosmetic") repairTypeMultiplier = 0.75;
+  if (card.repairType === "capital") repairTypeMultiplier = 1.25;
+  if (card.repairType === "whitebox") repairTypeMultiplier = 0.85;
+  total *= repairTypeMultiplier;
+
   const roundedTotal = Math.round(total);
   return {
     total: roundedTotal,
     perSquare: Math.round(roundedTotal / Math.max(area, 1)),
-    breakdown: filterCalculationItems(card.type, breakdown),
+    breakdown: filterCalculationItems(card.type, breakdown, card.repairType || "capital"),
   };
 };
 
@@ -796,9 +1065,18 @@ const IconButton = ({ label, onClick, disabled, children, style }) => (
 );
 
 const WhiteboxCalculator = ({ isMobile }) => {
-  const [roomCards, setRoomCards] = useState(() => [
-    createCardFromDraft(getDefaultDraft("room", [])),
-  ]);
+  const trackCalculatorEvent = (action, label = "") => {
+    ymTrackEvent("whitebox_calculator", action, label);
+  };
+
+  const [roomCards, setRoomCards] = useState(() => {
+    const initialCard = createCardFromDraft(getDefaultDraft("room", []));
+    // Убеждаемся, что repairType есть в начальной карточке
+    if (!initialCard.repairType) {
+      initialCard.repairType = "cosmetic";
+    }
+    return [initialCard];
+  });
   const [constructorDraft, setConstructorDraft] = useState(() => getDefaultDraft("room", []));
   const [expandedCardIds, setExpandedCardIds] = useState(() => []);
   const totalBudget = roomCards.reduce(
@@ -810,6 +1088,7 @@ const WhiteboxCalculator = ({ isMobile }) => {
     setRoomCards((prev) =>
       prev.map((card) => (card.id === id ? { ...card, name: value } : card))
     );
+    trackCalculatorEvent("card_name_edit", `${id}:${value}`);
   };
 
   const handleDuplicateCard = (id) => {
@@ -825,12 +1104,21 @@ const WhiteboxCalculator = ({ isMobile }) => {
       });
       const next = [...prev];
       next.splice(index + 1, 0, duplicate);
+      trackCalculatorEvent("card_duplicate", `${original.type}:${original.name}`);
       return next;
     });
   };
 
   const handleDeleteCard = (id) => {
-    setRoomCards((prev) => prev.filter((card) => card.id !== id));
+    setRoomCards((prev) => {
+      const cardToRemove = prev.find((card) => card.id === id);
+      if (!cardToRemove) {
+        return prev;
+      }
+      const next = prev.filter((card) => card.id !== id);
+      trackCalculatorEvent("card_remove", `${cardToRemove.type}:${cardToRemove.name}`);
+      return next;
+    });
   };
 
   const moveCard = (id, direction) => {
@@ -845,38 +1133,55 @@ const WhiteboxCalculator = ({ isMobile }) => {
       }
       const next = [...prev];
       [next[index], next[target]] = [next[target], next[index]];
+      const cardToMove = prev[index];
+      const directionLabel = direction === -1 ? "up" : "down";
+      trackCalculatorEvent("card_move", `${cardToMove.type}:${directionLabel}`);
+      return next;
+    });
+  };
+
+  const handleToggleBreakdown = (cardId) => {
+    setExpandedCardIds((prev) => {
+      const isOpen = prev.includes(cardId);
+      const next = isOpen ? prev.filter((entry) => entry !== cardId) : [...prev, cardId];
+      const stateLabel = isOpen ? "close" : "open";
+      trackCalculatorEvent("breakdown_toggle", `${cardId}:${stateLabel}`);
       return next;
     });
   };
 
   const handleConstructorFieldChange = (key, rawValue) => {
-    setConstructorDraft((prev) => {
-      const config = FIELD_LIBRARY[key];
-      if (!config) {
-        return prev;
+    const config = FIELD_LIBRARY[key];
+    if (!config) {
+      return;
+    }
+
+    let normalizedValue = rawValue;
+
+    if (config.type === "number") {
+      const parsed = Number(rawValue);
+      if (Number.isNaN(parsed)) {
+        return;
       }
-      const next = { ...prev };
-      if (config.type === "number") {
-        const parsed = Number(rawValue);
-        if (Number.isNaN(parsed)) {
-          return prev;
-        }
-        const min = config.min ?? -Infinity;
-        const max = config.max ?? Infinity;
-        next[key] = Math.max(min, Math.min(max, parsed));
-      } else if (config.type === "toggle") {
-        next[key] = Boolean(rawValue);
-      } else {
-        next[key] = rawValue;
-      }
-      return next;
-    });
+      const min = config.min ?? -Infinity;
+      const max = config.max ?? Infinity;
+      normalizedValue = Math.max(min, Math.min(max, parsed));
+    } else if (config.type === "toggle") {
+      normalizedValue = Boolean(rawValue);
+    }
+
+    setConstructorDraft((prev) => ({ ...prev, [key]: normalizedValue }));
+    trackCalculatorEvent(
+      "constructor_field_change",
+      `${key}:${String(normalizedValue)}`
+    );
   };
 
   const handleCreateCard = () => {
     const newCard = createCardFromDraft(constructorDraft);
     const updatedCards = [...roomCards, newCard];
     setRoomCards(updatedCards);
+    trackCalculatorEvent("card_create", `${newCard.type}:${newCard.name}`);
     setConstructorDraft((prev) => ({
       ...prev,
       name: getDefaultDraft(prev.type, updatedCards).name,
@@ -884,10 +1189,54 @@ const WhiteboxCalculator = ({ isMobile }) => {
   };
 
   const handleTypeSelect = (type) => {
-    setConstructorDraft(getDefaultDraft(type, roomCards));
+    const newDraft = getDefaultDraft(type, roomCards);
+    // Сохраняем текущий тип ремонта, если он был выбран
+    if (constructorDraft.repairType) {
+      newDraft.repairType = constructorDraft.repairType;
+    }
+    setConstructorDraft(newDraft);
+    trackCalculatorEvent("type_select", type);
   };
 
-  const currentFields = roomTypeFields[constructorDraft.type] ?? [];
+  const handleRepairTypeChange = (newRepairType) => {
+    const currentType = constructorDraft.type;
+    const baseFields = roomTypeFields[currentType] ?? [];
+    const allowedByRepair = filterFieldsByRepairType(
+      baseFields,
+      newRepairType,
+      currentType
+    );
+    const allowedFieldsSet = new Set(allowedByRepair);
+
+    // Создаём новый draft, удаляя все запрещённые поля
+    const cleanedDraft = { ...constructorDraft, repairType: newRepairType };
+    
+    // После смены типа ремонта удалять значения запрещённых полей ТОЛЬКО если repairType !== capital
+    if (newRepairType !== "capital") {
+      // Удаляем значения всех полей, которых нет в allowedFields
+      Object.keys(cleanedDraft).forEach((key) => {
+        if (key !== "id" && key !== "type" && key !== "repairType" && key !== "name" && !allowedFieldsSet.has(key)) {
+          // Восстанавливаем значение по умолчанию
+          const defaultValue = DEFAULT_CARD_VALUES[key];
+          if (defaultValue !== undefined) {
+            cleanedDraft[key] = defaultValue;
+          } else {
+            delete cleanedDraft[key];
+          }
+        }
+      });
+    }
+
+    setConstructorDraft(cleanedDraft);
+    trackCalculatorEvent("repair_type_change", newRepairType);
+  };
+
+  const currentFieldsRaw = roomTypeFields[constructorDraft.type] ?? [];
+  const currentFields = filterFieldsByRepairType(
+    currentFieldsRaw,
+    constructorDraft.repairType || "cosmetic",
+    constructorDraft.type
+  );
   const canCreate =
     Number(constructorDraft.area) > 0 && constructorDraft.name?.trim().length > 0;
 
@@ -1032,7 +1381,6 @@ const WhiteboxCalculator = ({ isMobile }) => {
         display: "flex",
         flexDirection: "column",
         gap: isMobile ? "18px" : "24px",
-        boxShadow: "0 30px 70px rgba(0,0,0,0.6)",
       }}
     >
       <div
@@ -1066,17 +1414,77 @@ const WhiteboxCalculator = ({ isMobile }) => {
             Сформируйте прозрачный расчёт
           </h3>
         </div>
-        <p
+        <div
           style={{
-            color: "rgba(255,255,255,0.75)",
-            fontSize: 15,
-            lineHeight: 1.5,
-            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
             maxWidth: isMobile ? "100%" : "360px",
           }}
         >
-          Добавляйте помещения, подбирайте параметры и следите за итогом по каждому объекту.
-        </p>
+          {USAGE_STEPS.map((step, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 10,
+              }}
+            >
+              <span
+                style={{
+                  color: "#FFD700",
+                  fontSize: 12,
+                  marginTop: 2,
+                  flexShrink: 0,
+                }}
+              >
+                ▶
+              </span>
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  margin: 0,
+                }}
+              >
+                {step}
+              </p>
+            </div>
+          ))}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 10,
+              marginTop: 4,
+            }}
+          >
+            <span
+              style={{
+                color: "#FFD700",
+                fontSize: 12,
+                marginTop: 2,
+                flexShrink: 0,
+              }}
+            >
+              📊
+            </span>
+            <p
+              style={{
+                color: "rgba(255,255,255,0.65)",
+                fontSize: 13,
+                lineHeight: 1.5,
+                margin: 0,
+              }}
+            >
+              Под капотом считается штукатурка (площадь × коэффициент), электрика (точка × цена),
+              сантехника (мокрые точки × базовая цена), гидроизоляция (площадь × ставка), демонтаж,
+              выравнивание полов и прокладка кабеля.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div
@@ -1116,12 +1524,25 @@ const WhiteboxCalculator = ({ isMobile }) => {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {roomCards.map((card, index) => {
-            const { total: cardTotal, perSquare, breakdown } = calculateCardPrice(card);
-            const typeEntry = getTypeEntry(card.type);
-            const cardFields = roomTypeFields[card.type] ?? [];
+            // Убеждаемся, что repairType есть в карточке (для старых карточек)
+            const cardWithDefaults = {
+              ...card,
+              repairType: card.repairType || "cosmetic",
+              materialQuality: card.materialQuality || "standard",
+            };
+            const { total: cardTotal, perSquare, breakdown } = calculateCardPrice(cardWithDefaults);
+            const typeEntry = getTypeEntry(cardWithDefaults.type);
+            const cardFieldsRaw = roomTypeFields[cardWithDefaults.type] ?? [];
+            const cardFields = filterFieldsByRepairType(
+              cardFieldsRaw,
+              cardWithDefaults.repairType || "cosmetic",
+              cardWithDefaults.type
+            );
+            const cardRepairType = cardWithDefaults.repairType;
+            const cardMaterialQuality = cardWithDefaults.materialQuality;
             return (
               <div
-                key={card.id}
+                key={cardWithDefaults.id}
                 style={{
                   background: "rgba(255,255,255,0.02)",
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -1143,8 +1564,8 @@ const WhiteboxCalculator = ({ isMobile }) => {
                 >
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <input
-                      value={card.name}
-                      onChange={(event) => handleCardNameChange(card.id, event.target.value)}
+                      value={cardWithDefaults.name}
+                      onChange={(event) => handleCardNameChange(cardWithDefaults.id, event.target.value)}
                       style={{
                         width: "100%",
                         background: "transparent",
@@ -1176,6 +1597,32 @@ const WhiteboxCalculator = ({ isMobile }) => {
                       >
                         {typeEntry.shortLabel}
                       </span>
+                      {cardRepairType && (
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color: "rgba(255,255,255,0.85)",
+                            border: "1px solid rgba(255,255,255,0.2)",
+                            borderRadius: 999,
+                            padding: "2px 10px",
+                            background: "rgba(255,255,255,0.05)",
+                          }}
+                        >
+                          {getOptionLabel("repairType", cardRepairType) || "Косметический"}
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.85)",
+                          border: "1px solid rgba(255,255,255,0.2)",
+                          borderRadius: 999,
+                          padding: "2px 10px",
+                          background: "rgba(255,255,255,0.05)",
+                        }}
+                      >
+                        {getOptionLabel("materialQuality", cardMaterialQuality)}
+                      </span>
                       <span
                         style={{
                           fontSize: 12,
@@ -1205,14 +1652,14 @@ const WhiteboxCalculator = ({ isMobile }) => {
                     <div style={{ display: "flex", gap: "8px" }}>
                       <IconButton
                         label="Переместить вверх"
-                        onClick={() => moveCard(card.id, -1)}
+                        onClick={() => moveCard(cardWithDefaults.id, -1)}
                         disabled={index === 0}
                       >
                         <ArrowIcon direction="up" />
                       </IconButton>
                       <IconButton
                         label="Переместить вниз"
-                        onClick={() => moveCard(card.id, 1)}
+                        onClick={() => moveCard(cardWithDefaults.id, 1)}
                         disabled={index === roomCards.length - 1}
                       >
                         <ArrowIcon direction="down" />
@@ -1221,13 +1668,13 @@ const WhiteboxCalculator = ({ isMobile }) => {
                     <div style={{ display: "flex", gap: "8px" }}>
                       <IconButton
                         label="Дублировать карточку"
-                        onClick={() => handleDuplicateCard(card.id)}
+                        onClick={() => handleDuplicateCard(cardWithDefaults.id)}
                       >
                         <DuplicateIcon />
                       </IconButton>
                       <IconButton
                         label="Удалить карточку"
-                        onClick={() => handleDeleteCard(card.id)}
+                        onClick={() => handleDeleteCard(cardWithDefaults.id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -1242,9 +1689,11 @@ const WhiteboxCalculator = ({ isMobile }) => {
                     paddingTop: "12px",
                   }}
                 >
-                  {cardFields.map((fieldKey) => (
-                    <div
-                      key={`${card.id}-${fieldKey}`}
+                  {cardFields
+                    .filter((fieldKey) => fieldKey !== "repairType" && fieldKey !== "materialQuality")
+                    .map((fieldKey) => (
+                      <div
+                        key={`${cardWithDefaults.id}-${fieldKey}`}
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -1271,7 +1720,7 @@ const WhiteboxCalculator = ({ isMobile }) => {
                           flexShrink: 0,
                         }}
                       >
-                        {renderFieldValue(fieldKey, card[fieldKey])}
+                        {renderFieldValue(fieldKey, cardWithDefaults[fieldKey])}
                       </span>
                     </div>
                   ))}
@@ -1284,13 +1733,7 @@ const WhiteboxCalculator = ({ isMobile }) => {
                 >
                   <button
                     type="button"
-                    onClick={() =>
-                      setExpandedCardIds((prev) =>
-                        prev.includes(card.id)
-                          ? prev.filter((entry) => entry !== card.id)
-                          : [...prev, card.id]
-                      )
-                    }
+                    onClick={() => handleToggleBreakdown(cardWithDefaults.id)}
                     style={{
                       all: "unset",
                       display: "flex",
@@ -1308,7 +1751,7 @@ const WhiteboxCalculator = ({ isMobile }) => {
                       {expandedCardIds.includes(card.id) ? "▾" : "▸"}
                     </span>
                   </button>
-                  {expandedCardIds.includes(card.id) && breakdown.length > 0 && (
+                  {expandedCardIds.includes(cardWithDefaults.id) && breakdown.length > 0 && (
                     <div
                       style={{
                         marginTop: 10,
@@ -1319,7 +1762,7 @@ const WhiteboxCalculator = ({ isMobile }) => {
                     >
                       {breakdown.map((item) => (
                         <div
-                          key={`${card.id}-breakdown-${item.label}`}
+                          key={`${cardWithDefaults.id}-breakdown-${item.label}`}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
@@ -1398,49 +1841,116 @@ const WhiteboxCalculator = ({ isMobile }) => {
           </p>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))",
-            gap: "10px",
-          }}
-        >
-          {ROOM_TYPES.map((option) => {
-            const selected = option.value === constructorDraft.type;
-            return (
-              <button
-                type="button"
-                key={option.value}
-                onClick={() => handleTypeSelect(option.value)}
-                style={{
-                  borderRadius: 6,
-                  border: `1px solid ${selected ? "#FFD700" : "rgba(255,255,255,0.4)"}`,
-                  background: selected ? option.accent : "rgba(255,255,255,0.04)",
-                  color: selected ? "#0B0B0B" : "#fff",
-                  padding: "10px 12px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  minHeight: "52px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: "2px",
-                }}
-              >
-                <span>{option.shortLabel}</span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: selected ? "#1E1E1E" : "rgba(255,255,255,0.6)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {option.label}
-                </span>
-              </button>
-            );
-          })}
+        {/* Вид ремонта */}
+        <div>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              fontSize: 14,
+              color: "rgba(255,255,255,0.85)",
+              fontWeight: 600,
+            }}
+          >
+            Вид ремонта
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                gap: "10px",
+              }}
+            >
+              {REPAIR_TYPE_OPTIONS.map((option) => {
+                const selected = option.value === (constructorDraft.repairType || "cosmetic");
+                return (
+                  <button
+                    type="button"
+                    key={option.value}
+                    onClick={() => handleRepairTypeChange(option.value)}
+                    style={{
+                      borderRadius: 6,
+                      border: `1px solid ${selected ? "#FFD700" : "rgba(255,255,255,0.2)"}`,
+                      background: "transparent",
+                      color: selected ? "#FFD700" : "rgba(255,255,255,0.85)",
+                      padding: "12px 14px",
+                      fontSize: isMobile ? 14 : 15,
+                      fontWeight: selected ? 600 : 500,
+                      cursor: "pointer",
+                      minHeight: "48px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s ease",
+                      textTransform: "none",
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </label>
+        </div>
+
+        {/* Тип помещения */}
+        <div>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              fontSize: 14,
+              color: "rgba(255,255,255,0.85)",
+              fontWeight: 600,
+            }}
+          >
+            Тип помещения
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))",
+                gap: "10px",
+              }}
+            >
+              {ROOM_TYPES.map((option) => {
+                const selected = option.value === constructorDraft.type;
+                return (
+                  <button
+                    type="button"
+                    key={option.value}
+                    onClick={() => handleTypeSelect(option.value)}
+                    style={{
+                      borderRadius: 6,
+                      border: `1px solid ${selected ? "#FFD700" : "rgba(255,255,255,0.4)"}`,
+                      background: selected ? option.accent : "rgba(255,255,255,0.04)",
+                      color: selected ? "#0B0B0B" : "#fff",
+                      padding: "10px 12px",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      minHeight: "52px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      gap: "2px",
+                    }}
+                  >
+                    <span>{option.shortLabel}</span>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: selected ? "#1E1E1E" : "rgba(255,255,255,0.6)",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {option.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </label>
         </div>
 
         <div>
@@ -1478,7 +1988,9 @@ const WhiteboxCalculator = ({ isMobile }) => {
             gap: "12px",
           }}
         >
-          {currentFields.map((fieldKey) => renderConstructorInput(fieldKey))}
+          {currentFields
+            .filter((fieldKey) => fieldKey !== "repairType")
+            .map((fieldKey) => renderConstructorInput(fieldKey))}
         </div>
 
         <YellowBorderButton
@@ -1489,43 +2001,17 @@ const WhiteboxCalculator = ({ isMobile }) => {
           Создать
         </YellowBorderButton>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {USAGE_STEPS.map((step) => (
-            <div
-              key={step}
-              style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}
-            >
-              <span style={{ color: "#FFD700", fontSize: 18, lineHeight: 1 }}>▹</span>
-              <p
-                style={{
-                  margin: 0,
-                  color: "rgba(255,255,255,0.7)",
-                  fontSize: 13,
-                  lineHeight: 1.4,
-                }}
-              >
-                {step}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <p
-          style={{
-            color: "rgba(255,255,255,0.65)",
-            fontSize: 13,
-            margin: 0,
-          }}
-        >
-          🧮 Под капотом считается штукатурка (площадь × коэффициент), электрика (точка × цена),
-          сантехника (мокрые точки × базовая цена), гидроизоляция (площадь × ставка), демонтаж,
-          выравнивание полов и прокладка кабеля.
-        </p>
-
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.12)",
-            paddingTop: "12px",
+            paddingTop: "16px",
+            paddingBottom: "16px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            marginTop: "16px",
+            background: "rgba(255,255,255,0.03)",
+            borderRadius: 8,
+            border: "1px solid rgba(255,255,255,0.08)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",

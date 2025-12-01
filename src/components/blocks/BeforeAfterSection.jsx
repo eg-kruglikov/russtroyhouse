@@ -22,6 +22,7 @@ const BeforeAfterSection = ({
   headerTitleStyle,
   headerSubtitleStyle,
   marginTop,
+  interactionLabel,
 }) => {
   const effectiveMarginTop = useMemo(() => {
     if (typeof marginTop === "string") return marginTop;
@@ -141,6 +142,7 @@ const BeforeAfterSection = ({
           firstImage={firstImage}
           secondImage={secondImage}
           isMobile={isMobile}
+          interactionLabel={interactionLabel || sectionId || title || "before_after"}
         />
       </div>
 

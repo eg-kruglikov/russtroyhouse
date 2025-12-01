@@ -8,10 +8,13 @@ import { usePressEffect } from "../../../hooks/useSomething";
 import {
   createRepairPageMenuItems,
   NAV_GOALS_MAP,
+  reorderMenuSections,
 } from "../../../utils/navigationConfig";
 import { ymGoal } from "../../../utils/metrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
 import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
+import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import { SECTION_BACKGROUND } from "../../../utils/spacing";
 
 const Desktop = () => {
@@ -23,16 +26,27 @@ const Desktop = () => {
     layoutPadding,
     showSidebar,
     sidebarWidth,
+    viewportWidth,
   } = useResponsiveShell();
   const sidebarGap = 0;
   const containerShift = showSidebar ? -(sidebarWidth + sidebarGap) / 2 : 0;
   const fallbackContentWidth = shellContentWidth > 0 ? shellContentWidth : 720;
+  const totalNavWidth = fallbackContentWidth + sidebarWidth + sidebarGap;
+  const sidebarLeft =
+    viewportWidth > 0
+      ? viewportWidth / 2 - totalNavWidth / 2 + containerShift
+      : 0;
+  const fixedSidebarLeft = Math.max(sidebarLeft - layoutPadding - 10, 0);
 
   // Меню для sidebar
   const location = useLocation();
-  const menuItems = useMemo(() => {
+  const baseMenuItems = useMemo(() => {
     return createRepairPageMenuItems(location.pathname);
   }, [location.pathname]);
+  const menuItems = useMemo(
+    () => reorderMenuSections(baseMenuItems),
+    [baseMenuItems]
+  );
 
   const handleSidebarSelection = (item) => {
     if (!item) return;
@@ -93,74 +107,15 @@ const Desktop = () => {
         }}
       >
         {showSidebar && (
-          <aside
+          <div
+            aria-hidden="true"
             style={{
               flex: `0 0 ${sidebarWidth}px`,
               maxWidth: `${sidebarWidth}px`,
               width: `${sidebarWidth}px`,
-              background: "transparent",
-              border: "none",
-              borderRadius: "0px",
-              padding: "28px 22px 28px",
-              position: "sticky",
-              top: "60px",
-              height: "auto",
-              maxHeight: "calc(100vh - 108px)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-              overflowY: "auto",
-              alignSelf: "flex-start",
-              WebkitBackdropFilter: "blur(12px)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "none",
+              pointerEvents: "none",
             }}
-          >
-            <nav
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "18px",
-              }}
-            >
-              {menuItems.map((item, index) => {
-                // Обработка separator
-                if (item.type === "separator") {
-                  return (
-                    <div
-                      key={`separator-${index}`}
-                      style={{
-                        height: "24px",
-                        width: "100%",
-                      }}
-                    />
-                  );
-                }
-
-                return (
-                  <button
-                    {...press}
-                    key={`${item.name}-${index}`}
-                    onClick={() => handleSidebarSelection(item)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      color: "rgba(255,255,255,0.95)",
-                      fontWeight: 500,
-                      fontSize: "16px",
-                      letterSpacing: "0.6px",
-                      textTransform: "uppercase",
-                      lineHeight: 1.5,
-                      padding: "4px 0",
-                      transition: "color 0.2s ease",
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </aside>
+          />
         )}
         <main
           style={{
@@ -244,6 +199,16 @@ const Desktop = () => {
 Если требуется, поможем оптимизировать смету: подберём материалы с лучшим соотношением цена/качество.
 В результате вы получаете надёжный ремонт "под ключ", рассчитанный на годы эксплуатации.`}
             </p>
+          </div>
+
+          {/* Калькулятор */}
+          <div style={{ marginTop: 32 }}>
+            <WhiteboxCalculator isMobile={false} />
+          </div>
+
+          {/* Блок «Получить точный расчёт» */}
+          <div style={{ marginTop: 32 }}>
+            <CallbackForm isMobile={false} source="capital" />
           </div>
 
           {/* Блок "Эстетика и стиль" */}
@@ -536,6 +501,74 @@ const Desktop = () => {
           </div>
         </main>
       </div>
+      {showSidebar && (
+        <aside
+          style={{
+            flex: `0 0 ${sidebarWidth}px`,
+            width: `${sidebarWidth}px`,
+            maxWidth: `${sidebarWidth}px`,
+            background: "transparent",
+            border: "none",
+            borderRadius: "0px",
+            padding: "28px 22px 28px",
+            position: "fixed",
+            top: "60px",
+            left: `${fixedSidebarLeft}px`,
+            maxHeight: "calc(100vh - 108px)",
+            height: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+            overflowY: "auto",
+            boxShadow: "none",
+            zIndex: 100,
+          }}
+        >
+          <nav
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+          >
+            {menuItems.map((item, index) => {
+              if (item.type === "separator") {
+                return (
+                  <div
+                    key={`separator-${index}`}
+                    style={{
+                      height: "24px",
+                      width: "100%",
+                    }}
+                  />
+                );
+              }
+
+              return (
+                <button
+                  {...press}
+                  key={`${item.name}-${index}`}
+                  onClick={() => handleSidebarSelection(item)}
+                  style={{
+                    all: "unset",
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,0.95)",
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    letterSpacing: "0.6px",
+                    textTransform: "uppercase",
+                    lineHeight: 1.5,
+                    padding: "4px 0",
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
+      )}
     </div>
   );
 };

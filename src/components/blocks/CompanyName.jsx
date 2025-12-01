@@ -13,7 +13,7 @@ const CompanyName = ({ isMobile }) => {
         textRendering: "optimizeLegibility",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
-        paddingLeft: "18px",
+        paddingLeft: "6px",
       }}
     >
       Руссуютстрой

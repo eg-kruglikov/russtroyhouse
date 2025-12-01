@@ -1,9 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { useNavigateWithMetrika } from "../../../hooks/useNavigateWithMetrika";
 import FullWidthImageGallery from "../../../components/blocks/FullWidthImageGallery";
 import FullWidthViewportVideo from "../../../components/blocks/FullWidthViewportVideo";
 import BeforeAfterSection from "../../../components/blocks/BeforeAfterSection";
 import WhiteboxCalculator from "../../../components/blocks/WhiteboxCalculator";
+import CallbackForm from "../../../components/blocks/CallbackForm";
 import YellowBorderButton from "../../../components/blocks/YellowBorderButton";
 import {
   SECTION_BACKGROUND,
@@ -12,6 +13,8 @@ import {
   TITLE_CONTENT_GAP,
 } from "../../../utils/spacing";
 import { WHITEBOX_WORK_GALLERY_GROUPS } from "./galleryData";
+import { useScrollContext } from "../../../contexts/ScrollContext";
+import { ymTrackEvent, ymGoal } from "../../../utils/metrika";
 
 const WA_CONTACT_LINK = `https://wa.me/79264081811?text=${encodeURIComponent(
   "Здравствуйте! Хочу получить точный расчет черновой отделки. Источник: whitebox"
@@ -24,6 +27,73 @@ const CONTACT_METHODS = [
 
 const Mobile = () => {
   const navigate = useNavigateWithMetrika();
+  const heroRef = useRef(null);
+  const calculatorRef = useRef(null);
+  const aboutRef = useRef(null);
+  const worksRef = useRef(null);
+  const howWeWorkRef = useRef(null);
+  const designProjectsRef = useRef(null);
+  const reviewsRef = useRef(null);
+
+  const { setScrollFunctions, setActiveScrollKey } = useScrollContext();
+
+  const sections = useMemo(
+    () => [
+      { key: "scrollToHero", ref: heroRef },
+      { key: "scrollToCalculator", ref: calculatorRef },
+      { key: "scrollToAbout", ref: aboutRef },
+      { key: "scrollToportfolio", ref: worksRef },
+      { key: "scrollToNashiUslugi", ref: howWeWorkRef },
+      { key: "scrollToDesignProjects", ref: designProjectsRef },
+      { key: "scrollToReviews", ref: reviewsRef },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    if (!setScrollFunctions) return;
+
+    const scrollFns = sections.reduce((acc, section) => {
+      acc[section.key] = () => {
+        section.ref.current?.scrollIntoView({ behavior: "smooth" });
+      };
+      return acc;
+    }, {});
+
+    setScrollFunctions(scrollFns);
+    return () => setScrollFunctions(null);
+  }, [sections, setScrollFunctions]);
+
+  useEffect(() => {
+    if (!setActiveScrollKey) return;
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      let nextKey = sections[0]?.key;
+      for (const section of sections) {
+        const elem = section.ref.current;
+        if (!elem) continue;
+        const top = elem.getBoundingClientRect().top + window.scrollY;
+        if (scrollPosition >= top) {
+          nextKey = section.key;
+        } else {
+          break;
+        }
+      }
+      setActiveScrollKey(nextKey);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [sections, setActiveScrollKey]);
+
+  useEffect(() => {
+    return () => {
+      setActiveScrollKey?.(null);
+      setScrollFunctions?.(null);
+    };
+  }, [setActiveScrollKey, setScrollFunctions]);
 
   const imageGeometry = "/images/repair/zelenyBor/3.webp";
 
@@ -81,6 +151,7 @@ const Mobile = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
   return (
     <div
       style={{
@@ -91,6 +162,7 @@ const Mobile = () => {
       }}
     >
       <div
+        ref={heroRef}
         style={{
           position: "relative",
           width: "100%",
@@ -159,119 +231,18 @@ const Mobile = () => {
       </div>
 
       {/* Калькулятор White Box */}
-      <WhiteboxCalculator isMobile={true} />
+      <div ref={calculatorRef}>
+        <WhiteboxCalculator isMobile={true} />
+      </div>
 
       {/* Блок «Получить точный расчёт» */}
-      <div
-        style={{
-          marginTop: 24,
-          padding: "24px 20px",
-          borderRadius: 12,
-          border: "1px solid rgba(255,255,255,0.12)",
-          background: "rgba(16, 21, 36, 0.95)",
-        }}
-      >
-        <h3
-          style={{
-            color: "#FFD700",
-            fontSize: 22,
-            margin: "0 0 12px",
-            fontWeight: 700,
-            letterSpacing: 0.5,
-            textTransform: "uppercase",
-          }}
-        >
-          Получить точный расчёт
-        </h3>
-        <p
-          style={{
-            color: "rgba(255,255,255,0.75)",
-            fontSize: 14,
-            margin: "0 0 16px",
-          }}
-        >
-          Выберите способ связи — звонок или WhatsApp. Сообщение отмечается как
-          заявка с раздела whitebox, чтобы менеджер сразу понял источник.
-        </p>
-        <label
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 6,
-            fontSize: 13,
-            color: "rgba(255,255,255,0.75)",
-            marginBottom: 12,
-          }}
-        >
-          Вариант связи
-          <select
-            value={contactMethod}
-            onChange={(event) => setContactMethod(event.target.value)}
-            style={{
-              width: "100%",
-              borderRadius: 8,
-              border: "1px solid rgba(255,255,255,0.4)",
-              background: "rgba(255,255,255,0.04)",
-              color: "#fff",
-              fontSize: 15,
-              padding: "10px 12px 10px 12px",
-              appearance: "none",
-              cursor: "pointer",
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1 L5 5 L9 1' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E\")",
-              backgroundPosition: "calc(100% - 16px) 50%",
-              backgroundRepeat: "no-repeat",
-              paddingRight: "36px",
-            }}
-          >
-            {CONTACT_METHODS.map((method) => (
-              <option
-                key={method.value}
-                value={method.value}
-                style={{ color: "#05060A" }}
-              >
-                {method.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        {contactMethod === "whatsapp" ? (
-          <YellowBorderButton
-            isMobile
-            onClick={() => window.open(WA_CONTACT_LINK, "_blank")}
-            style={{
-              borderRadius: 8,
-              marginTop: 4,
-            }}
-          >
-            Написать в WhatsApp
-          </YellowBorderButton>
-        ) : (
-          <YellowBorderButton
-            isMobile
-            onClick={() => (window.location.href = PHONE_CONTACT_LINK)}
-            style={{
-              borderRadius: 8,
-              marginTop: 4,
-            }}
-          >
-            Позвонить
-          </YellowBorderButton>
-        )}
-        <p
-          style={{
-            color: "rgba(255,255,255,0.55)",
-            fontSize: 12,
-            marginTop: 10,
-          }}
-        >
-          Уточните, что запрос пришёл со страницы whitebox, чтобы сохранить
-          связь с расчётом.
-        </p>
+      <div style={{ marginTop: 24 }}>
+        <CallbackForm isMobile={true} source="whitebox" />
       </div>
 
       {/* Почему мы? */}
       <div
+        ref={aboutRef}
         style={{
           padding: "32px 20px 0",
         }}
@@ -374,18 +345,6 @@ const Mobile = () => {
                 •
               </span>
               Даём гарантию на выполненные работы*.
-            </li>
-            <li style={{ marginBottom: 10, position: "relative" }}>
-              <span
-                style={{
-                  position: "absolute",
-                  left: -20,
-                  color: "#FFD700",
-                }}
-              >
-                •
-              </span>
-              Исправляем недостатки в выполненных работах.
             </li>
             <li style={{ marginBottom: 10, position: "relative" }}>
               <span
@@ -520,6 +479,7 @@ const Mobile = () => {
 
       {/* Блок "Наши работы" */}
       <div
+        ref={worksRef}
         style={{
           padding: "32px 20px 0",
           marginBottom: 16,
@@ -555,6 +515,7 @@ const Mobile = () => {
         altPrefix="Наши работы"
         isMobile={true}
         onIndexChange={setCurrentWorkGalleryIndex}
+        interactionLabel="gallery_whitebox_primary_mobile"
       />
 
       <div
@@ -588,6 +549,7 @@ const Mobile = () => {
         altPrefix="Наши работы"
         isMobile={true}
         onIndexChange={setSecondaryWorkGalleryIndex}
+        interactionLabel="gallery_whitebox_secondary_mobile"
       />
 
       <div
@@ -616,6 +578,7 @@ const Mobile = () => {
 
       {/* Блок "Как мы работаем" */}
       <div
+        ref={howWeWorkRef}
         style={{
           padding: "32px 20px 0",
         }}
@@ -638,6 +601,7 @@ const Mobile = () => {
         images={qualityBottomImages}
         altPrefix="Качество и практичность"
         isMobile={true}
+        interactionLabel="gallery_whitebox_quality_mobile"
       />
 
       {/* Описание */}
@@ -751,6 +715,7 @@ const Mobile = () => {
       <FullWidthViewportVideo
         videoSrc="/videos/1.mp4"
         containerStyle={{ marginTop: 20 }}
+        trackingLabel="video_object_mobile"
       />
 
       {/* Блок с призывом к действию */}
@@ -763,14 +728,14 @@ const Mobile = () => {
         }}
       >
         <img
-          src={imageGeometry}
+          src="/images/repair/zelenyBor/1.webp"
           alt="Получите расчет"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
             display: "block",
-            filter: "brightness(0.8)",
+            filter: "brightness(0.85)",
           }}
         />
         <div
@@ -791,29 +756,33 @@ const Mobile = () => {
           <h2
             style={{
               color: "#fff",
-              fontSize: "clamp(20px, 5.5vw, 28px)",
+              fontSize: "clamp(24px, 6.5vw, 32px)",
               fontWeight: 800,
               margin: 0,
               marginBottom: 14,
               lineHeight: 1.3,
-              textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+              textShadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)",
             }}
           >
             Получите точный расчет
             <br />
-            <span style={{ color: "#FFD700" }}>за наш счет</span> в течение 1-2
+            <span style={{ color: "#FFD700", textShadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)" }}>за наш счет</span> в течение 1-2
             <br />
             дней после звонка
           </h2>
 
           <a
             href="tel:+79264081811"
+            onClick={() => {
+              ymGoal("call_confirmed");
+            }}
             style={{
               color: "#fff",
-              fontSize: "clamp(28px, 8vw, 42px)",
-              fontWeight: 700,
+              fontSize: "clamp(32px, 9vw, 48px)",
+              fontWeight: 800,
               textDecoration: "none",
-              textShadow: "2px 2px 8px rgba(0, 0, 0, 0.7)",
+              textShadow: "0 1px 3px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)",
+              fontFamily: "Arial, sans-serif",
             }}
           >
             +7 (926) 408-18-11
@@ -822,41 +791,46 @@ const Mobile = () => {
       </div>
 
       {/* Блок "Последние работы" */}
-      <BeforeAfterSection
-        isMobile={true}
-        sectionId="portfolio"
-        sliderContainerRef={sliderContainerRef}
-        firstImage="/images/photolibrary/portfolio/designer/1/1.jpg"
-        secondImage="/images/photolibrary/portfolio/designer/1/2.jpg"
-        title="Последние работы"
-        subtitle="Дизайнерский ремонт в Москве на Большой Спасской"
-        footerDescription="Полная перепланировка, отделка стен и потолка, замена окон и дверей, укладка паркетной доски, установка современного освещения"
-        sliderHeightPx={sliderHeightPx}
-        marginTop="12px"
-        headerTitleStyle={{
-          fontSize: "7vw",
-          whiteSpace: "nowrap",
-        }}
-        headerSubtitleStyle={{
-          fontSize: "18px",
-        }}
-      />
+      <div ref={designProjectsRef}>
+        <BeforeAfterSection
+          isMobile={true}
+          sectionId="portfolio"
+          sliderContainerRef={sliderContainerRef}
+          firstImage="/images/photolibrary/portfolio/designer/1/1.jpg"
+          secondImage="/images/photolibrary/portfolio/designer/1/2.jpg"
+          title="Последние работы"
+          subtitle="Дизайнерский ремонт в Москве на Большой Спасской"
+          footerDescription="Полная перепланировка, отделка стен и потолка, замена окон и дверей, укладка паркетной доски, установка современного освещения"
+          sliderHeightPx={sliderHeightPx}
+          marginTop="12px"
+          headerTitleStyle={{
+            fontSize: "7vw",
+            whiteSpace: "nowrap",
+          }}
+          headerSubtitleStyle={{
+            fontSize: "18px",
+          }}
+          interactionLabel="before_after_portfolio_designer_mobile"
+        />
 
-      <BeforeAfterSection
-        isMobile={true}
-        firstImage="/images/photolibrary/portfolio/capital/2/1.jpg"
-        secondImage="/images/photolibrary/portfolio/capital/2/7.jpg"
-        subtitle="Комплексный ремонт квартиры с акцентом на современный минимализм, Москва, ЖК «Символ»"
-        footerDescription="Демонтаж старых покрытий и коммуникаций, полная замена электрики и сантехники, выравнивание стен и устройство скрытых дверей, монтаж потолков с освещением, укладка напольного покрытия, облицовка санузла плиткой под мрамор с декоративными элементами"
-        sliderHeightPx={sliderHeightPx}
-        marginTop="4px"
-        headerSubtitleStyle={{
-          fontSize: "18px",
-        }}
-      />
+        <BeforeAfterSection
+          isMobile={true}
+          firstImage="/images/photolibrary/portfolio/capital/2/1.jpg"
+          secondImage="/images/photolibrary/portfolio/capital/2/7.jpg"
+          subtitle="Комплексный ремонт квартиры с акцентом на современный минимализм, Москва, ЖК «Символ»"
+          footerDescription="Демонтаж старых покрытий и коммуникаций, полная замена электрики и сантехники, выравнивание стен и устройство скрытых дверей, монтаж потолков с освещением, укладка напольного покрытия, облицовка санузла плиткой под мрамор с декоративными элементами"
+          sliderHeightPx={sliderHeightPx}
+          marginTop="4px"
+          headerSubtitleStyle={{
+            fontSize: "18px",
+          }}
+          interactionLabel="before_after_portfolio_capital_mobile"
+        />
+      </div>
 
       {/* Обертка для Отзывов и "С заботой о вас" */}
       <div
+        ref={reviewsRef}
         style={{
           display: "flex",
           flexDirection: "column",
@@ -947,6 +921,30 @@ const Mobile = () => {
               return "#5a6b78";
             };
 
+            const trackReviewInteraction = (direction, targetIndex) => {
+              ymTrackEvent(
+                "whitebox_reviews",
+                `${direction}_swipe`,
+                `review_${targetIndex + 1}`
+              );
+            };
+
+            const goToNextReview = () => {
+              setCurrentReviewIndex((prev) => {
+                const next = prev < reviews.length - 1 ? prev + 1 : 0;
+                trackReviewInteraction("next", next);
+                return next;
+              });
+            };
+
+            const goToPrevReview = () => {
+              setCurrentReviewIndex((prev) => {
+                const next = prev > 0 ? prev - 1 : reviews.length - 1;
+                trackReviewInteraction("prev", next);
+                return next;
+              });
+            };
+
             const handleStart = (clientX) => {
               touchStartX.current = clientX;
             };
@@ -971,16 +969,12 @@ const Mobile = () => {
                 if (navigator.vibrate) {
                   navigator.vibrate(50);
                 }
-                setCurrentReviewIndex((prev) =>
-                  prev < reviews.length - 1 ? prev + 1 : 0
-                );
+                goToNextReview();
               } else if (distance < -minSwipeDistance) {
                 if (navigator.vibrate) {
                   navigator.vibrate(50);
                 }
-                setCurrentReviewIndex((prev) =>
-                  prev > 0 ? prev - 1 : reviews.length - 1
-                );
+                goToPrevReview();
               }
 
               touchStartX.current = 0;
@@ -1270,6 +1264,7 @@ const Mobile = () => {
                 objectFit: "cover",
               }}
               showSoundToggle={false}
+              trackingLabel="video_care_mobile"
             />
 
             <div

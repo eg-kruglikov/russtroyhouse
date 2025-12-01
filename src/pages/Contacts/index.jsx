@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import QuestionModal from "../../components/windows/FeedbackModal";
 import Map from "../../components/blocks/Map";
 import Footer from "../../components/blocks/Footer";
 import { usePressEffect } from "../../hooks/useSomething";
@@ -104,9 +103,12 @@ const IconPhone = (
 const ContactsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [numberDisplayed, setNumberDisplayed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [questioModalOpen, setQuestioModalOpen] = useState(false);
+  const [callbackTime, setCallbackTime] = useState("");
+  const [callbackPhone, setCallbackPhone] = useState("+7");
+  const [callbackLoading, setCallbackLoading] = useState(false);
+  const [callbackError, setCallbackError] = useState("");
+  const [callbackSubmitted, setCallbackSubmitted] = useState(false);
   const [activeScrollKey, setActiveScrollKey] = useState(null);
   const press = usePressEffect();
   const ensureNotBounce = useNotBounceOnce();
@@ -131,17 +133,96 @@ const ContactsPage = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const showNumber = () => {
-    if (!numberDisplayed) {
-      ymGoal("call_confirmed");
-      setNumberDisplayed(true);
-    }
-  };
-
   const confirmCall = () => {
     ymGoal("call_confirmed");
     window.location.href = "tel:+79264081811";
   };
+
+  const handleCallbackPhoneChange = (e) => {
+    let value = e.target.value;
+
+    // Гарантируем, что номер начинается с +7
+    if (!value.startsWith("+7")) return;
+
+    // Удаляем все символы кроме цифр (оставляя префикс +7)
+    const digits = value.replace(/[^\d]/g, "").slice(1); // всё после +7
+
+    const formatted = `+7${digits}`;
+    setCallbackPhone(formatted);
+
+    if (digits.length !== 10) {
+      setCallbackError("Введите корректный номер телефона");
+    } else {
+      setCallbackError("");
+    }
+  };
+
+  const handleCallbackSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!callbackTime) {
+      setCallbackError("Выберите время для звонка");
+      return;
+    }
+
+    if (callbackPhone.length !== 12 || callbackError) {
+      setCallbackError("Проверьте правильность номера");
+      return;
+    }
+
+    const phoneDigitsOnly = callbackPhone.replace(/\D/g, "");
+    if (phoneDigitsOnly.length < 10) {
+      setCallbackError("Введите корректный номер телефона (минимум 10 цифр)");
+      return;
+    }
+
+    setCallbackError("");
+    setCallbackLoading(true);
+
+    const token = import.meta.env.VITE_TELEGRAM_TOKEN;
+    const chatIds = [
+      import.meta.env.VITE_TELEGRAM_CHAT_ID_EGOR,
+      // import.meta.env.VITE_TELEGRAM_CHAT_ID_ANTON,
+    ];
+    const now = new Date().toLocaleString("ru-RU");
+    const message = `📞 Новая заявка на обратный звонок с сайта:\n\n📱 Телефон: ${callbackPhone}\n⏰ Время для звонка: ${callbackTime}\n🕐 Время заявки: ${now}`;
+
+    try {
+      for (const id of chatIds) {
+        if (id) {
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              chat_id: id,
+              text: message,
+            }),
+          });
+        }
+      }
+      ymGoal("form_sent");
+      setCallbackSubmitted(true);
+      setCallbackPhone("+7");
+      setCallbackTime("");
+      setTimeout(() => {
+        setCallbackSubmitted(false);
+      }, 3000);
+    } catch (err) {
+      setCallbackError("Ошибка при отправке. Попробуйте позже.");
+    } finally {
+      setCallbackLoading(false);
+    }
+  };
+
+  const timeSlots = [
+    "с 9 до 11",
+    "с 11 до 13",
+    "с 13 до 15",
+    "с 15 до 17",
+    "с 17 до 19",
+  ];
 
   // универсальная кнопка
   const Btn = ({ children, href, onClick, outline, icon }) => {
@@ -200,12 +281,6 @@ const ContactsPage = () => {
 
   return (
     <div style={Page}>
-      <QuestionModal
-        isOpen={questioModalOpen}
-        onClose={() => setQuestioModalOpen(false)}
-        isMobile={isMobile}
-      />
-
       {/* локальная шапка удалена */}
 
       {/* Main */}
@@ -333,9 +408,9 @@ const ContactsPage = () => {
             borderRight: "none",
           }}
         >
-          <div style={Cards}>
-          {/* Акция */}
-          <section style={{ ...Card }}>
+          <div style={{ ...Cards, paddingLeft: isMobile ? "20px" : "24px", paddingRight: isMobile ? "20px" : "24px", boxSizing: "border-box" }}>
+            {/* Акция */}
+            <section style={{ ...Card }}>
             <div
               style={{
                 ...CardHead,
@@ -391,102 +466,558 @@ const ContactsPage = () => {
           </section>
 
           {/* Кнопки связи */}
-          <div
-            style={{
-              marginTop: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-            }}
-          >
-            <button
-              {...press}
-              onClick={() => setQuestioModalOpen(true)}
+          {isMobile ? (
+            <div
               style={{
-                ...press.style,
-                background: "transparent",
-                border: "none",
-                color: "#FFD700",
-                fontSize: 19,
-                fontWeight: 700,
-                textDecoration: "none",
-                display: "inline-block",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                padding: 0,
-                textAlign: "left",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "0.8";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "1";
+                marginTop: 16,
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
               }}
             >
-              Заказать звонок
-            </button>
+              {/* Разделительная линия перед номером телефона */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
 
-            <button
-              {...press}
-              onClick={() => {
-                if (isMobile) confirmCall();
-                else showNumber();
-              }}
+              {/* Блок 1: Номер телефона на мобиле */}
+              <a
+                href="tel:+79264081811"
+                onClick={() => {
+                  ymGoal("call_confirmed");
+                }}
+                style={{
+                  color: "#fff",
+                  fontSize: 32,
+                  fontWeight: 700,
+                  lineHeight: 1.5,
+                  fontFamily: "Arial, sans-serif",
+                  paddingBottom: 20,
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+              >
+                +7 (926) 408-18-11
+              </a>
+
+              {/* Разделительная линия 1 */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
+
+              {/* Блок 2: Кнопка WhatsApp */}
+              <button
+                {...press}
+                onClick={wrap(
+                  () => window.open(WA_LINK, "_blank"),
+                  "lead_whatsapp"
+                )}
+                style={{
+                  ...press.style,
+                  borderRadius: 8,
+                  border: "1px solid #FFD700",
+                  background: "transparent",
+                  color: "#fff",
+                  fontSize: 15,
+                  padding: "12px 18px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  minHeight: 48,
+                  alignSelf: "flex-start",
+                  textAlign: "left",
+                }}
+              >
+                Написать в WhatsApp
+              </button>
+
+              {/* Разделительная линия 2 */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
+
+              {/* Блок 3: Кнопка Telegram */}
+              <button
+                {...press}
+                onClick={wrap(
+                  () => window.open(TG_CHANNEL, "_blank"),
+                  "contacts_telegram_channel"
+                )}
+                style={{
+                  ...press.style,
+                  borderRadius: 8,
+                  border: "1px solid #FFD700",
+                  background: "transparent",
+                  color: "#fff",
+                  fontSize: 15,
+                  padding: "12px 18px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  minHeight: 48,
+                  alignSelf: "flex-start",
+                  textAlign: "left",
+                }}
+              >
+                Наш Telegram канал
+              </button>
+
+              {/* Разделительная линия 3 */}
+              <div
+                style={{
+                  marginTop: 20,
+                  marginBottom: 12,
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                }}
+              />
+            </div>
+          ) : (
+            /* Десктоп: одна плитка для всех трех элементов */
+            <div
               style={{
-                ...press.style,
-                background: "transparent",
-                border: "none",
-                color: "#FFD700",
-                fontSize: 19,
-                fontWeight: 700,
-                textDecoration: "none",
-                display: "inline-block",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                padding: 0,
-                textAlign: "left",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "0.8";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "1";
+                marginTop: 16,
+                padding: "28px 32px",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(16, 21, 36, 0.95)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
               }}
             >
-              {numberDisplayed ? "+7 (926) 408-18-11" : "Позвонить"}
-            </button>
+              {/* Блок 1: Номер телефона */}
+              <a
+                href="tel:+79264081811"
+                onClick={() => {
+                  ymGoal("call_confirmed");
+                }}
+                style={{
+                  color: "#fff",
+                  fontSize: 32,
+                  fontWeight: 700,
+                  lineHeight: 1.5,
+                  fontFamily: "Arial, sans-serif",
+                  paddingBottom: 20,
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+              >
+                +7 (926) 408-18-11
+              </a>
 
-            <button
-              {...press}
-              onClick={wrap(
-                () => window.open(WA_LINK, "_blank"),
-                "lead_whatsapp"
+              {/* Разделительная линия 1 */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
+
+              {/* Блок 2: Кнопка WhatsApp */}
+              <button
+                {...press}
+                onClick={wrap(
+                  () => window.open(WA_LINK, "_blank"),
+                  "lead_whatsapp"
+                )}
+                style={{
+                  ...press.style,
+                  borderRadius: 8,
+                  border: "1px solid #FFD700",
+                  background: "transparent",
+                  color: "#fff",
+                  fontSize: 15,
+                  padding: "12px 18px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  minHeight: 48,
+                  alignSelf: "flex-start",
+                  textAlign: "left",
+                }}
+              >
+                Написать в WhatsApp
+              </button>
+
+              {/* Разделительная линия 2 */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
+
+              {/* Блок 3: Кнопка Telegram */}
+              <button
+                {...press}
+                onClick={wrap(
+                  () => window.open(TG_CHANNEL, "_blank"),
+                  "contacts_telegram_channel"
+                )}
+                style={{
+                  ...press.style,
+                  borderRadius: 8,
+                  border: "1px solid #FFD700",
+                  background: "transparent",
+                  color: "#fff",
+                  fontSize: 15,
+                  padding: "12px 18px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  minHeight: 48,
+                  alignSelf: "flex-start",
+                  textAlign: "left",
+                }}
+              >
+                Наш Telegram канал
+              </button>
+
+              {/* Разделительная линия 3 */}
+              <div
+                style={{
+                  height: 1,
+                  background: "rgba(255,255,255,0.12)",
+                  width: "100%",
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
+              />
+
+              {/* Блок 4: Форма обратного звонка внутри плитки на десктопе */}
+              <div>
+              <h3
+                style={{
+                  color: "#FFD700",
+                  fontSize: isMobile ? 22 : 24,
+                  margin: "0 0 14px",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  textTransform: "uppercase",
+                }}
+              >
+                Обратный звонок
+              </h3>
+
+              {callbackSubmitted ? (
+                <p
+                  style={{
+                    color: "#FFD700",
+                    fontSize: 16,
+                    textAlign: "left",
+                    margin: 0,
+                  }}
+                >
+                  Спасибо! Мы свяжемся с вами в указанное время.
+                </p>
+              ) : (
+                <form
+                  onSubmit={handleCallbackSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                  }}
+                >
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.75)",
+                    }}
+                  >
+                    Время для звонка
+                    <select
+                      value={callbackTime}
+                      onChange={(e) => setCallbackTime(e.target.value)}
+                      required
+                      style={{
+                        width: "100%",
+                        borderRadius: 8,
+                        border: "1px solid rgba(255,255,255,0.4)",
+                        background: "rgba(255,255,255,0.04)",
+                        color: "#fff",
+                        fontSize: 15,
+                        padding: "10px 14px",
+                        appearance: "none",
+                        cursor: "pointer",
+                        backgroundImage:
+                          'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'%3E%3Cpath d=\'M1 1 L5 5 L9 1\' stroke=\'%23ffffff\' stroke-width=\'1.5\' stroke-linecap=\'round\' fill=\'none\'/%3E%3C/svg%3E")',
+                        backgroundPosition: "calc(100% - 16px) 50%",
+                        backgroundRepeat: "no-repeat",
+                        paddingRight: 36,
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      <option value="" style={{ color: "#05060A" }}>
+                        Выберите время
+                      </option>
+                      {timeSlots.map((slot) => (
+                        <option
+                          key={slot}
+                          value={slot}
+                          style={{ color: "#05060A" }}
+                        >
+                          {slot}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.75)",
+                    }}
+                  >
+                    Номер телефона
+                    <input
+                      type="tel"
+                      value={callbackPhone}
+                      onChange={handleCallbackPhoneChange}
+                      placeholder="+7 (___) ___-__-__"
+                      required
+                      style={{
+                        width: "100%",
+                        borderRadius: 8,
+                        border: callbackError
+                          ? "1px solid #ff6b6b"
+                          : "1px solid rgba(255,255,255,0.4)",
+                        background: "rgba(255,255,255,0.04)",
+                        color: "#fff",
+                        fontSize: 15,
+                        padding: "10px 14px",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </label>
+
+                  {callbackError && (
+                    <p
+                      style={{
+                        color: "#ff6b6b",
+                        fontSize: 13,
+                        margin: 0,
+                        textAlign: "left",
+                      }}
+                    >
+                      {callbackError}
+                    </p>
+                  )}
+
+                  <button
+                    {...press}
+                    type="submit"
+                    disabled={callbackLoading}
+                    style={{
+                      ...press.style,
+                      borderRadius: 8,
+                      border: "1px solid #FFD700",
+                      background: "transparent",
+                      color: "#fff",
+                      fontSize: 15,
+                      padding: "12px 18px",
+                      fontWeight: 700,
+                      cursor: callbackLoading ? "not-allowed" : "pointer",
+                      minHeight: 48,
+                      alignSelf: "flex-start",
+                      opacity: callbackLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {callbackLoading ? "Отправка..." : "Отправить"}
+                  </button>
+                </form>
               )}
+              </div>
+            </div>
+          )}
+
+          {/* Блок 3: Форма обратного звонка для мобильной версии */}
+          {isMobile && (
+            <div
               style={{
-                ...press.style,
-                background: "transparent",
-                border: "none",
-                color: "#FFD700",
-                fontSize: 19,
-                fontWeight: 700,
-                textDecoration: "none",
-                display: "inline-block",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                padding: 0,
-                textAlign: "left",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "0.8";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "1";
+                padding: "24px 0",
               }}
             >
-              Написать в WhatsApp
-            </button>
+              <h3
+                style={{
+                  color: "#FFD700",
+                  fontSize: 22,
+                  margin: "0 0 14px",
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  textTransform: "uppercase",
+                }}
+              >
+                Обратный звонок
+              </h3>
+
+              {callbackSubmitted ? (
+                <p
+                  style={{
+                    color: "#FFD700",
+                    fontSize: 16,
+                    textAlign: "left",
+                    margin: 0,
+                  }}
+                >
+                  Спасибо! Мы свяжемся с вами в указанное время.
+                </p>
+              ) : (
+                <form
+                  onSubmit={handleCallbackSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                  }}
+                >
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.75)",
+                    }}
+                  >
+                    Время для звонка
+                    <select
+                      value={callbackTime}
+                      onChange={(e) => setCallbackTime(e.target.value)}
+                      required
+                      style={{
+                        width: "100%",
+                        borderRadius: 8,
+                        border: "1px solid rgba(255,255,255,0.4)",
+                        background: "rgba(255,255,255,0.04)",
+                        color: "#fff",
+                        fontSize: 15,
+                        padding: "10px 14px",
+                        appearance: "none",
+                        cursor: "pointer",
+                        backgroundImage:
+                          'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\' viewBox=\'0 0 10 6\'%3E%3Cpath d=\'M1 1 L5 5 L9 1\' stroke=\'%23ffffff\' stroke-width=\'1.5\' stroke-linecap=\'round\' fill=\'none\'/%3E%3C/svg%3E")',
+                        backgroundPosition: "calc(100% - 16px) 50%",
+                        backgroundRepeat: "no-repeat",
+                        paddingRight: 36,
+                        boxSizing: "border-box",
+                      }}
+                    >
+                      <option value="" style={{ color: "#05060A" }}>
+                        Выберите время
+                      </option>
+                      {timeSlots.map((slot) => (
+                        <option
+                          key={slot}
+                          value={slot}
+                          style={{ color: "#05060A" }}
+                        >
+                          {slot}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 6,
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.75)",
+                    }}
+                  >
+                    Номер телефона
+                    <input
+                      type="tel"
+                      value={callbackPhone}
+                      onChange={handleCallbackPhoneChange}
+                      placeholder="+7 (___) ___-__-__"
+                      required
+                      style={{
+                        width: "100%",
+                        borderRadius: 8,
+                        border: callbackError
+                          ? "1px solid #ff6b6b"
+                          : "1px solid rgba(255,255,255,0.4)",
+                        background: "rgba(255,255,255,0.04)",
+                        color: "#fff",
+                        fontSize: 15,
+                        padding: "10px 14px",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </label>
+
+                  {callbackError && (
+                    <p
+                      style={{
+                        color: "#ff6b6b",
+                        fontSize: 13,
+                        margin: 0,
+                        textAlign: "left",
+                      }}
+                    >
+                      {callbackError}
+                    </p>
+                  )}
+
+                  <button
+                    {...press}
+                    type="submit"
+                    disabled={callbackLoading}
+                    style={{
+                      ...press.style,
+                      borderRadius: 8,
+                      border: "1px solid #FFD700",
+                      background: "transparent",
+                      color: "#fff",
+                      fontSize: 15,
+                      padding: "12px 18px",
+                      fontWeight: 700,
+                      cursor: callbackLoading ? "not-allowed" : "pointer",
+                      minHeight: 48,
+                      alignSelf: "flex-start",
+                      opacity: callbackLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {callbackLoading ? "Отправка..." : "Отправить"}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
           </div>
 
+          {/* Изображение офиса - без отступов */}
           <div
             style={{
               marginTop: 28,
@@ -506,14 +1037,18 @@ const ContactsPage = () => {
             />
           </div>
 
+          {/* Адрес - с отступами */}
           <div
             style={{
               marginTop: 18,
+              paddingLeft: isMobile ? "20px" : "24px",
+              paddingRight: isMobile ? "20px" : "24px",
               textAlign: "left",
               color: "#fff",
               fontWeight: 700,
               fontSize: 16,
               lineHeight: 1.5,
+              boxSizing: "border-box",
             }}
           >
             МОСКОВСКАЯ ОБЛАСТЬ, Г. КОРОЛЁВ, УЛ ПРОСПЕКТ КОРОЛЁВА 5Д, ТРЦ —
@@ -527,9 +1062,6 @@ const ContactsPage = () => {
             >
               Будем рады видеть вас в гостях.
             </div>
-          </div>
-
-          {/* Кнопка На главную удалена */}
           </div>
 
           {/* Карта и контакты */}
